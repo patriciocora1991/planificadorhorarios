@@ -54,17 +54,28 @@
         <!-- PESTAÑA 1: GRILLA SEMANAL -->
         <section id="tab-grilla" class="space-y-6">
             <div class="bg-white p-6 rounded-xl shadow-md print-shadow">
-                <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4 no-print">
+                <div class="flex flex-col lg:flex-row justify-between items-center mb-6 gap-4 no-print">
                     <div>
                         <h2 class="text-xl font-bold text-indigo-900">Grilla General de Entrenamientos</h2>
-                        <p class="text-sm text-slate-500">Visualiza los colores por predio, rangos horarios y secuencia de planteles.</p>
+                        <p class="text-sm text-slate-500">Filtra por predio, tira general o división puntual.</p>
                     </div>
-                    <div class="flex items-center gap-3">
+                    <div class="flex flex-wrap items-center gap-2.5">
                         <button onclick="abrirModalTurno()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition shadow">
-                            + Agregar Turno Manual
+                            + Agregar Turno
                         </button>
+                        <!-- Filtro por Predio -->
                         <select id="filtroPredio" onchange="renderizarGrilla()" class="border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                             <option value="todos">Todos los Predios</option>
+                        </select>
+                        <!-- Filtro por Tira (AFA o Futsala) -->
+                        <select id="filtroTipo" onchange="renderizarGrilla()" class="border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none font-semibold text-indigo-900 bg-indigo-50/50">
+                            <option value="todos">Todas las Tiras</option>
+                            <option value="AFA">Tira AFA</option>
+                            <option value="Futsala">Tira Futsala (+ Promos)</option>
+                        </select>
+                        <!-- Filtro por División Puntual -->
+                        <select id="filtroDivision" onchange="renderizarGrilla()" class="border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none font-semibold text-slate-700 bg-slate-50">
+                            <option value="todos">Todas las Divisiones</option>
                         </select>
                     </div>
                 </div>
@@ -340,17 +351,32 @@
             }
         }
 
-        // GRILLA
+        // GRILLA CON TRIPLE FILTRO (PREDIO + TIRA + DIVISIÓN PUNTUAL)
         function renderizarGrilla() {
-            actualizarSelectoresFiltroPredio();
-            const filtro = document.getElementById('filtroPredio').value;
+            actualizarSelectoresFiltros();
+            const filtroPredio = document.getElementById('filtroPredio').value;
+            const filtroTipo = document.getElementById('filtroTipo').value;
+            const filtroDivision = document.getElementById('filtroDivision').value;
             const contenedor = document.getElementById('grillaContenedor');
             contenedor.innerHTML = "";
 
             const dias = ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes"];
 
             dias.forEach(dia => {
-                let sesiones = grillaDatos[dia] ? grillaDatos[dia].filter(s => filtro === 'todos' || s.predio === filtro) : [];
+                let sesiones = grillaDatos[dia] ? grillaDatos[dia].filter(s => {
+                    let cumplePredio = (filtroPredio === 'todos' || s.predio === filtroPredio);
+                    let cumpleTipo = true;
+
+                    if (filtroTipo === 'AFA') {
+                        cumpleTipo = (s.tipo === 'AFA');
+                    } else if (filtroTipo === 'Futsala') {
+                        cumpleTipo = (s.tipo === 'Futsala' || s.tipo === 'Promo');
+                    }
+
+                    let cumpleDivision = (filtroDivision === 'todos' || s.division === filtroDivision);
+
+                    return cumplePredio && cumpleTipo && cumpleDivision;
+                }) : [];
 
                 let columna = document.createElement('div');
                 columna.className = "bg-slate-50 border border-slate-200 rounded-xl p-3 flex flex-col gap-3";
@@ -375,9 +401,8 @@
                             </div>
                         </div>
                     `;
-                }).join('') : `<p class="text-xs text-slate-400 italic text-center py-4">Sin turnos asignados</p>`;
+                }).join('') : `<p class="text-xs text-slate-400 italic text-center py-4">Sin turnos para este filtro</p>`;
 
-                // Resumen de horarios disponibles en los predios para ese día
                 let infoHorariosDia = prediosData.map(p => `<div class="text-[10px] text-slate-500 truncate"><strong>${p.nombre}:</strong> ${p.horario}</div>`).join('');
 
                 columna.innerHTML = `
@@ -395,14 +420,31 @@
             });
         }
 
-        function actualizarSelectoresFiltroPredio() {
-            const selectFiltro = document.getElementById('filtroPredio');
-            const valorActual = selectFiltro.value;
-            selectFiltro.innerHTML = `<option value="todos">Todos los Predios</option>`;
+        function actualizarSelectoresFiltros() {
+            // Predios
+            const selectPredio = document.getElementById('filtroPredio');
+            const valorActualPredio = selectPredio.value;
+            selectPredio.innerHTML = `<option value="todos">Todos los Predios</option>`;
             prediosData.forEach(p => {
-                selectFiltro.innerHTML += `<option value="${p.nombre}">${p.nombre}</option>`;
+                selectPredio.innerHTML += `<option value="${p.nombre}">${p.nombre}</option>`;
             });
-            selectFiltro.value = valorActual;
+            selectPredio.value = valorActualPredio;
+
+            // Divisiones Puntuales (Dinámico según planteles y turnos activos)
+            const selectDivision = document.getElementById('filtroDivision');
+            const valorActualDiv = selectDivision.value;
+            selectDivision.innerHTML = `<option value="todos">Todas las Divisiones</option>`;
+            
+            let divisionesSet = new Set();
+            plantelesData.forEach(pl => divisionesSet.add(pl.nombre));
+            Object.values(grillaDatos).forEach(diaArr => {
+                if(diaArr) diaArr.forEach(s => divisionesSet.add(s.division));
+            });
+
+            Array.from(divisionesSet).sort().forEach(div => {
+                selectDivision.innerHTML += `<option value="${div}">${div}</option>`;
+            });
+            selectDivision.value = valorActualDiv;
         }
 
         function abrirModalTurno() {
@@ -605,21 +647,18 @@
 
         // MOTOR DE OPTIMIZACIÓN REAL DE SECUENCIAS
         function ejecutarOptimizador() {
-            // Ordena las sesiones de cada día agrupándolas por predio y aplicando orden cronológico estricto
             Object.keys(grillaDatos).forEach(dia => {
                 if (grillaDatos[dia]) {
                     grillaDatos[dia].sort((a, b) => {
-                        // Primero agrupar por predio
                         if (a.predio < b.predio) return -1;
                         if (a.predio > b.predio) return 1;
-                        // Luego por horario de inicio
                         return a.horario.localeCompare(b.horario);
                     });
                 }
             });
             guardarEnStorage();
             renderizarGrilla();
-            alert("✨ ¡Secuencias optimizadas! Los turnos se han ordenado cronológicamente por predio, respetando las reglas de continuidad del staff y eliminando solapamientos.");
+            alert("✨ ¡Secuencias optimizadas! Los turnos se han ordenado cronológicamente por predio respetando las reglas de continuidad del staff.");
         }
 
         // Carga inicial
