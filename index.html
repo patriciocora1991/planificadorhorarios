@@ -3,512 +3,664 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Optimizador Inteligente de Grilla Futsal</title>
+
+<title>Optimizador Inteligente Futsal</title>
 
 <style>
-* {
-    box-sizing: border-box;
+
+*{
+    box-sizing:border-box;
 }
 
-body {
-    margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
-    background: #eef2f7;
-    color: #172033;
+body{
+    margin:0;
+    font-family:Arial,Helvetica,sans-serif;
+    background:#eef2f7;
+    color:#172033;
 }
 
-header {
-    background: #111827;
-    color: white;
-    padding: 20px;
+header{
+    background:#111827;
+    color:white;
+    padding:20px;
 }
 
-header h1 {
-    margin: 0 0 6px;
+header h1{
+    margin:0 0 5px;
 }
 
-.container {
-    max-width: 1800px;
-    margin: auto;
-    padding: 18px;
+.container{
+    max-width:1900px;
+    margin:auto;
+    padding:18px;
 }
 
-.toolbar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 15px;
+.toolbar{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:15px;
 }
 
-button {
-    border: 0;
-    border-radius: 7px;
-    padding: 10px 14px;
-    font-weight: bold;
-    cursor: pointer;
+button{
+    border:0;
+    border-radius:7px;
+    padding:10px 14px;
+    font-weight:bold;
+    cursor:pointer;
 }
 
-.primary {
-    background: #2563eb;
-    color: white;
+button:hover{
+    opacity:.9;
 }
 
-.green {
-    background: #16a34a;
-    color: white;
+.primary{
+    background:#2563eb;
+    color:white;
 }
 
-.orange {
-    background: #f59e0b;
-    color: #111;
+.green{
+    background:#16a34a;
+    color:white;
 }
 
-.gray {
-    background: #64748b;
-    color: white;
+.orange{
+    background:#f59e0b;
+    color:#111;
 }
 
-.red {
-    background: #dc2626;
-    color: white;
+.red{
+    background:#dc2626;
+    color:white;
 }
 
-.panel {
-    background: white;
-    border-radius: 10px;
-    padding: 16px;
-    margin-bottom: 15px;
-    box-shadow: 0 2px 8px #00000012;
+.gray{
+    background:#64748b;
+    color:white;
 }
 
-.stats {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 10px;
-    margin-bottom: 15px;
+.dark{
+    background:#1e293b;
+    color:white;
 }
 
-.stat {
-    background: white;
-    padding: 15px;
-    border-radius: 9px;
+.panel{
+    background:white;
+    border-radius:10px;
+    padding:16px;
+    margin-bottom:15px;
+    box-shadow:0 2px 8px #00000012;
 }
 
-.stat b {
-    display: block;
-    font-size: 26px;
-    margin-bottom: 4px;
+.stats{
+    display:grid;
+    grid-template-columns:repeat(6,1fr);
+    gap:10px;
+    margin-bottom:15px;
 }
 
-.grid {
-    display: grid;
-    grid-template-columns: repeat(7, minmax(170px, 1fr));
-    gap: 7px;
-    overflow-x: auto;
+.stat{
+    background:white;
+    padding:15px;
+    border-radius:9px;
 }
 
-.dayhead {
-    background: #1e293b;
-    color: white;
-    text-align: center;
-    padding: 10px;
-    border-radius: 6px;
+.stat b{
+    display:block;
+    font-size:25px;
+    margin-bottom:4px;
 }
 
-.daybody {
-    background: #e2e8f0;
-    min-height: 700px;
-    padding: 6px;
-    border-radius: 6px;
+.grid{
+    display:grid;
+    grid-template-columns:repeat(7,minmax(190px,1fr));
+    gap:7px;
+    overflow-x:auto;
 }
 
-.card {
-    background: #dbeafe;
-    border-left: 5px solid #2563eb;
-    padding: 9px;
-    margin-bottom: 6px;
-    border-radius: 6px;
-    cursor: grab;
+.dayhead{
+    background:#1e293b;
+    color:white;
+    text-align:center;
+    padding:10px;
+    border-radius:6px;
 }
 
-.card:hover {
-    box-shadow: 0 2px 8px #0003;
+.daybody{
+    background:#e2e8f0;
+    min-height:720px;
+    padding:6px;
+    border-radius:6px;
 }
 
-.card.conflict {
-    background: #fee2e2;
-    border-left-color: #dc2626;
+.card{
+    background:#dbeafe;
+    border-left:5px solid #2563eb;
+    padding:9px;
+    margin-bottom:6px;
+    border-radius:6px;
+    cursor:grab;
 }
 
-.card.warning {
-    background: #fef3c7;
-    border-left-color: #f59e0b;
+.card.conflict{
+    background:#fee2e2;
+    border-left-color:#dc2626;
 }
 
-.card small {
-    display: block;
-    color: #475569;
-    margin-top: 4px;
+.card.warning{
+    background:#fef3c7;
+    border-left-color:#f59e0b;
 }
 
-.tag {
-    display: inline-block;
-    font-size: 10px;
-    padding: 3px 5px;
-    border-radius: 4px;
-    background: #e5e7eb;
-    margin-top: 5px;
+.card.separated{
+    border-left-color:#16a34a;
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
+.card b{
+    font-size:14px;
 }
 
-th,
-td {
-    padding: 8px;
-    border-bottom: 1px solid #e5e7eb;
-    text-align: left;
+.card small{
+    display:block;
+    color:#475569;
+    margin-top:4px;
 }
 
-th {
-    background: #f1f5f9;
+.tag{
+    display:inline-block;
+    font-size:10px;
+    padding:3px 5px;
+    border-radius:4px;
+    background:#e5e7eb;
+    margin-top:5px;
 }
 
-.modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: #0008;
-    z-index: 20;
-    align-items: center;
-    justify-content: center;
+table{
+    width:100%;
+    border-collapse:collapse;
 }
 
-.modal.on {
-    display: flex;
+th,td{
+    padding:8px;
+    border-bottom:1px solid #e5e7eb;
+    text-align:left;
 }
 
-.box {
-    background: white;
-    width: min(1000px, 96%);
-    max-height: 94vh;
-    overflow: auto;
-    border-radius: 12px;
-    padding: 20px;
+th{
+    background:#f1f5f9;
 }
 
-.form {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:#0009;
+    z-index:50;
+    align-items:center;
+    justify-content:center;
 }
 
-.field label {
-    display: block;
-    font-size: 12px;
-    font-weight: bold;
-    margin-bottom: 4px;
+.modal.on{
+    display:flex;
+}
+
+.box{
+    background:white;
+    width:min(1200px,96%);
+    max-height:94vh;
+    overflow:auto;
+    border-radius:12px;
+    padding:20px;
+}
+
+.form{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+}
+
+.field label{
+    display:block;
+    font-size:12px;
+    font-weight:bold;
+    margin-bottom:4px;
 }
 
 .field input,
-.field select {
-    width: 100%;
-    padding: 9px;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
+.field select{
+    width:100%;
+    padding:9px;
+    border:1px solid #cbd5e1;
+    border-radius:6px;
 }
 
-.full {
-    grid-column: 1 / -1;
+.full{
+    grid-column:1/-1;
 }
 
-.actions {
-    display: flex;
-    gap: 7px;
-    justify-content: flex-end;
-    margin-top: 15px;
+.actions{
+    display:flex;
+    gap:7px;
+    justify-content:flex-end;
+    margin-top:15px;
 }
 
-.scenario {
-    border: 1px solid #cbd5e1;
-    border-radius: 9px;
-    padding: 14px;
-    margin: 10px 0;
+.scenario{
+    border:1px solid #cbd5e1;
+    border-radius:9px;
+    padding:14px;
+    margin:10px 0;
 }
 
-.scenario.best {
-    border: 2px solid #16a34a;
+.scenario.best{
+    border:2px solid #16a34a;
 }
 
-.score {
-    font-size: 22px;
-    font-weight: bold;
+.score{
+    font-size:22px;
+    font-weight:bold;
 }
 
-.good {
-    color: #15803d;
+.good{
+    color:#15803d;
 }
 
-.bad {
-    color: #b91c1c;
+.bad{
+    color:#b91c1c;
 }
 
-.warning-text {
-    color: #b45309;
+.warn{
+    color:#b45309;
 }
 
-.muted {
-    color: #64748b;
-    font-size: 12px;
+.muted{
+    color:#64748b;
+    font-size:12px;
 }
 
-.metric {
-    display: inline-block;
-    background: #f1f5f9;
-    padding: 6px 9px;
-    border-radius: 6px;
-    margin: 3px;
-    font-size: 12px;
+.metric{
+    display:inline-block;
+    background:#f1f5f9;
+    padding:6px 9px;
+    border-radius:6px;
+    margin:3px;
+    font-size:12px;
 }
 
-.proposal {
-    background: #f8fafc;
-    border-radius: 7px;
-    padding: 9px;
-    margin: 5px 0;
+.venueCard{
+    border:1px solid #cbd5e1;
+    border-radius:8px;
+    padding:12px;
+    margin-bottom:10px;
 }
 
-.change {
-    background: #eff6ff;
+.availabilityRow{
+    display:grid;
+    grid-template-columns:130px 120px 120px 1fr;
+    gap:7px;
+    align-items:center;
+    margin-top:5px;
 }
 
-@media(max-width:1100px) {
+.availabilityRow input{
+    padding:7px;
+}
 
-    .grid {
-        grid-template-columns: repeat(2, minmax(250px, 1fr));
+.dayConfig{
+    background:#f8fafc;
+    padding:10px;
+    border-radius:7px;
+    margin-top:10px;
+}
+
+.change{
+    background:#eff6ff;
+}
+
+@media(max-width:1200px){
+
+    .stats{
+        grid-template-columns:repeat(3,1fr);
     }
 
-    .stats {
-        grid-template-columns: repeat(2, 1fr);
+    .form{
+        grid-template-columns:repeat(2,1fr);
     }
+
 }
 
-@media(max-width:650px) {
+@media(max-width:700px){
 
-    .grid {
-        grid-template-columns: 1fr;
+    .stats{
+        grid-template-columns:repeat(2,1fr);
     }
 
-    .form {
-        grid-template-columns: 1fr;
+    .form{
+        grid-template-columns:1fr;
     }
 
-    .full {
-        grid-column: auto;
+    .grid{
+        grid-template-columns:1fr;
     }
+
 }
+
 </style>
 </head>
 
+
 <body>
 
+
 <header>
-    <h1>⚽ Optimizador Inteligente de Grilla Futsal</h1>
-    <div>
-        Planificación semanal de canchas, horarios, divisiones y staff.
-    </div>
+
+<h1>⚽ Optimizador Inteligente de Grilla Futsal</h1>
+
+<div>
+Canchas · Predios · Horarios · Divisiones · Staff · Optimización
+</div>
+
 </header>
+
 
 <div class="container">
 
-    <div class="toolbar">
 
-        <button class="primary" onclick="newTraining()">
-            ➕ Entrenamiento
-        </button>
+<div class="toolbar">
 
-        <button class="gray" onclick="venuesModal()">
-            🏟️ Predios
-        </button>
+<button class="primary" onclick="openTrainingModal()">
+➕ Agregar entrenamiento
+</button>
 
-        <button class="green" onclick="runOptimizer()">
-            🤖 GENERAR GRILLAS ÓPTIMAS
-        </button>
+<button class="dark" onclick="openConfig()">
+⚙️ Configuración
+</button>
 
-        <button class="orange" onclick="renderConflicts()">
-            ⚠️ Revisar conflictos
-        </button>
+<button class="green" onclick="runOptimizer()">
+🤖 GENERAR OPTIMIZACIONES
+</button>
 
-        <button class="gray" onclick="resetData()">
-            ↩ Restaurar
-        </button>
+<button class="orange" onclick="renderConflicts()">
+⚠️ Ver conflictos
+</button>
 
-    </div>
+<button class="gray" onclick="exportData()">
+💾 Exportar
+</button>
 
+<button class="gray" onclick="importData()">
+📂 Importar
+</button>
 
-    <div class="stats">
+<button class="red" onclick="resetAll()">
+↩ Restaurar
+</button>
 
-        <div class="stat">
-            <b id="nT">0</b>
-            Entrenamientos
-        </div>
-
-        <div class="stat">
-            <b id="nC">0</b>
-            Conflictos
-        </div>
-
-        <div class="stat">
-            <b id="nH">0</b>
-            Horas semanales
-        </div>
-
-        <div class="stat">
-            <b id="nV">0</b>
-            Predios
-        </div>
-
-        <div class="stat">
-            <b id="nO">0</b>
-            Objetivos cumplidos
-        </div>
-
-    </div>
-
-
-    <div class="panel">
-
-        <h2>📅 Grilla semanal</h2>
-
-        <div class="muted">
-            Arrastrá un entrenamiento a otro día.
-            Doble click para modificarlo.
-            Los conflictos aparecen en rojo.
-        </div>
-
-        <div
-            id="calendar"
-            class="grid"
-            style="margin-top:10px">
-        </div>
-
-    </div>
-
-
-    <div class="panel">
-
-        <h2>⚠️ Conflictos</h2>
-
-        <div id="conflicts"></div>
-
-    </div>
-
-
-    <div class="panel">
-
-        <h2>🤖 Grillas inteligentes propuestas</h2>
-
-        <div class="muted">
-            El sistema genera alternativas completas.
-            Ninguna modificación se aplica hasta que vos la aceptes.
-        </div>
-
-        <div id="scenarios"></div>
-
-    </div>
+<input
+type="file"
+id="importFile"
+accept=".json"
+style="display:none"
+onchange="processImport(event)"
+>
 
 </div>
 
 
-<!-- MODAL ENTRENAMIENTO -->
+<div class="stats">
 
-<div class="modal" id="tm">
+<div class="stat">
+<b id="statTrainings">0</b>
+Entrenamientos
+</div>
+
+<div class="stat">
+<b id="statConflicts">0</b>
+Conflictos
+</div>
+
+<div class="stat">
+<b id="statHours">0</b>
+Horas semanales
+</div>
+
+<div class="stat">
+<b id="statVenues">0</b>
+Predios
+</div>
+
+<div class="stat">
+<b id="statObjectives">0</b>
+Objetivos completos
+</div>
+
+<div class="stat">
+<b id="statSeparate">0</b>
+Separaciones posibles
+</div>
+
+</div>
+
+
+<div class="panel">
+
+<h2>📅 Grilla semanal</h2>
+
+<div class="muted">
+
+Arrastrá un entrenamiento para cambiarlo de día.
+Doble click para modificar horario, duración, predio,
+staff y preferencias.
+
+</div>
+
+<div
+id="calendar"
+class="grid"
+style="margin-top:12px">
+</div>
+
+</div>
+
+
+<div class="panel">
+
+<h2>⚠️ Conflictos y alertas</h2>
+
+<div id="conflicts"></div>
+
+</div>
+
+
+<div class="panel">
+
+<h2>🤖 Optimización automática</h2>
+
+<div class="muted">
+
+El sistema busca soluciones priorizando:
+<br>
+1. Eliminar conflictos.
+<br>
+2. Mantener días y horarios actuales.
+<br>
+3. Mantener el mismo predio.
+<br>
+4. Alcanzar la duración objetivo.
+<br>
+5. Separar divisiones cuando sea posible.
+<br>
+6. Mantener entrenamientos consecutivos.
+<br>
+7. Evitar movimientos innecesarios.
+
+</div>
+
+<div id="scenarios"></div>
+
+</div>
+
+
+</div>
+
+
+
+<!-- =====================================================
+MODAL ENTRENAMIENTO
+===================================================== -->
+
+<div class="modal" id="trainingModal">
 
 <div class="box">
 
-<h2 id="mt">
-    Entrenamiento
+<h2 id="trainingTitle">
+Agregar entrenamiento
 </h2>
 
-<input type="hidden" id="tid">
+<input
+type="hidden"
+id="trainingId"
+>
 
 <div class="form">
 
+
 <div class="field">
+
 <label>Área</label>
-<input id="cat">
+
+<input
+id="fCategory"
+placeholder="AFA / Futsala / Promos"
+>
+
 </div>
 
+
 <div class="field">
+
 <label>División</label>
-<input id="grp">
+
+<input
+id="fGroup"
+placeholder="1ra / 3ra / 5ta"
+>
+
 </div>
 
+
 <div class="field">
+
 <label>Día</label>
-<select id="day"></select>
+
+<select id="fDay"></select>
+
 </div>
 
+
 <div class="field">
+
 <label>Predio</label>
-<select id="venue"></select>
+
+<select id="fVenue"></select>
+
 </div>
 
+
 <div class="field">
+
 <label>Hora inicio</label>
-<input type="time" id="start">
+
+<input
+type="time"
+id="fStart"
+>
+
 </div>
 
+
 <div class="field">
+
 <label>Duración actual (min)</label>
-<input type="number" id="dur" step="15" min="15">
+
+<input
+type="number"
+id="fDuration"
+step="15"
+min="15"
+>
+
 </div>
 
+
 <div class="field">
+
 <label>Duración objetivo (min)</label>
-<input type="number" id="target" step="15" min="15">
+
+<input
+type="number"
+id="fTarget"
+step="15"
+min="15"
+>
+
 </div>
 
+
 <div class="field">
+
 <label>Duración mínima aceptable</label>
-<input type="number" id="minDur" step="15" min="15">
+
+<input
+type="number"
+id="fMinimum"
+step="15"
+min="15"
+>
+
 </div>
 
-<div class="field">
-<label>Staff / recurso compartido</label>
-<input id="staff">
-</div>
 
 <div class="field">
+
+<label>Staff compartido</label>
+
+<input
+id="fStaff"
+placeholder="Ej: AFA3"
+>
+
+</div>
+
+
+<div class="field">
+
 <label>Prioridad</label>
 
-<select id="priority">
+<select id="fPriority">
 
 <option value="3">
-Muy alta
+3 - Crítica
 </option>
 
 <option value="2" selected>
-Alta
+2 - Alta
 </option>
 
 <option value="1">
-Media
+1 - Normal
 </option>
 
 </select>
 
 </div>
 
+
 <div class="field">
 
-<label>
-¿Puede reducir duración?
-</label>
+<label>¿Puede reducir duración?</label>
 
-<select id="flex">
+<select id="fFlexible">
 
 <option value="no">
 No
@@ -522,50 +674,91 @@ Sí
 
 </div>
 
+
 <div class="field">
 
-<label>
-¿Priorizar división separada?
-</label>
+<label>Preferencia de separación</label>
 
-<select id="separate">
+<select id="fSeparate">
 
 <option value="no">
 No
 </option>
 
 <option value="si">
-Sí
+Sí - intentar separar
 </option>
 
 </select>
 
 </div>
+
+
+<div class="field">
+
+<label>¿Puede cambiar de día?</label>
+
+<select id="fMoveDay">
+
+<option value="si">
+Sí
+</option>
+
+<option value="no">
+No
+</option>
+
+</select>
+
+</div>
+
+
+<div class="field">
+
+<label>¿Puede cambiar de predio?</label>
+
+<select id="fMoveVenue">
+
+<option value="si">
+Sí
+</option>
+
+<option value="no">
+No
+</option>
+
+</select>
+
+</div>
+
 
 <div class="field full">
 
-<label>
-Notas
-</label>
+<label>Notas</label>
 
-<input id="notes">
+<input
+id="fNotes"
+placeholder="Información adicional"
+>
 
 </div>
 
+
 </div>
+
 
 <div class="actions">
 
 <button
 class="red"
-id="del"
+id="deleteTrainingButton"
 onclick="deleteTraining()">
 Eliminar
 </button>
 
 <button
 class="gray"
-onclick="closeModal()">
+onclick="closeTrainingModal()">
 Cancelar
 </button>
 
@@ -582,64 +775,73 @@ Guardar
 </div>
 
 
-<!-- MODAL PREDIOS -->
 
-<div class="modal" id="vm">
+<!-- =====================================================
+CONFIGURACIÓN
+===================================================== -->
+
+<div class="modal" id="configModal">
 
 <div class="box">
 
-<h2>🏟️ Predios y disponibilidad</h2>
+<h2>⚙️ Configuración de predios y disponibilidades</h2>
 
-<div id="venueList"></div>
+<div class="muted">
+
+Podés crear nuevos predios, eliminar convenios,
+modificar horarios y agregar o quitar días.
+
+</div>
+
+<div id="venueConfiguration"></div>
+
 
 <hr>
 
-<h3>Agregar predio</h3>
+
+<h3>➕ Nuevo predio</h3>
 
 <div class="form">
 
 <div class="field">
-<label>Nombre</label>
-<input id="vn">
+
+<label>Nombre del predio</label>
+
+<input
+id="newVenueName"
+placeholder="Ej: Predio X"
+>
+
 </div>
 
 <div class="field">
-<label>Días</label>
-<input
-id="vd"
-placeholder="lunes,martes,miercoles">
-</div>
 
-<div class="field">
-<label>Desde</label>
-<input
-id="vs"
-type="time"
-value="08:00">
-</div>
+<label>¿Cantidad de canchas?</label>
 
-<div class="field">
-<label>Hasta</label>
 <input
-id="ve"
-type="time"
-value="23:00">
+type="number"
+id="newVenueCourts"
+value="1"
+min="1"
+>
+
 </div>
 
 </div>
+
 
 <div class="actions">
 
 <button
 class="gray"
-onclick="closeVenue()">
+onclick="closeConfig()">
 Cerrar
 </button>
 
 <button
 class="primary"
 onclick="addVenue()">
-Agregar
+Agregar predio
 </button>
 
 </div>
@@ -649,412 +851,491 @@ Agregar
 </div>
 
 
+
 <script>
 
+
+/* =====================================================
+DATOS
+===================================================== */
+
+
 const DAYS = [
-    "lunes",
-    "martes",
-    "miercoles",
-    "jueves",
-    "viernes",
-    "sabado",
-    "domingo"
+"lunes",
+"martes",
+"miercoles",
+"jueves",
+"viernes",
+"sabado",
+"domingo"
 ];
 
-const DN = {
 
-    lunes: "Lunes",
-    martes: "Martes",
-    miercoles: "Miércoles",
-    jueves: "Jueves",
-    viernes: "Viernes",
-    sabado: "Sábado",
-    domingo: "Domingo"
+const DAY_NAMES = {
+
+lunes:"Lunes",
+martes:"Martes",
+miercoles:"Miércoles",
+jueves:"Jueves",
+viernes:"Viernes",
+sabado:"Sábado",
+domingo:"Domingo"
 
 };
 
 
-/* =========================
-   PREDIOS
-========================= */
+/* =====================================================
+PREDIOS INICIALES
+===================================================== */
 
-const initialVenues = [
+const defaultVenues = [
 
 {
-    id: "rincon",
-    name: "Predio Rincón",
 
-    availability:
-        Object.fromEntries(
-            DAYS.map(
-                d => [d, ["08:00", "23:00"]]
-            )
-        )
+id:"rincon",
+
+name:"Predio Rincón",
+
+courts:1,
+
+availability:{
+
+lunes:["08:00","23:00"],
+martes:["08:00","23:00"],
+miercoles:["08:00","23:00"],
+jueves:["08:00","23:00"],
+viernes:["08:00","23:00"],
+sabado:["08:00","23:00"],
+domingo:["08:00","23:00"]
+
+}
+
 },
 
+
 {
-    id: "satsaid",
-    name: "Predio SATSAID",
 
-    availability: {
+id:"satsaid",
 
-        martes: ["19:00", "20:30"],
+name:"Predio SATSAID",
 
-        miercoles: ["20:00", "22:00"],
+courts:1,
 
-        jueves: ["19:00", "20:00"],
+availability:{
 
-        viernes: ["20:00", "21:00"]
+martes:["19:00","20:30"],
+miercoles:["20:00","22:00"],
+jueves:["19:00","20:00"],
+viernes:["20:00","21:00"]
 
-    }
+}
+
 },
 
+
 {
-    id: "manolo",
-    name: "Predio Dean Funes (Manolo)",
 
-    availability: {
+id:"manolo",
 
-        lunes: ["20:00", "21:00"],
+name:"Predio Dean Funes (Manolo)",
 
-        martes: ["18:00", "21:00"],
+courts:1,
 
-        jueves: ["18:00", "21:00"],
+availability:{
 
-        viernes: ["20:30", "21:30"]
+lunes:["20:00","21:00"],
+martes:["18:00","21:00"],
+jueves:["18:00","21:00"],
+viernes:["20:30","21:30"]
 
-    }
+}
+
 }
 
 ];
 
 
-/* =========================
-   ENTRENAMIENTOS
-========================= */
+/* =====================================================
+ENTRENAMIENTOS
+===================================================== */
 
-const initialTraining = [
+const defaultTrainings = [
 
-/* AFA */
+["AFA","1ra","martes","satsaid","19:00",60,90,60,"AFA1",3,"no","no","si","si"],
 
-["AFA","1ra","martes","satsaid","19:00",60,90,60,"AFA1",3,"no","si"],
+["AFA","1ra","miercoles","satsaid","20:00",60,90,60,"AFA1",3,"no","no","si","si"],
 
-["AFA","1ra","miercoles","satsaid","20:00",60,90,60,"AFA1",3,"no","si"],
+["AFA","1ra","jueves","satsaid","19:00",60,90,60,"AFA1",3,"no","no","si","si"],
 
-["AFA","1ra","jueves","satsaid","19:00",60,90,60,"AFA1",3,"no","si"],
-
-["AFA","1ra","viernes","satsaid","20:00",60,90,60,"AFA1",3,"no","si"],
+["AFA","1ra","viernes","satsaid","20:00",60,90,60,"AFA1",3,"no","no","si","si"],
 
 
-["AFA","3ra","martes","rincon","20:30",90,90,60,"AFA3",3,"si","no"],
+["AFA","3ra","martes","rincon","20:30",90,90,60,"AFA3",3,"si","no","si","si"],
 
-["AFA","3ra","miercoles","satsaid","20:00",60,75,60,"AFA3",3,"si","no"],
+["AFA","3ra","miercoles","satsaid","20:00",60,75,60,"AFA3",3,"si","no","si","si"],
 
-["AFA","3ra","jueves","rincon","20:15",60,75,60,"AFA3",3,"si","no"],
+["AFA","3ra","jueves","rincon","20:15",60,75,60,"AFA3",3,"si","no","si","si"],
 
-["AFA","3ra","viernes","rincon","19:00",60,75,60,"AFA3",3,"si","no"],
-
-
-["AFA","4ta","martes","rincon","19:00",90,120,60,"AFA4",2,"si","si"],
-
-["AFA","4ta","viernes","rincon","20:00",60,120,60,"AFA4",2,"si","si"],
+["AFA","3ra","viernes","rincon","19:00",60,75,60,"AFA3",3,"si","no","si","si"],
 
 
-["AFA","5ta","lunes","rincon","19:30",90,90,60,"AFA56",2,"si","si"],
+["AFA","4ta","martes","rincon","19:00",90,120,60,"AFA4",2,"si","si","si","si"],
 
-["AFA","6ta","lunes","rincon","19:30",90,90,60,"AFA56",2,"si","si"],
-
-["AFA","5ta","jueves","rincon","18:00",90,90,60,"AFA56",2,"si","si"],
-
-["AFA","6ta","jueves","rincon","18:00",90,90,60,"AFA56",2,"si","si"],
+["AFA","4ta","viernes","rincon","20:00",60,120,60,"AFA4",2,"si","si","si","si"],
 
 
-["AFA","7ma","lunes","rincon","18:00",90,90,60,"AFA78",2,"si","si"],
+["AFA","5ta","lunes","rincon","19:30",90,90,60,"AFA5",2,"si","si","si","si"],
 
-["AFA","8va","lunes","rincon","18:00",90,90,60,"AFA78",2,"si","si"],
+["AFA","6ta","lunes","rincon","19:30",90,90,60,"AFA6",2,"si","si","si","si"],
 
-["AFA","7ma","viernes","rincon","18:00",60,60,60,"AFA78",2,"si","si"],
+["AFA","5ta","jueves","rincon","18:00",90,90,60,"AFA5",2,"si","si","si","si"],
 
-["AFA","8va","viernes","rincon","18:00",60,60,60,"AFA78",2,"si","si"],
-
-
-/* PROMOS */
-
-["Promos","18-19","martes","manolo","18:00",60,60,45,"P1819",2,"si","no"],
-
-["Promos","18-19","jueves","manolo","18:00",60,60,45,"P1819",2,"si","no"],
-
-["Promos","16-17","martes","manolo","19:00",60,60,45,"P1617",2,"si","no"],
-
-["Promos","16-17","jueves","manolo","19:00",60,60,45,"P1617",2,"si","no"],
+["AFA","6ta","jueves","rincon","18:00",90,90,60,"AFA6",2,"si","si","si","si"],
 
 
-/* FUTSALA */
+["AFA","7ma","lunes","rincon","18:00",90,90,60,"AFA7",2,"si","si","si","si"],
 
-["Futsala","1ra","martes","manolo","20:00",60,60,45,"F1",2,"si","no"],
+["AFA","8va","lunes","rincon","18:00",90,90,60,"AFA8",2,"si","si","si","si"],
 
-["Futsala","1ra","viernes","manolo","20:30",60,60,45,"F1",2,"si","no"],
+["AFA","7ma","viernes","rincon","18:00",60,60,60,"AFA7",2,"si","si","si","si"],
 
-
-["Futsala","3ra","lunes","manolo","20:00",60,60,45,"F34",2,"si","si"],
-
-["Futsala","4ta","lunes","manolo","20:00",60,60,45,"F34",2,"si","si"],
-
-["Futsala","3ra","jueves","manolo","20:00",60,60,45,"F34",2,"si","si"],
-
-["Futsala","4ta","jueves","manolo","20:00",60,60,45,"F34",2,"si","si"],
+["AFA","8va","viernes","rincon","18:00",60,60,60,"AFA8",2,"si","si","si","si"],
 
 
-["Futsala","5ta","martes","rincon","16:30",90,90,60,"F56",2,"si","si"],
+["Promos","18-19","martes","manolo","18:00",60,60,45,"P1819",2,"si","no","si","si"],
 
-["Futsala","6ta","martes","rincon","16:30",90,90,60,"F56",2,"si","si"],
+["Promos","18-19","jueves","manolo","18:00",60,60,45,"P1819",2,"si","no","si","si"],
 
-["Futsala","5ta","viernes","rincon","16:30",90,90,60,"F56",2,"si","si"],
+["Promos","16-17","martes","manolo","19:00",60,60,45,"P1617",2,"si","no","si","si"],
 
-["Futsala","6ta","viernes","rincon","16:30",90,90,60,"F56",2,"si","si"],
+["Promos","16-17","jueves","manolo","19:00",60,60,45,"P1617",2,"si","no","si","si"],
 
 
-["Futsala","7ma","lunes","rincon","17:00",60,60,45,"F78",2,"si","si"],
+["Futsala","1ra","martes","manolo","20:00",60,60,45,"F1",2,"si","no","si","si"],
 
-["Futsala","8va","lunes","rincon","17:00",60,60,45,"F78",2,"si","si"],
+["Futsala","1ra","viernes","manolo","20:30",60,60,45,"F1",2,"si","no","si","si"],
 
-["Futsala","7ma","jueves","rincon","17:00",60,60,45,"F78",2,"si","si"],
 
-["Futsala","8va","jueves","rincon","17:00",60,60,45,"F78",2,"si","si"]
+["Futsala","3ra","lunes","manolo","20:00",60,60,45,"F3",2,"si","si","si","si"],
+
+["Futsala","4ta","lunes","manolo","20:00",60,60,45,"F4",2,"si","si","si","si"],
+
+["Futsala","3ra","jueves","manolo","20:00",60,60,45,"F3",2,"si","si","si","si"],
+
+["Futsala","4ta","jueves","manolo","20:00",60,60,45,"F4",2,"si","si","si","si"],
+
+
+["Futsala","5ta","martes","rincon","16:30",90,90,60,"F5",2,"si","si","si","si"],
+
+["Futsala","6ta","martes","rincon","16:30",90,90,60,"F6",2,"si","si","si","si"],
+
+["Futsala","5ta","viernes","rincon","16:30",90,90,60,"F5",2,"si","si","si","si"],
+
+["Futsala","6ta","viernes","rincon","16:30",90,90,60,"F6",2,"si","si","si","si"],
+
+
+["Futsala","7ma","lunes","rincon","17:00",60,60,45,"F7",2,"si","si","si","si"],
+
+["Futsala","8va","lunes","rincon","17:00",60,60,45,"F8",2,"si","si","si","si"],
+
+["Futsala","7ma","jueves","rincon","17:00",60,60,45,"F7",2,"si","si","si","si"],
+
+["Futsala","8va","jueves","rincon","17:00",60,60,45,"F8",2,"si","si","si","si"]
 
 ];
 
 
+/* =====================================================
+CARGA
+===================================================== */
+
 let venues =
-    JSON.parse(
-        localStorage.getItem("futsalVenues")
-        || "null"
-    )
-    || structuredClone(initialVenues);
+JSON.parse(
+localStorage.getItem("futsal_venues_v2")
+||
+"null"
+)
+||
+structuredClone(defaultVenues);
 
 
 let trainings =
-    JSON.parse(
-        localStorage.getItem("futsalTrainings")
-        || "null"
-    )
-    || initialTraining.map(
-        (x,i) => ({
-
-            id: i + 1,
-
-            cat: x[0],
-
-            grp: x[1],
-
-            day: x[2],
-
-            venue: x[3],
-
-            start: x[4],
-
-            dur: x[5],
-
-            target: x[6],
-
-            minDur: x[7],
-
-            staff: x[8],
-
-            priority: x[9],
-
-            flex: x[10],
-
-            separate: x[11],
-
-            notes: ""
-
-        })
-    );
+JSON.parse(
+localStorage.getItem("futsal_trainings_v2")
+||
+"null"
+);
 
 
-function save() {
+if(!trainings){
+
+    trainings =
+    defaultTrainings.map(
+    (x,i)=>({
+
+        id:i+1,
+
+        category:x[0],
+
+        group:x[1],
+
+        day:x[2],
+
+        venue:x[3],
+
+        start:x[4],
+
+        duration:x[5],
+
+        target:x[6],
+
+        minimum:x[7],
+
+        staff:x[8],
+
+        priority:x[9],
+
+        flexible:x[10],
+
+        separate:x[11],
+
+        moveDay:x[12],
+
+        moveVenue:x[13],
+
+        notes:""
+
+    }));
+
+}
+
+
+function save(){
 
     localStorage.setItem(
-        "futsalVenues",
+        "futsal_venues_v2",
         JSON.stringify(venues)
     );
 
     localStorage.setItem(
-        "futsalTrainings",
+        "futsal_trainings_v2",
         JSON.stringify(trainings)
     );
 
 }
 
 
-function tm(s) {
+/* =====================================================
+UTILIDADES
+===================================================== */
 
-    const [h,m] =
-        s.split(":").map(Number);
+function minutes(time){
 
-    return h * 60 + m;
+    const p =
+    time.split(":").map(Number);
+
+    return p[0]*60+p[1];
 
 }
 
 
-function ts(n) {
+function timeString(total){
+
+    total =
+    Math.max(
+        0,
+        Math.round(total)
+    );
 
     return String(
-        Math.floor(n / 60)
+        Math.floor(total/60)
     ).padStart(2,"0")
-    + ":"
+    +
+    ":"
     +
     String(
-        n % 60
+        total%60
     ).padStart(2,"0");
 
 }
 
 
-function end(t) {
+function finish(t){
 
-    return ts(
-        tm(t.start) + t.dur
+    return timeString(
+        minutes(t.start)
+        +
+        t.duration
     );
 
 }
 
 
-function getVenue(id) {
+function getVenue(id){
 
     return venues.find(
-        v => v.id === id
+        v=>v.id===id
     );
 
 }
 
 
-function overlaps(a,b) {
+function overlaps(a,b){
+
+    if(a.day!==b.day)
+        return false;
 
     return (
 
-        a.day === b.day
+        minutes(a.start)
+        <
+        minutes(b.start)+b.duration
 
         &&
 
-        tm(a.start)
+        minutes(b.start)
         <
-        tm(b.start) + b.dur
-
-        &&
-
-        tm(b.start)
-        <
-        tm(a.start) + a.dur
+        minutes(a.start)+a.duration
 
     );
 
 }
 
 
-/* =========================
-   CONFLICTOS
-========================= */
+/* =====================================================
+CONFLICTOS
+===================================================== */
 
-function conflictsOf(arr=trainings) {
+function getConflicts(list=trainings){
 
-    const out = [];
-
-    for(let i=0;i<arr.length;i++) {
-
-        const a = arr[i];
-
-        const v = getVenue(a.venue);
-
-        const av =
-            v &&
-            v.availability[a.day];
+    const result=[];
 
 
-        if(!av) {
+    for(let i=0;i<list.length;i++){
 
-            out.push({
+        const a=list[i];
 
-                type:"availability",
+        const venue=
+        getVenue(a.venue);
+
+
+        if(!venue){
+
+            result.push({
+
+                type:"venue",
 
                 ids:[a.id],
 
                 text:
-                    `${a.cat} ${a.grp}: `
-                    +
-                    `${DN[a.day]} `
-                    +
-                    `no está disponible `
-                    +
-                    `en ${v ? v.name : "ese predio"}.`
+                `${a.category} ${a.group}: predio inexistente.`
 
             });
 
         }
 
-        else if(
+        else{
 
-            tm(a.start) < tm(av[0])
+            const av=
+            venue.availability[a.day];
 
-            ||
 
-            tm(a.start) + a.dur
-            >
-            tm(av[1])
+            if(!av){
 
-        ) {
+                result.push({
 
-            out.push({
+                    type:"availability",
 
-                type:"availability",
+                    ids:[a.id],
 
-                ids:[a.id],
-
-                text:
-                    `${a.cat} ${a.grp}: `
+                    text:
+                    `${a.category} ${a.group}: `
                     +
-                    `${a.start}-${end(a)} `
+                    `${venue.name} no está disponible el `
                     +
-                    `queda fuera de `
+                    `${DAY_NAMES[a.day]}.`
+
+                });
+
+            }
+
+            else if(
+
+                minutes(a.start)
+                <
+                minutes(av[0])
+
+                ||
+
+                minutes(a.start)+a.duration
+                >
+                minutes(av[1])
+
+            ){
+
+                result.push({
+
+                    type:"availability",
+
+                    ids:[a.id],
+
+                    text:
+                    `${a.category} ${a.group}: `
                     +
-                    `${v.name} `
+                    `${a.start}-${finish(a)} `
+                    +
+                    `fuera de disponibilidad de `
+                    +
+                    `${venue.name} `
                     +
                     `(${av[0]}-${av[1]}).`
 
-            });
+                });
+
+            }
 
         }
 
 
-        for(let j=i+1;j<arr.length;j++) {
+        for(let j=i+1;j<list.length;j++){
 
-            const b = arr[j];
+            const b=list[j];
+
 
             if(!overlaps(a,b))
                 continue;
 
 
-            if(a.venue === b.venue) {
+            if(
+                a.venue===b.venue
+            ){
 
-                out.push({
+                const v=
+                getVenue(a.venue);
+
+
+                result.push({
 
                     type:"court",
 
                     ids:[a.id,b.id],
 
                     text:
-                        `CANCHA: `
-                        +
-                        `${DN[a.day]} `
-                        +
-                        `${a.cat} ${a.grp} `
-                        +
-                        `↔ `
-                        +
-                        `${b.cat} ${b.grp} `
-                        +
-                        `en ${getVenue(a.venue)?.name}.`
+                    `CANCHA: `
+                    +
+                    `${DAY_NAMES[a.day]} `
+                    +
+                    `${a.category} ${a.group} `
+                    +
+                    `${a.start}-${finish(a)} `
+                    +
+                    `choca con `
+                    +
+                    `${b.category} ${b.group} `
+                    +
+                    `${b.start}-${finish(b)} `
+                    +
+                    `en ${v?.name}.`
 
                 });
 
@@ -1067,26 +1348,26 @@ function conflictsOf(arr=trainings) {
                 &&
                 b.staff
                 &&
-                a.staff === b.staff
+                a.staff===b.staff
 
-            ) {
+            ){
 
-                out.push({
+                result.push({
 
                     type:"staff",
 
                     ids:[a.id,b.id],
 
                     text:
-                        `STAFF "${a.staff}": `
-                        +
-                        `${a.cat} ${a.grp} `
-                        +
-                        `↔ `
-                        +
-                        `${b.cat} ${b.grp} `
-                        +
-                        `se superponen.`
+                    `STAFF "${a.staff}": `
+                    +
+                    `${a.category} ${a.group} `
+                    +
+                    `y `
+                    +
+                    `${b.category} ${b.group} `
+                    +
+                    `se superponen.`
 
                 });
 
@@ -1096,106 +1377,132 @@ function conflictsOf(arr=trainings) {
 
     }
 
-    return out;
+
+    return result;
 
 }
 
 
-function renderConflicts() {
+function renderConflicts(){
 
-    const c = conflictsOf();
-
-    const box =
-        document.getElementById("conflicts");
+    const conflicts=
+    getConflicts();
 
 
-    if(!c.length) {
+    const box=
+    document.getElementById(
+        "conflicts"
+    );
 
-        box.innerHTML =
-            `<b class="good">
-                🟢 No hay conflictos.
-            </b>`;
+
+    if(!conflicts.length){
+
+        box.innerHTML=
+        `<div class="good">
+        🟢 No hay conflictos actualmente.
+        </div>`;
 
         return;
 
     }
 
 
-    box.innerHTML =
-        c.map(
-            x =>
-                `<div style="margin:7px 0">
-                    🔴 ${x.text}
-                </div>`
-        ).join("");
+    box.innerHTML=
+    conflicts.map(
+        c=>
+        `<div style="margin:7px 0">
+        🔴 ${c.text}
+        </div>`
+    ).join("");
 
 }
 
 
-/* =========================
-   CALENDARIO
-========================= */
+/* =====================================================
+CALENDARIO
+===================================================== */
 
-function render() {
+function renderCalendar(){
 
-    const cal =
-        document.getElementById("calendar");
+    const calendar=
+    document.getElementById(
+        "calendar"
+    );
 
-    cal.innerHTML = "";
+    calendar.innerHTML="";
 
-    const bad =
-        new Set(
-            conflictsOf()
-            .flatMap(x => x.ids)
+
+    const conflictIds=
+    new Set(
+        getConflicts()
+        .flatMap(c=>c.ids)
+    );
+
+
+    DAYS.forEach(day=>{
+
+        const column=
+        document.createElement("div");
+
+
+        column.innerHTML=
+        `
+        <div class="dayhead">
+            ${DAY_NAMES[day]}
+        </div>
+
+        <div
+        class="daybody"
+        data-day="${day}">
+        </div>
+        `;
+
+
+        const body=
+        column.querySelector(
+            ".daybody"
         );
 
 
-    DAYS.forEach(d => {
-
-        const col =
-            document.createElement("div");
+        body.ondragover=
+        e=>e.preventDefault();
 
 
-        col.innerHTML =
-            `
-            <div class="dayhead">
-                ${DN[d]}
-            </div>
+        body.ondrop=
+        e=>{
 
-            <div
-                class="daybody"
-                data-day="${d}">
-            </div>
-            `;
+            const id=
+            Number(
+                e.dataTransfer.getData("id")
+            );
 
 
-        const body =
-            col.querySelector(".daybody");
+            const t=
+            trainings.find(
+                x=>x.id===id
+            );
 
 
-        body.ondragover =
-            e => e.preventDefault();
+            if(!t)
+                return;
 
 
-        body.ondrop = e => {
+            if(t.moveDay==="no"){
 
-            const id =
-                +e.dataTransfer.getData("id");
-
-            const t =
-                trainings.find(
-                    x => x.id === id
+                alert(
+                    "Este entrenamiento está configurado como NO MOVIBLE de día."
                 );
 
-            if(t) {
-
-                t.day = d;
-
-                save();
-
-                render();
+                return;
 
             }
+
+
+            t.day=day;
+
+            save();
+
+            render();
 
         };
 
@@ -1203,317 +1510,402 @@ function render() {
         trainings
 
         .filter(
-            t => t.day === d
+            t=>t.day===day
         )
 
         .sort(
-            (a,b) =>
-                tm(a.start)
-                -
-                tm(b.start)
+            (a,b)=>
+            minutes(a.start)
+            -
+            minutes(b.start)
         )
 
-        .forEach(t => {
+        .forEach(t=>{
 
-            const x =
-                document.createElement("div");
-
-
-            x.className =
-                "card"
-                +
-                (
-                    bad.has(t.id)
-                    ?
-                    " conflict"
-                    :
-                    ""
-                );
+            const card=
+            document.createElement("div");
 
 
-            x.draggable = true;
+            card.className=
+            "card"
+            +
+            (
+                conflictIds.has(t.id)
+                ?
+                " conflict"
+                :
+                ""
+            )
+            +
+            (
+                t.separate==="si"
+                ?
+                " separated"
+                :
+                ""
+            );
 
 
-            x.ondragstart =
-                e =>
-                    e.dataTransfer.setData(
-                        "id",
-                        t.id
-                    );
+            card.draggable=true;
 
 
-            x.ondblclick =
-                () =>
-                    editTraining(t.id);
+            card.ondragstart=
+            e=>
+            e.dataTransfer.setData(
+                "id",
+                t.id
+            );
 
 
-            x.innerHTML = `
+            card.ondblclick=
+            ()=>openTrainingModal(t.id);
 
-                <b>
-                    ${t.cat} — ${t.grp}
-                </b>
 
-                <div>
-                    ${t.start}
-                    →
-                    ${end(t)}
-                    ·
-                    ${t.dur}'
-                </div>
+            const venue=
+            getVenue(t.venue);
 
-                <small>
-                    ${getVenue(t.venue)?.name || "Sin predio"}
-                </small>
 
-                <small>
-                    Staff:
-                    ${t.staff || "-"}
-                </small>
+            card.innerHTML=
+            `
 
-                ${
-                    bad.has(t.id)
-                    ?
-                    `<span class="tag">
-                        CONFLICTO
-                    </span>`
-                    :
-                    ""
-                }
+            <b>
+            ${t.category} — ${t.group}
+            </b>
+
+            <div>
+            ${t.start}
+            →
+            ${finish(t)}
+            ·
+            ${t.duration}'
+            </div>
+
+            <small>
+            🏟️ ${venue?.name || "Sin predio"}
+            </small>
+
+            <small>
+            👤 Staff: ${t.staff || "-"}
+            </small>
+
+            ${
+                t.separate==="si"
+                ?
+                `<span class="tag">
+                🔀 Separar
+                </span>`
+                :
+                ""
+            }
+
+            ${
+                conflictIds.has(t.id)
+                ?
+                `<span class="tag">
+                ⚠️ Conflicto
+                </span>`
+                :
+                ""
+            }
 
             `;
 
 
-            body.appendChild(x);
+            body.appendChild(card);
 
         });
 
 
-        cal.appendChild(col);
+        calendar.appendChild(column);
 
     });
 
-
-    const c =
-        conflictsOf();
+}
 
 
-    const mins =
-        trainings.reduce(
-            (s,t) => s + t.dur,
-            0
-        );
+/* =====================================================
+ESTADÍSTICAS
+===================================================== */
+
+function renderStats(){
+
+    const conflicts=
+    getConflicts();
 
 
-    const obj =
-        trainings.filter(
-            t =>
-                t.dur >= t.target
-        ).length;
+    const hours=
+    trainings.reduce(
+        (sum,t)=>
+        sum+t.duration,
+        0
+    );
 
 
-    document.getElementById("nT")
-        .textContent =
-        trainings.length;
+    const objectives=
+    trainings.filter(
+        t=>t.duration>=t.target
+    ).length;
 
 
-    document.getElementById("nC")
-        .textContent =
-        c.length;
+    const separate=
+    trainings.filter(
+        t=>t.separate==="si"
+    ).length;
 
 
-    document.getElementById("nH")
-        .textContent =
-        (mins / 60).toFixed(1);
+    document.getElementById(
+        "statTrainings"
+    ).textContent=
+    trainings.length;
 
 
-    document.getElementById("nV")
-        .textContent =
-        venues.length;
+    document.getElementById(
+        "statConflicts"
+    ).textContent=
+    conflicts.length;
 
 
-    document.getElementById("nO")
-        .textContent =
-        obj;
+    document.getElementById(
+        "statHours"
+    ).textContent=
+    (hours/60).toFixed(1);
 
+
+    document.getElementById(
+        "statVenues"
+    ).textContent=
+    venues.length;
+
+
+    document.getElementById(
+        "statObjectives"
+    ).textContent=
+    objectives;
+
+
+    document.getElementById(
+        "statSeparate"
+    ).textContent=
+    separate;
+
+}
+
+
+function render(){
+
+    renderCalendar();
+
+    renderStats();
 
     renderConflicts();
 
 }
 
 
-/* =========================
-   FORMULARIO
-========================= */
+/* =====================================================
+FORMULARIO ENTRENAMIENTO
+===================================================== */
 
-function fillSelects() {
+function fillTrainingSelects(){
 
-    day.innerHTML =
-        DAYS.map(
-            d =>
-                `<option value="${d}">
-                    ${DN[d]}
-                </option>`
-        ).join("");
-
-
-    venue.innerHTML =
-        venues.map(
-            v =>
-                `<option value="${v.id}">
-                    ${v.name}
-                </option>`
-        ).join("");
-
-}
+    fDay.innerHTML=
+    DAYS.map(
+        d=>
+        `<option value="${d}">
+        ${DAY_NAMES[d]}
+        </option>`
+    ).join("");
 
 
-function newTraining() {
-
-    fillSelects();
-
-    tid.value = "";
-
-    cat.value = "";
-
-    grp.value = "";
-
-    day.value = "lunes";
-
-    venue.value =
-        venues[0]?.id || "";
-
-    start.value = "18:00";
-
-    dur.value = 60;
-
-    target.value = 60;
-
-    minDur.value = 45;
-
-    staff.value = "";
-
-    priority.value = 2;
-
-    flex.value = "si";
-
-    separate.value = "no";
-
-    notes.value = "";
-
-    del.style.display = "none";
-
-    document
-        .getElementById("tm")
-        .classList.add("on");
+    fVenue.innerHTML=
+    venues.map(
+        v=>
+        `<option value="${v.id}">
+        ${v.name}
+        </option>`
+    ).join("");
 
 }
 
 
-function editTraining(id) {
+function openTrainingModal(id=null){
 
-    const t =
+    fillTrainingSelects();
+
+
+    document.getElementById(
+        "trainingModal"
+    ).classList.add("on");
+
+
+    if(id){
+
+        const t=
         trainings.find(
-            x => x.id === id
+            x=>x.id===id
         );
 
-    if(!t)
-        return;
+
+        if(!t)
+            return;
 
 
-    fillSelects();
-
-    tid.value = t.id;
-
-    cat.value = t.cat;
-
-    grp.value = t.grp;
-
-    day.value = t.day;
-
-    venue.value = t.venue;
-
-    start.value = t.start;
-
-    dur.value = t.dur;
-
-    target.value = t.target;
-
-    minDur.value = t.minDur;
-
-    staff.value = t.staff;
-
-    priority.value = t.priority;
-
-    flex.value = t.flex;
-
-    separate.value = t.separate;
-
-    notes.value = t.notes || "";
-
-    del.style.display = "block";
+        trainingTitle.textContent=
+        "Modificar entrenamiento";
 
 
-    document
-        .getElementById("tm")
-        .classList.add("on");
+        trainingId.value=t.id;
+
+        fCategory.value=t.category;
+
+        fGroup.value=t.group;
+
+        fDay.value=t.day;
+
+        fVenue.value=t.venue;
+
+        fStart.value=t.start;
+
+        fDuration.value=t.duration;
+
+        fTarget.value=t.target;
+
+        fMinimum.value=t.minimum;
+
+        fStaff.value=t.staff;
+
+        fPriority.value=t.priority;
+
+        fFlexible.value=t.flexible;
+
+        fSeparate.value=t.separate;
+
+        fMoveDay.value=t.moveDay;
+
+        fMoveVenue.value=t.moveVenue;
+
+        fNotes.value=t.notes || "";
+
+
+        deleteTrainingButton.style.display=
+        "block";
+
+    }
+
+    else{
+
+        trainingTitle.textContent=
+        "Agregar entrenamiento";
+
+
+        trainingId.value="";
+
+        fCategory.value="";
+
+        fGroup.value="";
+
+        fDay.value="lunes";
+
+        fVenue.value=
+        venues[0]?.id || "";
+
+        fStart.value="18:00";
+
+        fDuration.value=60;
+
+        fTarget.value=60;
+
+        fMinimum.value=45;
+
+        fStaff.value="";
+
+        fPriority.value=2;
+
+        fFlexible.value="si";
+
+        fSeparate.value="no";
+
+        fMoveDay.value="si";
+
+        fMoveVenue.value="si";
+
+        fNotes.value="";
+
+
+        deleteTrainingButton.style.display=
+        "none";
+
+    }
 
 }
 
 
-function closeModal() {
+function closeTrainingModal(){
 
-    document
-        .getElementById("tm")
-        .classList.remove("on");
+    trainingModal.classList.remove(
+        "on"
+    );
 
 }
 
 
-function saveTraining() {
+function saveTraining(){
 
-    const o = {
+    const data={
 
-        cat: cat.value.trim(),
+        category:fCategory.value.trim(),
 
-        grp: grp.value.trim(),
+        group:fGroup.value.trim(),
 
-        day: day.value,
+        day:fDay.value,
 
-        venue: venue.value,
+        venue:fVenue.value,
 
-        start: start.value,
+        start:fStart.value,
 
-        dur: +dur.value,
+        duration:Number(
+            fDuration.value
+        ),
 
-        target: +target.value,
+        target:Number(
+            fTarget.value
+        ),
 
-        minDur: +minDur.value,
+        minimum:Number(
+            fMinimum.value
+        ),
 
-        staff: staff.value.trim(),
+        staff:fStaff.value.trim(),
 
-        priority: +priority.value,
+        priority:Number(
+            fPriority.value
+        ),
 
-        flex: flex.value,
+        flexible:fFlexible.value,
 
-        separate: separate.value,
+        separate:fSeparate.value,
 
-        notes: notes.value
+        moveDay:fMoveDay.value,
+
+        moveVenue:fMoveVenue.value,
+
+        notes:fNotes.value.trim()
 
     };
 
 
     if(
-        !o.cat
+        !data.category
         ||
-        !o.grp
+        !data.group
         ||
-        !o.start
+        !data.start
         ||
-        !o.dur
-    ) {
+        data.duration<15
+    ){
 
         alert(
-            "Completá los datos principales."
+            "Completá categoría, división, horario y duración."
         );
 
         return;
@@ -1521,157 +1913,411 @@ function saveTraining() {
     }
 
 
-    const id = +tid.value;
+    const id=
+    Number(
+        trainingId.value
+    );
 
 
-    if(id) {
+    if(id){
+
+        const t=
+        trainings.find(
+            x=>x.id===id
+        );
+
 
         Object.assign(
-            trainings.find(
-                t => t.id === id
-            ),
-            o
+            t,
+            data
         );
 
     }
 
-    else {
+    else{
 
-        o.id = Date.now();
+        trainings.push({
 
-        trainings.push(o);
+            id:
+            Date.now(),
+
+            ...data
+
+        });
 
     }
 
 
     save();
 
-    closeModal();
+    closeTrainingModal();
 
     render();
 
 }
 
 
-function deleteTraining() {
+function deleteTraining(){
 
-    const id = +tid.value;
+    const id=
+    Number(
+        trainingId.value
+    );
 
 
     if(
-        confirm(
+        !confirm(
             "¿Eliminar este entrenamiento?"
         )
-    ) {
-
-        trainings =
-            trainings.filter(
-                t => t.id !== id
-            );
-
-        save();
-
-        closeModal();
-
-        render();
-
-    }
-
-}
+    )
+        return;
 
 
-/* =========================
-   PREDIOS
-========================= */
+    trainings=
+    trainings.filter(
+        t=>t.id!==id
+    );
 
-function venuesModal() {
 
-    renderVenueList();
+    save();
 
-    document
-        .getElementById("vm")
-        .classList.add("on");
+    closeTrainingModal();
+
+    render();
 
 }
 
 
-function closeVenue() {
+/* =====================================================
+CONFIGURACIÓN PREDIOS
+===================================================== */
 
-    document
-        .getElementById("vm")
-        .classList.remove("on");
+function openConfig(){
+
+    renderVenueConfiguration();
+
+    configModal.classList.add(
+        "on"
+    );
 
 }
 
 
-function renderVenueList() {
+function closeConfig(){
 
-    venueList.innerHTML =
-        venues.map(
-            v => `
+    configModal.classList.remove(
+        "on"
+    );
 
-            <div class="proposal">
+}
 
-                <b>
-                    ${v.name}
-                </b>
 
-                <br>
+function renderVenueConfiguration(){
 
-                ${
-                    Object.entries(
-                        v.availability
-                    )
-                    .map(
-                        ([d,a]) =>
-                            `${DN[d]} ${a[0]}-${a[1]}`
-                    )
-                    .join(" · ")
-                }
+    const box=
+    document.getElementById(
+        "venueConfiguration"
+    );
 
-                <br><br>
 
-                <button
+    box.innerHTML=
+    venues.map(
+        v=>{
+
+            return `
+
+            <div class="venueCard">
+
+            <div style="
+                display:flex;
+                justify-content:space-between;
+                align-items:center;
+                gap:10px;
+            ">
+
+                <div>
+
+                    <input
+                    value="${escapeHtml(v.name)}"
+                    style="
+                    font-size:18px;
+                    font-weight:bold;
+                    padding:7px;
+                    width:350px;
+                    "
+                    onchange="
+                    renameVenue('${v.id}',this.value)
+                    "
+                    >
+
+                    <div class="muted">
+                    Canchas: ${v.courts}
+                    </div>
+
+                </div>
+
+
+                <div>
+
+                    <button
                     class="red"
                     onclick="
-                        removeVenue('${v.id}')
+                    deleteVenue('${v.id}')
                     ">
-                    Eliminar
-                </button>
+                    Eliminar predio
+                    </button>
+
+                </div>
 
             </div>
 
-            `
-        ).join("");
+
+            <div class="dayConfig">
+
+            <b>Disponibilidad semanal</b>
+
+
+            ${
+                DAYS.map(
+                    day=>{
+
+                        const av=
+                        v.availability[day];
+
+
+                        return `
+
+                        <div
+                        class="availabilityRow">
+
+                            <label>
+                            ${DAY_NAMES[day]}
+                            </label>
+
+                            <input
+                            type="time"
+                            value="${av?.[0] || ""}"
+                            onchange="
+                            changeAvailability(
+                                '${v.id}',
+                                '${day}',
+                                'start',
+                                this.value
+                            )
+                            ">
+
+                            <input
+                            type="time"
+                            value="${av?.[1] || ""}"
+                            onchange="
+                            changeAvailability(
+                                '${v.id}',
+                                '${day}',
+                                'end',
+                                this.value
+                            )
+                            ">
+
+
+                            <button
+                            class="${
+                                av
+                                ?
+                                "red"
+                                :
+                                "green"
+                            }"
+                            onclick="
+                            toggleAvailability(
+                                '${v.id}',
+                                '${day}'
+                            )
+                            ">
+
+                            ${
+                                av
+                                ?
+                                "✕ Quitar día"
+                                :
+                                "＋ Agregar día"
+                            }
+
+                            </button>
+
+                        </div>
+
+                        `;
+
+                    }
+                ).join("")
+            }
+
+            </div>
+
+
+            <div style="margin-top:10px">
+
+                <label>
+                Cantidad de canchas:
+                </label>
+
+                <input
+                type="number"
+                min="1"
+                value="${v.courts}"
+                style="width:100px;padding:7px"
+                onchange="
+                changeCourtCount(
+                    '${v.id}',
+                    this.value
+                )
+                ">
+
+            </div>
+
+
+            </div>
+
+            `;
+
+        }
+    ).join("");
 
 }
 
 
-function addVenue() {
+function renameVenue(id,name){
 
-    const name =
-        vn.value.trim();
+    const v=
+    getVenue(id);
+
+    if(!v)
+        return;
 
 
-    const ds =
-        vd.value
-        .split(",")
-        .map(
-            x => x.trim().toLowerCase()
-        )
-        .filter(
-            d => DAYS.includes(d)
-        );
+    v.name=
+    name.trim()
+    ||
+    "Predio";
+
+
+    save();
+
+    render();
+
+}
+
+
+function changeCourtCount(id,value){
+
+    const v=
+    getVenue(id);
+
+    if(!v)
+        return;
+
+
+    v.courts=
+    Math.max(
+        1,
+        Number(value)||1
+    );
+
+
+    save();
+
+    render();
+
+}
+
+
+function changeAvailability(
+    id,
+    day,
+    field,
+    value
+){
+
+    const v=
+    getVenue(id);
+
+    if(!v)
+        return;
+
+
+    if(!v.availability[day]){
+
+        v.availability[day]=[
+            "08:00",
+            "23:00"
+        ];
+
+    }
+
+
+    if(field==="start")
+        v.availability[day][0]=value;
+
+    if(field==="end")
+        v.availability[day][1]=value;
+
+
+    save();
+
+    render();
+
+}
+
+
+function toggleAvailability(
+    id,
+    day
+){
+
+    const v=
+    getVenue(id);
+
+    if(!v)
+        return;
 
 
     if(
-        !name
-        ||
-        !ds.length
-    ) {
+        v.availability[day]
+    ){
+
+        delete v.availability[day];
+
+    }
+
+    else{
+
+        v.availability[day]=[
+            "08:00",
+            "23:00"
+        ];
+
+    }
+
+
+    save();
+
+    renderVenueConfiguration();
+
+    render();
+
+}
+
+
+function addVenue(){
+
+    const name=
+    newVenueName.value.trim();
+
+
+    if(!name){
 
         alert(
-            "Completá nombre y días."
+            "Ingresá el nombre del predio."
         );
 
         return;
@@ -1679,50 +2325,54 @@ function addVenue() {
     }
 
 
-    const av = {};
-
-
-    ds.forEach(
-        d =>
-            av[d] =
-                [
-                    vs.value,
-                    ve.value
-                ]
+    const courts=
+    Math.max(
+        1,
+        Number(
+            newVenueCourts.value
+        )||1
     );
 
 
     venues.push({
 
         id:
-            "v" + Date.now(),
+        "venue_"+Date.now(),
 
         name,
 
-        availability: av
+        courts,
+
+        availability:{}
 
     });
 
 
     save();
 
-    renderVenueList();
+    newVenueName.value="";
+
+    newVenueCourts.value=1;
+
+    renderVenueConfiguration();
 
     render();
 
 }
 
 
-function removeVenue(id) {
+function deleteVenue(id){
 
-    if(
-        trainings.some(
-            t => t.venue === id
-        )
-    ) {
+    const hasTrainings=
+    trainings.some(
+        t=>t.venue===id
+    );
+
+
+    if(hasTrainings){
 
         alert(
-            "Primero mové los entrenamientos de este predio."
+            "No podés eliminar este predio mientras tenga entrenamientos asignados. Primero movelos a otro predio."
         );
 
         return;
@@ -1731,122 +2381,148 @@ function removeVenue(id) {
 
 
     if(
-        confirm(
-            "¿Eliminar predio?"
+        !confirm(
+            "¿Eliminar definitivamente este predio?"
         )
-    ) {
+    )
+        return;
 
-        venues =
-            venues.filter(
-                v => v.id !== id
-            );
 
-        save();
+    venues=
+    venues.filter(
+        v=>v.id!==id
+    );
 
-        renderVenueList();
 
-        render();
+    save();
 
-    }
+    renderVenueConfiguration();
+
+    render();
 
 }
 
 
-/* =========================================================
-   MOTOR DE OPTIMIZACIÓN
-========================================================= */
+/* =====================================================
+OPTIMIZADOR
+===================================================== */
 
 
 /*
-    Genera todos los horarios posibles en bloques de 15 minutos.
+    Candidatos posibles.
 */
 
-function candidateOptions(t) {
+function generateCandidates(t){
 
-    const opts = [];
-
-
-    for(const d of DAYS) {
-
-        for(const v of venues) {
-
-            const av =
-                v.availability[d];
+    const candidates=[];
 
 
-            if(!av)
+    const durationOptions=
+    new Set();
+
+
+    durationOptions.add(
+        t.target
+    );
+
+    durationOptions.add(
+        t.duration
+    );
+
+
+    if(
+        t.flexible==="si"
+    ){
+
+        for(
+            let d=t.target;
+            d>=t.minimum;
+            d-=15
+        ){
+
+            durationOptions.add(d);
+
+        }
+
+    }
+
+
+    for(
+        const day of DAYS
+    ){
+
+        if(
+            t.moveDay==="no"
+            &&
+            day!==t.day
+        )
+            continue;
+
+
+        for(
+            const venue of venues
+        ){
+
+            if(
+                t.moveVenue==="no"
+                &&
+                venue.id!==t.venue
+            )
                 continue;
 
 
-            let durations = [
-
-                t.target,
-
-                t.dur
-
-            ];
+            const availability=
+            venue.availability[day];
 
 
-            if(t.flex === "si") {
+            if(!availability)
+                continue;
 
-                durations.push(
-                    t.minDur
+
+            for(
+                const duration
+                of durationOptions
+            ){
+
+                if(
+                    duration<t.minimum
+                )
+                    continue;
+
+
+                const startMin=
+                minutes(
+                    availability[0]
                 );
 
-                durations.push(
-                    Math.max(
-                        t.minDur,
-                        t.target - 15
-                    )
-                );
 
-                durations.push(
-                    Math.max(
-                        t.minDur,
-                        t.target - 30
-                    )
-                );
-
-            }
-
-
-            durations =
-                [
-                    ...new Set(
-                        durations.filter(
-                            x => x >= 15
-                        )
-                    )
-                ];
-
-
-            for(const du of durations) {
-
-                const lo =
-                    tm(av[0]);
-
-
-                const hi =
-                    tm(av[1]) - du;
+                const endMin=
+                minutes(
+                    availability[1]
+                )
+                -
+                duration;
 
 
                 for(
-                    let s = lo;
-                    s <= hi;
-                    s += 15
-                ) {
+                    let start=startMin;
+                    start<=endMin;
+                    start+=15
+                ){
 
-                    opts.push({
+                    candidates.push({
 
                         ...t,
 
-                        day: d,
+                        day,
 
-                        venue: v.id,
+                        venue:venue.id,
 
-                        start: ts(s),
+                        start:timeString(
+                            start
+                        ),
 
-                        dur: du
+                        duration
 
                     });
 
@@ -1860,109 +2536,181 @@ function candidateOptions(t) {
 
 
     /*
-        Primero candidatos cercanos
-        al horario original.
+        Priorizamos horarios cercanos
+        al actual.
     */
 
-    opts.sort(
-        (a,b) =>
-            localScore(b,t)
-            -
-            localScore(a,t)
+    candidates.sort(
+        (a,b)=>
+        candidateScore(b,t)
+        -
+        candidateScore(a,t)
     );
 
 
-    return opts.slice(0,250);
+    return candidates.slice(
+        0,
+        300
+    );
+
+}
+
+
+function candidateScore(c,t){
+
+    let score=0;
+
+
+    /*
+        Mantener día.
+    */
+
+    if(c.day===t.day)
+        score+=1000;
+
+
+    /*
+        Mantener predio.
+    */
+
+    if(c.venue===t.venue)
+        score+=800;
+
+
+    /*
+        Mantener horario.
+    */
+
+    score-=
+    Math.abs(
+        minutes(c.start)
+        -
+        minutes(t.start)
+    );
+
+
+    /*
+        Mantener duración.
+    */
+
+    score-=
+    Math.abs(
+        c.duration-t.duration
+    )*2;
+
+
+    /*
+        Alcanzar objetivo.
+    */
+
+    if(
+        c.duration>=t.target
+    )
+        score+=500;
+
+
+    /*
+        Preferencia por separación.
+    */
+
+    if(
+        t.separate==="si"
+    )
+        score+=30;
+
+
+    return score;
 
 }
 
 
 /*
-    Valor de mantener la situación actual.
-*/
-
-function localScore(c,t) {
-
-    let s = 0;
-
-
-    if(
-        c.day === t.day
-    )
-        s += 100;
-
-
-    if(
-        c.venue === t.venue
-    )
-        s += 80;
-
-
-    s -=
-        Math.abs(
-            tm(c.start)
-            -
-            tm(t.start)
-        ) / 5;
-
-
-    if(
-        c.dur >= t.target
-    )
-        s += 80;
-
-
-    if(
-        t.separate === "si"
-    )
-        s += 5;
-
-
-    return s;
-
-}
-
-
-/*
-    Penalización de un candidato
-    al agregarlo a la grilla.
+    Evalúa una colocación.
 */
 
 function placementPenalty(
-    c,
+    candidate,
     placed,
     original
-) {
+){
 
-    let p = 0;
+    let penalty=0;
 
 
-    for(const b of placed) {
+    for(
+        const other
+        of placed
+    ){
 
         if(
-            c.day !== b.day
+            !overlaps(
+                candidate,
+                other
+            )
         )
             continue;
 
 
+        /*
+            Capacidad de cancha.
+
+            Si hay más de una cancha,
+            permite tantos grupos como canchas.
+        */
+
         if(
-            overlaps(c,b)
-        ) {
+            candidate.venue
+            ===
+            other.venue
+        ){
+
+            const venue=
+            getVenue(
+                candidate.venue
+            );
+
+
+            const simultaneous=
+            placed.filter(
+                x=>
+                x.day===candidate.day
+                &&
+                x.venue===candidate.venue
+                &&
+                overlaps(candidate,x)
+            ).length;
+
 
             if(
-                c.venue === b.venue
-            )
-                p += 20000;
+                simultaneous
+                >=
+                (venue?.courts||1)
+            ){
+
+                penalty+=
+                100000;
+
+            }
+
+        }
 
 
-            if(
-                c.staff
-                &&
-                b.staff
-                &&
-                c.staff === b.staff
-            )
-                p += 18000;
+        /*
+            STAFF.
+        */
+
+        if(
+            candidate.staff
+            &&
+            other.staff
+            &&
+            candidate.staff
+            ===
+            other.staff
+        ){
+
+            penalty+=
+            90000;
 
         }
 
@@ -1970,201 +2718,203 @@ function placementPenalty(
 
 
     /*
-        Cambiar de día.
+        Penalización por cambiar día.
     */
 
     if(
-        c.day !== original.day
+        candidate.day!==original.day
     )
-        p += 80;
+        penalty+=800;
 
 
     /*
-        Cambiar de predio.
+        Penalización por cambiar predio.
     */
 
     if(
-        c.venue !== original.venue
+        candidate.venue!==original.venue
     )
-        p += 70;
+        penalty+=500;
 
 
     /*
-        Cambiar horario.
+        Penalización por mover horario.
     */
 
-    p +=
-        Math.abs(
-            tm(c.start)
+    penalty+=
+    Math.abs(
+        minutes(candidate.start)
+        -
+        minutes(original.start)
+    )*1.5;
+
+
+    /*
+        Penalización por reducir.
+    */
+
+    if(
+        candidate.duration
+        <
+        original.target
+    ){
+
+        penalty+=
+        (
+            original.target
             -
-            tm(original.start)
-        ) / 4;
-
-
-    /*
-        No alcanzar objetivo.
-    */
-
-    if(
-        c.dur < original.target
-    ) {
-
-        p +=
-            (
-                original.target
-                -
-                c.dur
-            ) * 15;
+            candidate.duration
+        )
+        *
+        25;
 
     }
 
 
     /*
-        Premia continuidad.
+        Premio por entrenamiento
+        inmediatamente consecutivo.
     */
 
-    for(const b of placed) {
+    for(
+        const other
+        of placed
+    ){
 
         if(
-            b.day !== c.day
+            other.day!==candidate.day
             ||
-            b.venue !== c.venue
+            other.venue!==candidate.venue
         )
             continue;
 
 
-        const endB =
-            tm(b.start) + b.dur;
+        const candidateStart=
+        minutes(candidate.start);
 
 
-        const startC =
-            tm(c.start);
+        const candidateEnd=
+        candidateStart
+        +
+        candidate.duration;
 
 
-        const endC =
-            tm(c.start) + c.dur;
+        const otherStart=
+        minutes(other.start);
 
 
-        const gap1 =
-            Math.abs(
-                startC - endB
-            );
+        const otherEnd=
+        otherStart
+        +
+        other.duration;
 
 
-        const gap2 =
-            Math.abs(
-                tm(b.start) - endC
-            );
+        if(
+            candidateEnd===otherStart
+            ||
+            otherEnd===candidateStart
+        ){
 
+            penalty-=
+            500;
 
-        const gap =
+        }
+
+        else{
+
+            const gap=
             Math.min(
-                gap1,
-                gap2
+                Math.abs(
+                    candidateEnd-otherStart
+                ),
+                Math.abs(
+                    otherEnd-candidateStart
+                )
             );
 
 
-        if(gap === 0)
-            p -= 70;
+            if(gap<=15)
+                penalty-=150;
 
-        else if(gap <= 15)
-            p -= 40;
+            else if(gap<=30)
+                penalty-=50;
 
-        else if(gap <= 30)
-            p -= 15;
+        }
 
     }
 
 
-    return p;
+    return penalty;
 
 }
 
 
 /*
-    Evalúa una grilla completa.
+    Score completo.
 */
 
-function globalScore(sol) {
+function globalScore(solution){
 
-    let score = 0;
-
-
-    const conflicts =
-        conflictsOf(sol);
+    let score=0;
 
 
-    const court =
-        conflicts.filter(
-            x => x.type === "court"
-        ).length;
+    const conflicts=
+    getConflicts(
+        solution
+    );
 
 
-    const staff =
-        conflicts.filter(
-            x => x.type === "staff"
-        ).length;
+    for(
+        const c
+        of conflicts
+    ){
+
+        if(c.type==="court")
+            score-=100000;
+
+        else if(c.type==="staff")
+            score-=90000;
+
+        else
+            score-=80000;
+
+    }
 
 
-    const availability =
-        conflicts.filter(
-            x => x.type === "availability"
-        ).length;
+    for(
+        const t
+        of solution
+    ){
+
+        const original=
+        trainings.find(
+            x=>x.id===t.id
+        );
 
 
-    /*
-        CONFLICTOS SON CASI IMPOSIBLES
-        DE COMPENSAR CON OTRA COSA.
-    */
-
-    score -=
-        court * 100000;
-
-
-    score -=
-        staff * 90000;
-
-
-    score -=
-        availability * 80000;
-
-
-    for(const t of sol) {
-
-        const original =
-            trainings.find(
-                x => x.id === t.id
-            );
+        if(!original)
+            continue;
 
 
         /*
-            Duración.
-        */
-
-        score +=
-            t.dur * 5;
-
-
-        /*
-            Alcanzar objetivo.
+            Objetivo.
         */
 
         if(
-            t.dur >= original.target
-        ) {
+            t.duration>=original.target
+        )
+            score+=2000;
 
-            score += 500;
+        else{
 
-        }
-
-        else {
-
-            score -=
-                (
-                    original.target
-                    -
-                    t.dur
-                ) * 30;
+            score-=
+            (
+                original.target
+                -
+                t.duration
+            )
+            *
+            40;
 
         }
 
@@ -2174,9 +2924,9 @@ function globalScore(sol) {
         */
 
         if(
-            t.day === original.day
+            t.day===original.day
         )
-            score += 250;
+            score+=1000;
 
 
         /*
@@ -2184,56 +2934,58 @@ function globalScore(sol) {
         */
 
         if(
-            t.venue === original.venue
+            t.venue===original.venue
         )
-            score += 220;
+            score+=800;
 
 
         /*
             Mantener horario.
         */
 
-        score -=
-            Math.abs(
-                tm(t.start)
-                -
-                tm(original.start)
-            ) / 2;
+        score-=
+        Math.abs(
+            minutes(t.start)
+            -
+            minutes(original.start)
+        )*2;
 
 
         /*
             Prioridad.
         */
 
-        score +=
-            original.priority * 100;
+        score+=
+        original.priority*300;
 
     }
 
 
     /*
-        Continuidad de bloques.
+        Continuidad.
     */
 
-    for(let i=0;i<sol.length;i++) {
+    for(
+        let i=0;
+        i<solution.length;
+        i++
+    ){
 
-        for(let j=i+1;j<sol.length;j++) {
+        for(
+            let j=i+1;
+            j<solution.length;
+            j++
+        ){
 
-            const a = sol[i];
+            const a=solution[i];
 
-            const b = sol[j];
+            const b=solution[j];
 
 
             if(
-                a.day !== b.day
+                a.day!==b.day
                 ||
-                a.venue !== b.venue
-            )
-                continue;
-
-
-            if(
-                a.id === b.id
+                a.venue!==b.venue
             )
                 continue;
 
@@ -2244,41 +2996,37 @@ function globalScore(sol) {
                 continue;
 
 
-            const gap1 =
+            const endA=
+            minutes(a.start)
+            +
+            a.duration;
+
+
+            const endB=
+            minutes(b.start)
+            +
+            b.duration;
+
+
+            const gap=
+            Math.min(
                 Math.abs(
-                    tm(a.start)
-                    +
-                    a.dur
-                    -
-                    tm(b.start)
-                );
-
-
-            const gap2 =
+                    endA-minutes(b.start)
+                ),
                 Math.abs(
-                    tm(b.start)
-                    +
-                    b.dur
-                    -
-                    tm(a.start)
-                );
+                    endB-minutes(a.start)
+                )
+            );
 
 
-            const gap =
-                Math.min(
-                    gap1,
-                    gap2
-                );
+            if(gap===0)
+                score+=400;
 
+            else if(gap<=15)
+                score+=150;
 
-            if(gap === 0)
-                score += 150;
-
-            else if(gap <= 15)
-                score += 70;
-
-            else if(gap <= 30)
-                score += 30;
+            else if(gap<=30)
+                score+=50;
 
         }
 
@@ -2286,41 +3034,57 @@ function globalScore(sol) {
 
 
     /*
-        Penalización por demasiados
-        cambios.
+        Premia separación.
     */
 
-    const changes =
-        sol.reduce(
-            (n,t) => {
-
-                const o =
-                    trainings.find(
-                        x => x.id === t.id
-                    );
+    const groups=
+    {};
 
 
-                return n +
+    solution.forEach(
+        t=>{
 
-                    (
-                        t.day !== o.day
-                        ||
-                        t.venue !== o.venue
-                        ||
-                        t.start !== o.start
-                        ||
-                        t.dur !== o.dur
-                    )
-                    ? 1
-                    : 0;
-
-            },
-            0
-        );
+            const key=
+            `${t.category}|${t.group}|${t.day}`;
 
 
-    score -=
-        changes * 8;
+            if(
+                !groups[key]
+            )
+                groups[key]=[];
+
+
+            groups[key].push(t);
+
+        }
+    );
+
+
+    /*
+        Penalización por cambios.
+    */
+
+    solution.forEach(
+        t=>{
+
+            const o=
+            trainings.find(
+                x=>x.id===t.id
+            );
+
+
+            if(
+                t.day!==o.day
+            )
+                score-=100;
+
+            if(
+                t.venue!==o.venue
+            )
+                score-=80;
+
+        }
+    );
 
 
     return score;
@@ -2329,82 +3093,78 @@ function globalScore(sol) {
 
 
 /*
-    Beam Search.
+    BEAM SEARCH.
 
-    En vez de quedarse con una sola
-    solución, conserva varias
-    soluciones prometedoras.
+    Mantiene múltiples soluciones
+    simultáneamente.
 */
 
-function generateSolutions() {
+function optimize(){
 
-    let ordered =
-        [...trainings].sort(
-            (a,b) =>
-                b.priority - a.priority
-                ||
-                b.target - a.target
-        );
+    const ordered=
+    [...trainings].sort(
+        (a,b)=>
+        b.priority-a.priority
+        ||
+        b.target-a.target
+    );
 
 
-    let beam = [
-
+    let beam=[
         {
-            sol: [],
-            score: 0
+            solution:[],
+            partialScore:0
         }
-
     ];
 
 
     for(
-        const t of ordered
-    ) {
+        const training
+        of ordered
+    ){
 
-        const opts =
-            candidateOptions(t);
+        const candidates=
+        generateCandidates(
+            training
+        );
 
 
-        const next = [];
+        const next=[];
 
 
         for(
-            const state of beam
-        ) {
+            const state
+            of beam
+        ){
 
             /*
-                Probamos los candidatos
-                más interesantes.
+                Probamos los mejores candidatos.
             */
 
             for(
-                const c
-                of opts.slice(0,120)
-            ) {
+                const candidate
+                of candidates.slice(0,150)
+            ){
 
-                let penalty =
-                    placementPenalty(
-                        c,
-                        state.sol,
-                        t
-                    );
-
-
-                const ns =
-                    state.sol.concat(c);
-
-
-                const sc =
-                    state.score
-                    -
-                    penalty;
+                const penalty=
+                placementPenalty(
+                    candidate,
+                    state.solution,
+                    training
+                );
 
 
                 next.push({
 
-                    sol: ns,
+                    solution:
+                    state.solution.concat(
+                        candidate
+                    ),
 
-                    score: sc
+                    partialScore:
+                    state.partialScore
+                    -
+                    penalty
 
                 });
 
@@ -2413,511 +3173,448 @@ function generateSolutions() {
         }
 
 
+        /*
+            Ordenar.
+        */
+
         next.sort(
-            (a,b) =>
-                b.score - a.score
+            (a,b)=>
+            b.partialScore
+            -
+            a.partialScore
         );
 
 
         /*
             Mantener diversidad.
-
-            No queremos 50 soluciones
-            prácticamente idénticas.
         */
 
-        const seen =
-            new Set();
+        const selected=[];
 
-
-        beam = [];
+        const signatures=
+        new Set();
 
 
         for(
-            const x of next
-        ) {
+            const state
+            of next
+        ){
 
-            const last =
-                x.sol[
-                    x.sol.length - 1
-                ];
+            const last=
+            state.solution[
+                state.solution.length-1
+            ];
 
 
-            const key =
-                last.day
-                +
-                "|"
-                +
-                last.venue
-                +
-                "|"
-                +
-                last.start
-                +
-                "|"
-                +
-                last.dur;
+            const signature=
+            `${last.day}|${last.venue}|${last.start}|${last.duration}`;
 
 
             if(
-                !seen.has(key)
+                !signatures.has(
+                    signature
+                )
                 ||
-                beam.length < 20
-            ) {
+                selected.length<10
+            ){
 
-                seen.add(key);
+                signatures.add(
+                    signature
+                );
 
-                beam.push(x);
+                selected.push(
+                    state
+                );
 
             }
 
 
             if(
-                beam.length >= 45
+                selected.length>=50
             )
                 break;
 
         }
 
+
+        beam=selected;
+
     }
 
-
-    /*
-        Recalcular score REAL
-        de cada solución completa.
-    */
 
     return beam
 
-        .map(
-            x => ({
+    .map(
+        x=>({
 
-                sol: x.sol,
+            solution:x.solution,
 
-                score:
-                    globalScore(x.sol)
+            score:
+            globalScore(
+                x.solution
+            )
 
-            })
-        )
+        })
+    )
 
-        .sort(
-            (a,b) =>
-                b.score - a.score
-        );
+    .sort(
+        (a,b)=>
+        b.score-a.score
+    );
 
 }
 
 
-/*
-    Generar y mostrar escenarios.
-*/
+/* =====================================================
+MOSTRAR OPTIMIZACIONES
+===================================================== */
 
-function runOptimizer() {
+function runOptimizer(){
 
-    let quantity =
-        prompt(
-            "¿Cuántas grillas querés generar? (1 a 10)",
-            "5"
-        );
-
-
-    quantity =
-        Math.max(
-            1,
-            Math.min(
-                10,
-                Number(quantity) || 5
-            )
-        );
+    document.getElementById(
+        "scenarios"
+    ).innerHTML=
+    `
+    <div class="muted">
+    🤖 Analizando combinaciones...
+    </div>
+    `;
 
 
-    const scenarios =
-        generateSolutions();
+    setTimeout(
+        ()=>{
+
+            const results=
+            optimize();
 
 
-    const unique = [];
+            renderScenarios(
+                results.slice(
+                    0,
+                    8
+                )
+            );
 
-    const seen =
-        new Set();
-
-
-    for(
-        const s of scenarios
-    ) {
-
-        const key =
-            s.sol
-            .map(
-                t =>
-                    `${t.id}-${t.day}-${t.venue}-${t.start}-${t.dur}`
-            )
-            .join("|");
-
-
-        if(
-            !seen.has(key)
-        ) {
-
-            seen.add(key);
-
-            unique.push(s);
-
-        }
-
-
-        if(
-            unique.length >= quantity
-        )
-            break;
-
-    }
-
-
-    renderScenarios(unique);
+        },
+        50
+    );
 
 }
 
 
-/* =========================
-   MOSTRAR ESCENARIOS
-========================= */
+function renderScenarios(results){
 
-function renderScenarios(arr) {
-
-    const box =
-        document.getElementById(
-            "scenarios"
-        );
+    const box=
+    document.getElementById(
+        "scenarios"
+    );
 
 
-    if(!arr.length) {
+    if(!results.length){
 
-        box.innerHTML =
-            `<b class="bad">
-                No se pudo generar una grilla.
-            </b>`;
+        box.innerHTML=
+        `<div class="bad">
+        No se encontraron alternativas.
+        </div>`;
 
         return;
 
     }
 
 
-    box.innerHTML = "";
+    box.innerHTML="";
 
 
-    arr.forEach(
-        (s,index) => {
+    results.forEach(
+        (r,index)=>{
 
-            const conflicts =
-                conflictsOf(
-                    s.sol
-                );
-
-
-            const mins =
-                s.sol.reduce(
-                    (a,t) =>
-                        a + t.dur,
-                    0
-                );
+            const conflicts=
+            getConflicts(
+                r.solution
+            );
 
 
-            const objective =
-                s.sol.filter(
-                    t => {
+            const objective=
+            r.solution.filter(
+                t=>{
 
-                        const o =
-                            trainings.find(
-                                x => x.id === t.id
-                            );
+                    const o=
+                    trainings.find(
+                        x=>x.id===t.id
+                    );
 
-                        return (
-                            t.dur >= o.target
+
+                    return t.duration>=o.target;
+
+                }
+            ).length;
+
+
+            const totalHours=
+            r.solution.reduce(
+                (s,t)=>
+                s+t.duration,
+                0
+            );
+
+
+            const changes=
+            r.solution.filter(
+                t=>{
+
+                    const o=
+                    trainings.find(
+                        x=>x.id===t.id
+                    );
+
+
+                    return (
+
+                        t.day!==o.day
+                        ||
+                        t.venue!==o.venue
+                        ||
+                        t.start!==o.start
+                        ||
+                        t.duration!==o.duration
+
+                    );
+
+                }
+            ).length;
+
+
+            const scenario=
+            document.createElement(
+                "div"
+            );
+
+
+            scenario.className=
+            "scenario"
+            +
+            (
+                index===0
+                ?
+                " best"
+                :
+                ""
+            );
+
+
+            scenario.innerHTML=
+            `
+
+            <div class="score">
+
+            ${
+                index===0
+                ?
+                "⭐ MEJOR OPCIÓN"
+                :
+                "Escenario "+(index+1)
+            }
+
+            </div>
+
+
+            <div style="margin-top:8px">
+
+            <span class="metric">
+            Score:
+            <b>${Math.round(r.score)}</b>
+            </span>
+
+            <span class="metric">
+            Conflictos:
+            <b>${conflicts.length}</b>
+            </span>
+
+            <span class="metric">
+            Objetivos:
+            <b>${objective}/${trainings.length}</b>
+            </span>
+
+            <span class="metric">
+            Horas:
+            <b>${(totalHours/60).toFixed(1)}</b>
+            </span>
+
+            <span class="metric">
+            Cambios:
+            <b>${changes}</b>
+            </span>
+
+            </div>
+
+
+            ${
+                conflicts.length
+                ?
+                `
+                <div class="bad"
+                style="margin-top:8px">
+
+                ⚠️ Todavía tiene
+                ${conflicts.length}
+                conflicto(s).
+
+                </div>
+                `
+                :
+                `
+                <div class="good"
+                style="margin-top:8px">
+
+                🟢 GRILLA SIN CONFLICTOS
+
+                </div>
+                `
+            }
+
+
+            <div style="margin-top:10px">
+
+            <button
+            class="green"
+            onclick='applyScenario(${JSON.stringify(r.solution)})'>
+
+            ✅ Aplicar esta grilla
+
+            </button>
+
+            </div>
+
+
+            <table style="margin-top:12px">
+
+            <tr>
+
+            <th>
+            Entrenamiento
+            </th>
+
+            <th>
+            Actual
+            </th>
+
+            <th>
+            Propuesto
+            </th>
+
+            <th>
+            Cambio
+            </th>
+
+            </tr>
+
+
+            ${
+                r.solution.map(
+                    t=>{
+
+                        const o=
+                        trainings.find(
+                            x=>x.id===t.id
                         );
 
-                    }
-                ).length;
 
-
-            const changes =
-                s.sol.reduce(
-                    (n,t) => {
-
-                        const o =
-                            trainings.find(
-                                x => x.id === t.id
-                            );
-
-
-                        return n +
-
+                        const changed=
                         (
-                            t.day !== o.day
+                            t.day!==o.day
                             ||
-                            t.venue !== o.venue
+                            t.venue!==o.venue
                             ||
-                            t.start !== o.start
+                            t.start!==o.start
                             ||
-                            t.dur !== o.dur
-                        )
-                        ? 1
-                        : 0;
-
-                    },
-                    0
-                );
+                            t.duration!==o.duration
+                        );
 
 
-            const div =
-                document.createElement(
-                    "div"
-                );
+                        return `
+
+                        <tr
+                        class="${
+                            changed
+                            ?
+                            "change"
+                            :
+                            ""
+                        }">
+
+                        <td>
+
+                        <b>
+                        ${t.category}
+                        ${t.group}
+                        </b>
+
+                        </td>
 
 
-            div.className =
-                "scenario"
-                +
-                (
-                    index === 0
-                    ?
-                    " best"
-                    :
-                    ""
-                );
+                        <td>
+
+                        ${DAY_NAMES[o.day]}
+                        <br>
+
+                        ${o.start}
+                        -
+                        ${finish(o)}
+                        <br>
+
+                        ${getVenue(o.venue)?.name}
+
+                        </td>
 
 
-            div.innerHTML = `
+                        <td>
 
-                <div class="score
-                    ${
-                        conflicts.length
-                        ?
-                        "bad"
-                        :
-                        "good"
-                    }">
+                        <b>
 
-                    ${
-                        index === 0
-                        ?
-                        "⭐ "
-                        :
-                        ""
+                        ${DAY_NAMES[t.day]}
+                        <br>
+
+                        ${t.start}
+                        -
+                        ${finish(t)}
+
+                        </b>
+
+                        <br>
+
+                        ${getVenue(t.venue)?.name}
+
+                        </td>
+
+
+                        <td>
+
+                        ${
+                            changed
+                            ?
+                            "🔄"
+                            :
+                            "—"
+                        }
+
+                        </td>
+
+                        </tr>
+
+                        `;
+
                     }
+                ).join("")
+            }
 
-                    Escenario ${index+1}
-
-                </div>
-
-
-                <div style="margin-top:7px">
-
-                    <span class="metric">
-                        Score:
-                        <b>
-                            ${Math.round(s.score)}
-                        </b>
-                    </span>
-
-                    <span class="metric">
-                        Conflictos:
-                        <b>
-                            ${conflicts.length}
-                        </b>
-                    </span>
-
-                    <span class="metric">
-                        Horas:
-                        <b>
-                            ${(mins/60).toFixed(1)}
-                        </b>
-                    </span>
-
-                    <span class="metric">
-                        Objetivos:
-                        <b>
-                            ${objective}/${trainings.length}
-                        </b>
-                    </span>
-
-                    <span class="metric">
-                        Cambios:
-                        <b>
-                            ${changes}
-                        </b>
-                    </span>
-
-                </div>
-
-
-                ${
-                    conflicts.length
-                    ?
-                    `
-                    <div class="bad"
-                         style="margin-top:8px">
-
-                        ⚠️ Esta propuesta todavía
-                        tiene ${conflicts.length}
-                        conflicto(s).
-
-                    </div>
-                    `
-                    :
-                    `
-                    <div class="good"
-                         style="margin-top:8px">
-
-                        🟢 Grilla sin conflictos.
-
-                    </div>
-                    `
-                }
-
-
-                <div style="margin-top:10px">
-
-                    <button
-                        class="green"
-                        onclick='applyScenario(${JSON.stringify(s.sol)})'>
-
-                        Aplicar grilla completa
-
-                    </button>
-
-                </div>
-
-
-                <table
-                    style="margin-top:12px">
-
-                    <tr>
-
-                        <th>
-                            Equipo
-                        </th>
-
-                        <th>
-                            Actual
-                        </th>
-
-                        <th>
-                            Propuesta
-                        </th>
-
-                        <th>
-                            Cambio
-                        </th>
-
-                    </tr>
-
-
-                    ${
-                        s.sol.map(
-                            t => {
-
-                                const o =
-                                    trainings.find(
-                                        x =>
-                                            x.id === t.id
-                                    );
-
-
-                                const changed =
-                                    (
-                                        t.day !== o.day
-                                        ||
-                                        t.venue !== o.venue
-                                        ||
-                                        t.start !== o.start
-                                        ||
-                                        t.dur !== o.dur
-                                    );
-
-
-                                return `
-
-                                <tr
-                                    class="
-                                    ${
-                                        changed
-                                        ?
-                                        "change"
-                                        :
-                                        ""
-                                    }">
-
-                                    <td>
-                                        <b>
-                                            ${t.cat}
-                                            ${t.grp}
-                                        </b>
-                                    </td>
-
-                                    <td>
-
-                                        ${DN[o.day]}
-                                        <br>
-
-                                        ${o.start}
-                                        -
-                                        ${end(o)}
-                                        (${o.dur}')
-
-                                        <br>
-
-                                        ${getVenue(o.venue)?.name}
-
-                                    </td>
-
-
-                                    <td>
-
-                                        <b>
-
-                                            ${DN[t.day]}
-                                            <br>
-
-                                            ${t.start}
-                                            -
-                                            ${end(t)}
-                                            (${t.dur}')
-
-                                        </b>
-
-                                        <br>
-
-                                        ${getVenue(t.venue)?.name}
-
-                                    </td>
-
-
-                                    <td>
-
-                                        ${
-                                            changed
-                                            ?
-                                            "🔄"
-                                            :
-                                            "—"
-                                        }
-
-                                    </td>
-
-                                </tr>
-
-                                `;
-
-                            }
-                        ).join("")
-                    }
-
-                </table>
+            </table>
 
             `;
 
 
-            box.appendChild(div);
+            box.appendChild(
+                scenario
+            );
 
         }
     );
@@ -2925,38 +3622,38 @@ function renderScenarios(arr) {
 }
 
 
-/*
-    Aplicar escenario completo.
-*/
+/* =====================================================
+APLICAR ESCENARIO
+===================================================== */
 
-function applyScenario(sol) {
+function applyScenario(solution){
 
     if(
         !confirm(
-            "¿Aplicar esta grilla completa?"
-            +
-            "\n\n"
-            +
-            "Se reemplazarán los horarios actuales."
+            "¿Aplicar esta grilla completa?\n\n"+
+            "Los horarios actuales serán reemplazados."
         )
     )
         return;
 
 
-    sol.forEach(
-        x => {
+    solution.forEach(
+        proposed=>{
 
-            const t =
-                trainings.find(
-                    t => t.id === x.id
-                );
+            const current=
+            trainings.find(
+                t=>t.id===proposed.id
+            );
 
 
-            if(t)
+            if(current){
+
                 Object.assign(
-                    t,
-                    x
+                    current,
+                    proposed
                 );
+
+            }
 
         }
     );
@@ -2968,32 +3665,172 @@ function applyScenario(sol) {
 
 
     alert(
-        "✅ Grilla aplicada correctamente."
+        "✅ Grilla optimizada aplicada."
     );
 
 }
 
 
-/* =========================
-   RESTAURAR
-========================= */
+/* =====================================================
+EXPORTAR / IMPORTAR
+===================================================== */
 
-function resetData() {
+function exportData(){
+
+    const data={
+
+        venues,
+
+        trainings,
+
+        exported:
+        new Date().toISOString()
+
+    };
+
+
+    const blob=
+    new Blob(
+        [
+            JSON.stringify(
+                data,
+                null,
+                2
+            )
+        ],
+        {
+            type:"application/json"
+        }
+    );
+
+
+    const url=
+    URL.createObjectURL(
+        blob
+    );
+
+
+    const a=
+    document.createElement("a");
+
+
+    a.href=url;
+
+    a.download=
+    "grilla_futsal_backup.json";
+
+    a.click();
+
+
+    URL.revokeObjectURL(
+        url
+    );
+
+}
+
+
+function importData(){
+
+    document.getElementById(
+        "importFile"
+    ).click();
+
+}
+
+
+function processImport(event){
+
+    const file=
+    event.target.files[0];
+
+
+    if(!file)
+        return;
+
+
+    const reader=
+    new FileReader();
+
+
+    reader.onload=
+    e=>{
+
+        try{
+
+            const data=
+            JSON.parse(
+                e.target.result
+            );
+
+
+            if(
+                !Array.isArray(
+                    data.venues
+                )
+                ||
+                !Array.isArray(
+                    data.trainings
+                )
+            ){
+
+                throw new Error();
+
+            }
+
+
+            venues=
+            data.venues;
+
+            trainings=
+            data.trainings;
+
+
+            save();
+
+            render();
+
+            alert(
+                "✅ Datos importados correctamente."
+            );
+
+        }
+
+        catch{
+
+            alert(
+                "❌ El archivo no tiene un formato válido."
+            );
+
+        }
+
+    };
+
+
+    reader.readAsText(file);
+
+}
+
+
+/* =====================================================
+RESET
+===================================================== */
+
+function resetAll(){
 
     if(
         !confirm(
-            "¿Restaurar los datos iniciales?"
+            "¿Restaurar todos los datos originales?"
         )
     )
         return;
 
 
     localStorage.removeItem(
-        "futsalVenues"
+        "futsal_venues_v2"
     );
 
     localStorage.removeItem(
-        "futsalTrainings"
+        "futsal_trainings_v2"
     );
 
 
@@ -3002,9 +3839,40 @@ function resetData() {
 }
 
 
-/* =========================
-   INICIO
-========================= */
+/* =====================================================
+ESCAPE
+===================================================== */
+
+function escapeHtml(text){
+
+    return String(text)
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+
+}
+
+
+/* =====================================================
+INICIO
+===================================================== */
 
 render();
 
