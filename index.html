@@ -3,1049 +3,646 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Optimizador de Grilla Futsal</title>
+<title>Optimizador Inteligente de Grilla Futsal</title>
 
 <style>
-
-*{
-    box-sizing:border-box;
+* {
+    box-sizing: border-box;
 }
 
-:root{
-    --bg:#f3f5f7;
-    --card:#ffffff;
-    --text:#17202a;
-    --muted:#667085;
-    --border:#d8dee6;
-    --dark:#111827;
-    --blue:#2563eb;
-    --green:#16803c;
-    --red:#dc2626;
-    --orange:#d97706;
-    --purple:#7c3aed;
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #eef2f7;
+    color: #172033;
 }
 
-body{
-    margin:0;
-    background:var(--bg);
-    color:var(--text);
-    font-family:Arial,Helvetica,sans-serif;
+header {
+    background: #111827;
+    color: white;
+    padding: 20px;
 }
 
-header{
-    background:var(--dark);
-    color:white;
-    padding:20px 25px;
+header h1 {
+    margin: 0 0 6px;
 }
 
-header h1{
-    margin:0 0 5px;
-    font-size:26px;
+.container {
+    max-width: 1800px;
+    margin: auto;
+    padding: 18px;
 }
 
-header p{
-    margin:0;
-    color:#cbd5e1;
+.toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 15px;
 }
 
-nav{
-    background:white;
-    border-bottom:1px solid var(--border);
-    padding:10px 15px;
-    display:flex;
-    gap:7px;
-    flex-wrap:wrap;
-    position:sticky;
-    top:0;
-    z-index:50;
+button {
+    border: 0;
+    border-radius: 7px;
+    padding: 10px 14px;
+    font-weight: bold;
+    cursor: pointer;
 }
 
-nav button{
-    border:0;
-    padding:10px 13px;
-    border-radius:7px;
-    background:#edf0f3;
-    cursor:pointer;
-    font-weight:bold;
+.primary {
+    background: #2563eb;
+    color: white;
 }
 
-nav button.active{
-    background:var(--dark);
-    color:white;
+.green {
+    background: #16a34a;
+    color: white;
 }
 
-main{
-    max-width:1700px;
-    margin:auto;
-    padding:20px;
+.orange {
+    background: #f59e0b;
+    color: #111;
 }
 
-.tab{
-    display:none;
+.gray {
+    background: #64748b;
+    color: white;
 }
 
-.tab.active{
-    display:block;
+.red {
+    background: #dc2626;
+    color: white;
 }
 
-.card{
-    background:var(--card);
-    border:1px solid var(--border);
-    border-radius:10px;
-    padding:18px;
-    margin-bottom:18px;
-    box-shadow:0 2px 5px rgba(0,0,0,.04);
+.panel {
+    background: white;
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 8px #00000012;
 }
 
-h2{
-    margin-top:0;
+.stats {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin-bottom: 15px;
 }
 
-h3{
-    margin-top:0;
+.stat {
+    background: white;
+    padding: 15px;
+    border-radius: 9px;
 }
 
-.grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:12px;
+.stat b {
+    display: block;
+    font-size: 26px;
+    margin-bottom: 4px;
 }
 
-label{
-    display:block;
-    font-size:13px;
-    font-weight:bold;
-    margin-bottom:5px;
+.grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(170px, 1fr));
+    gap: 7px;
+    overflow-x: auto;
 }
 
-input,
-select{
-    width:100%;
-    padding:9px;
-    border:1px solid var(--border);
-    border-radius:6px;
-    background:white;
+.dayhead {
+    background: #1e293b;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    border-radius: 6px;
 }
 
-button{
-    border:0;
-    border-radius:6px;
-    padding:9px 13px;
-    cursor:pointer;
-    font-weight:bold;
+.daybody {
+    background: #e2e8f0;
+    min-height: 700px;
+    padding: 6px;
+    border-radius: 6px;
 }
 
-.btn{
-    background:#e5e7eb;
+.card {
+    background: #dbeafe;
+    border-left: 5px solid #2563eb;
+    padding: 9px;
+    margin-bottom: 6px;
+    border-radius: 6px;
+    cursor: grab;
 }
 
-.btn-primary{
-    background:var(--dark);
-    color:white;
+.card:hover {
+    box-shadow: 0 2px 8px #0003;
 }
 
-.btn-blue{
-    background:var(--blue);
-    color:white;
+.card.conflict {
+    background: #fee2e2;
+    border-left-color: #dc2626;
 }
 
-.btn-green{
-    background:var(--green);
-    color:white;
+.card.warning {
+    background: #fef3c7;
+    border-left-color: #f59e0b;
 }
 
-.btn-red{
-    background:var(--red);
-    color:white;
+.card small {
+    display: block;
+    color: #475569;
+    margin-top: 4px;
 }
 
-.btn-orange{
-    background:var(--orange);
-    color:white;
+.tag {
+    display: inline-block;
+    font-size: 10px;
+    padding: 3px 5px;
+    border-radius: 4px;
+    background: #e5e7eb;
+    margin-top: 5px;
 }
 
-.btn-purple{
-    background:var(--purple);
-    color:white;
-}
-
-.actions{
-    display:flex;
-    gap:8px;
-    flex-wrap:wrap;
-    margin-top:15px;
-}
-
-.notice{
-    background:#eef2ff;
-    border:1px solid #c7d2fe;
-    padding:12px;
-    border-radius:7px;
-    margin-bottom:12px;
-}
-
-.warning{
-    background:#fff7ed;
-    border:1px solid #fed7aa;
-    padding:12px;
-    border-radius:7px;
-}
-
-.success{
-    background:#ecfdf3;
-    border:1px solid #a7f3d0;
-    padding:12px;
-    border-radius:7px;
-}
-
-.danger{
-    background:#fef2f2;
-    border:1px solid #fecaca;
-    padding:12px;
-    border-radius:7px;
-}
-
-.small{
-    font-size:12px;
-    color:var(--muted);
-}
-
-table{
-    width:100%;
-    border-collapse:collapse;
+table {
+    width: 100%;
+    border-collapse: collapse;
 }
 
 th,
-td{
-    border:1px solid var(--border);
-    padding:8px;
-    text-align:left;
-    vertical-align:top;
+td {
+    padding: 8px;
+    border-bottom: 1px solid #e5e7eb;
+    text-align: left;
 }
 
-th{
-    background:#f1f3f5;
+th {
+    background: #f1f5f9;
 }
 
-.stat-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-    gap:12px;
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: #0008;
+    z-index: 20;
+    align-items: center;
+    justify-content: center;
 }
 
-.stat{
-    background:white;
-    border:1px solid var(--border);
-    border-radius:8px;
-    padding:15px;
+.modal.on {
+    display: flex;
 }
 
-.stat span{
-    display:block;
-    color:var(--muted);
-    font-size:13px;
+.box {
+    background: white;
+    width: min(1000px, 96%);
+    max-height: 94vh;
+    overflow: auto;
+    border-radius: 12px;
+    padding: 20px;
 }
 
-.stat strong{
-    display:block;
-    font-size:25px;
-    margin-top:5px;
+.form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
 }
 
-/* ================================
-   GRILLA
-================================ */
-
-.grilla-scroll{
-    overflow:auto;
-    border:1px solid var(--border);
+.field label {
+    display: block;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 4px;
 }
 
-.week-grid{
-    min-width:1300px;
-    display:grid;
-    grid-template-columns:85px repeat(7,1fr);
+.field input,
+.field select {
+    width: 100%;
+    padding: 9px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
 }
 
-.grid-head{
-    background:var(--dark);
-    color:white;
-    padding:10px;
-    font-weight:bold;
-    text-align:center;
-    border-right:1px solid #374151;
+.full {
+    grid-column: 1 / -1;
 }
 
-.time-cell{
-    height:55px;
-    border-right:1px solid var(--border);
-    border-bottom:1px solid var(--border);
-    background:#f5f6f7;
-    padding:5px;
-    font-size:12px;
-    font-weight:bold;
+.actions {
+    display: flex;
+    gap: 7px;
+    justify-content: flex-end;
+    margin-top: 15px;
 }
 
-.day-cell{
-    height:55px;
-    border-right:1px solid var(--border);
-    border-bottom:1px solid var(--border);
-    position:relative;
-    background:white;
+.scenario {
+    border: 1px solid #cbd5e1;
+    border-radius: 9px;
+    padding: 14px;
+    margin: 10px 0;
 }
 
-.day-cell.drop-active{
-    background:#eff6ff;
+.scenario.best {
+    border: 2px solid #16a34a;
 }
 
-.event{
-    position:absolute;
-    left:3px;
-    right:3px;
-    min-height:48px;
-    border-radius:6px;
-    padding:5px;
-    font-size:11px;
-    cursor:grab;
-    z-index:10;
-    overflow:hidden;
-    border-left:4px solid var(--dark);
-    background:#e8eefc;
+.score {
+    font-size: 22px;
+    font-weight: bold;
 }
 
-.event:active{
-    cursor:grabbing;
+.good {
+    color: #15803d;
 }
 
-.event.conflict{
-    background:#fee2e2;
-    border-left-color:#dc2626;
+.bad {
+    color: #b91c1c;
 }
 
-.event.outside{
-    background:#fff7ed;
-    border-left-color:#d97706;
+.warning-text {
+    color: #b45309;
 }
 
-.event.proposal{
-    background:#dbeafe;
-    border-left-color:#2563eb;
+.muted {
+    color: #64748b;
+    font-size: 12px;
 }
 
-.event-title{
-    font-weight:bold;
-    margin-bottom:2px;
+.metric {
+    display: inline-block;
+    background: #f1f5f9;
+    padding: 6px 9px;
+    border-radius: 6px;
+    margin: 3px;
+    font-size: 12px;
 }
 
-.event-meta{
-    font-size:10px;
-    color:#344054;
+.proposal {
+    background: #f8fafc;
+    border-radius: 7px;
+    padding: 9px;
+    margin: 5px 0;
 }
 
-.event-conflict{
-    color:#b91c1c;
-    font-weight:bold;
-    margin-top:2px;
+.change {
+    background: #eff6ff;
 }
 
-.legend{
-    display:flex;
-    gap:12px;
-    flex-wrap:wrap;
-    margin-top:12px;
-    font-size:12px;
-}
+@media(max-width:1100px) {
 
-.legend-item{
-    display:flex;
-    align-items:center;
-    gap:5px;
-}
-
-.legend-box{
-    width:15px;
-    height:15px;
-    border-radius:3px;
-}
-
-/* ================================
-   CONFLICTOS
-================================ */
-
-.conflict-row{
-    border-left:5px solid var(--red);
-    background:#fffafa;
-}
-
-.conflict-title{
-    font-weight:bold;
-    color:#b91c1c;
-}
-
-/* ================================
-   MODAL
-================================ */
-
-.modal{
-    display:none;
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.55);
-    z-index:100;
-    align-items:center;
-    justify-content:center;
-    padding:15px;
-}
-
-.modal.show{
-    display:flex;
-}
-
-.modal-box{
-    background:white;
-    border-radius:12px;
-    width:min(700px,96vw);
-    max-height:92vh;
-    overflow:auto;
-    padding:20px;
-}
-
-hr{
-    border:0;
-    border-top:1px solid var(--border);
-    margin:18px 0;
-}
-
-.range-value{
-    font-weight:bold;
-    margin-left:8px;
-}
-
-.proposal-card{
-    border:1px solid var(--border);
-    border-radius:8px;
-    padding:14px;
-    margin-bottom:10px;
-    background:white;
-}
-
-.proposal-card.accepted{
-    border-color:#86efac;
-    background:#f0fdf4;
-}
-
-.proposal-card.rejected{
-    opacity:.55;
-}
-
-.badge{
-    display:inline-block;
-    padding:3px 7px;
-    border-radius:12px;
-    font-size:10px;
-    font-weight:bold;
-}
-
-.badge-fixed{
-    background:#fee2e2;
-    color:#991b1b;
-}
-
-.badge-preferido{
-    background:#fef3c7;
-    color:#92400e;
-}
-
-.badge-flexible{
-    background:#dcfce7;
-    color:#166534;
-}
-
-.badge-optional{
-    background:#dbeafe;
-    color:#1d4ed8;
-}
-
-.empty{
-    padding:25px;
-    text-align:center;
-    color:var(--muted);
-}
-
-@media(max-width:800px){
-
-    main{
-        padding:10px;
+    .grid {
+        grid-template-columns: repeat(2, minmax(250px, 1fr));
     }
 
-    header{
-        padding:15px;
-    }
-
-    header h1{
-        font-size:21px;
+    .stats {
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
+@media(max-width:650px) {
+
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form {
+        grid-template-columns: 1fr;
+    }
+
+    .full {
+        grid-column: auto;
+    }
+}
 </style>
 </head>
-
 
 <body>
 
 <header>
-
-<h1>⚽ Optimizador de Grilla — Futsal</h1>
-
-<p>
-Gestión de predios · disponibilidad · entrenamientos · conflictos · optimización
-</p>
-
+    <h1>⚽ Optimizador Inteligente de Grilla Futsal</h1>
+    <div>
+        Planificación semanal de canchas, horarios, divisiones y staff.
+    </div>
 </header>
 
+<div class="container">
 
-<nav>
+    <div class="toolbar">
 
-<button class="active" onclick="showTab('dashboard',this)">
-📊 Dashboard
-</button>
+        <button class="primary" onclick="newTraining()">
+            ➕ Entrenamiento
+        </button>
 
-<button onclick="showTab('grilla',this)">
-🗓️ Grilla
-</button>
+        <button class="gray" onclick="venuesModal()">
+            🏟️ Predios
+        </button>
 
-<button onclick="showTab('conflictos',this)">
-🔴 Conflictos
-</button>
+        <button class="green" onclick="runOptimizer()">
+            🤖 GENERAR GRILLAS ÓPTIMAS
+        </button>
 
-<button onclick="showTab('optimizar',this)">
-🧠 Optimizar
-</button>
+        <button class="orange" onclick="renderConflicts()">
+            ⚠️ Revisar conflictos
+        </button>
 
-<button onclick="showTab('predios',this)">
-🏟️ Predios
-</button>
+        <button class="gray" onclick="resetData()">
+            ↩ Restaurar
+        </button>
 
-<button onclick="showTab('equipos',this)">
-⚽ Equipos
-</button>
-
-<button onclick="showTab('entrenamientos',this)">
-📅 Entrenamientos
-</button>
-
-<button onclick="showTab('datos',this)">
-💾 Datos
-</button>
-
-</nav>
+    </div>
 
 
-<main>
+    <div class="stats">
+
+        <div class="stat">
+            <b id="nT">0</b>
+            Entrenamientos
+        </div>
+
+        <div class="stat">
+            <b id="nC">0</b>
+            Conflictos
+        </div>
+
+        <div class="stat">
+            <b id="nH">0</b>
+            Horas semanales
+        </div>
+
+        <div class="stat">
+            <b id="nV">0</b>
+            Predios
+        </div>
+
+        <div class="stat">
+            <b id="nO">0</b>
+            Objetivos cumplidos
+        </div>
+
+    </div>
 
 
-<!-- ==========================================
-     DASHBOARD
-========================================== -->
+    <div class="panel">
 
-<section id="dashboard" class="tab active">
+        <h2>📅 Grilla semanal</h2>
 
-<div class="card">
+        <div class="muted">
+            Arrastrá un entrenamiento a otro día.
+            Doble click para modificarlo.
+            Los conflictos aparecen en rojo.
+        </div>
 
-<h2>Situación actual</h2>
+        <div
+            id="calendar"
+            class="grid"
+            style="margin-top:10px">
+        </div>
 
-<div class="stat-grid">
-
-<div class="stat">
-<span>Predios</span>
-<strong id="statPredios">0</strong>
-</div>
-
-<div class="stat">
-<span>Equipos</span>
-<strong id="statEquipos">0</strong>
-</div>
-
-<div class="stat">
-<span>Entrenamientos</span>
-<strong id="statEntrenamientos">0</strong>
-</div>
-
-<div class="stat">
-<span>Horas semanales</span>
-<strong id="statHoras">0</strong>
-</div>
-
-<div class="stat">
-<span>Conflictos</span>
-<strong id="statConflictos">0</strong>
-</div>
-
-<div class="stat">
-<span>Minutos disponibles</span>
-<strong id="statDisponibles">0</strong>
-</div>
-
-</div>
-
-</div>
+    </div>
 
 
-<div class="card">
+    <div class="panel">
 
-<h2>🚀 Acciones rápidas</h2>
+        <h2>⚠️ Conflictos</h2>
 
-<div class="actions">
+        <div id="conflicts"></div>
 
-<button class="btn-primary"
-onclick="showTab('grilla')">
-🗓️ Abrir grilla
-</button>
+    </div>
 
-<button class="btn-blue"
-onclick="showTab('optimizar')">
-🧠 Buscar optimización
-</button>
 
-<button class="btn-orange"
-onclick="showTab('conflictos')">
-🔴 Ver conflictos
-</button>
+    <div class="panel">
 
-<button class="btn"
-onclick="deshacer()">
-↩️ Deshacer
-</button>
+        <h2>🤖 Grillas inteligentes propuestas</h2>
 
-</div>
+        <div class="muted">
+            El sistema genera alternativas completas.
+            Ninguna modificación se aplica hasta que vos la aceptes.
+        </div>
+
+        <div id="scenarios"></div>
+
+    </div>
 
 </div>
 
 
-<div id="dashboardResumen"></div>
+<!-- MODAL ENTRENAMIENTO -->
 
-</section>
+<div class="modal" id="tm">
 
+<div class="box">
 
-<!-- ==========================================
-     GRILLA
-========================================== -->
+<h2 id="mt">
+    Entrenamiento
+</h2>
 
-<section id="grilla" class="tab">
+<input type="hidden" id="tid">
 
-<div class="card">
+<div class="form">
 
-<h2>🗓️ Grilla semanal</h2>
-
-<div class="notice">
-
-<strong>Modo manual:</strong>
-podés arrastrar cualquier entrenamiento hacia otro día y horario.
-También podés hacer <strong>doble clic</strong> sobre un entrenamiento
-para editarlo.
-
+<div class="field">
+<label>Área</label>
+<input id="cat">
 </div>
 
+<div class="field">
+<label>División</label>
+<input id="grp">
+</div>
 
-<div class="grid">
+<div class="field">
+<label>Día</label>
+<select id="day"></select>
+</div>
 
-<div>
+<div class="field">
+<label>Predio</label>
+<select id="venue"></select>
+</div>
 
-<label>Filtrar predio</label>
+<div class="field">
+<label>Hora inicio</label>
+<input type="time" id="start">
+</div>
 
-<select id="filtroPredio"
-onchange="renderGrilla()">
+<div class="field">
+<label>Duración actual (min)</label>
+<input type="number" id="dur" step="15" min="15">
+</div>
 
-<option value="">
-Todos los predios
+<div class="field">
+<label>Duración objetivo (min)</label>
+<input type="number" id="target" step="15" min="15">
+</div>
+
+<div class="field">
+<label>Duración mínima aceptable</label>
+<input type="number" id="minDur" step="15" min="15">
+</div>
+
+<div class="field">
+<label>Staff / recurso compartido</label>
+<input id="staff">
+</div>
+
+<div class="field">
+<label>Prioridad</label>
+
+<select id="priority">
+
+<option value="3">
+Muy alta
+</option>
+
+<option value="2" selected>
+Alta
+</option>
+
+<option value="1">
+Media
 </option>
 
 </select>
 
 </div>
 
+<div class="field">
 
-<div>
+<label>
+¿Puede reducir duración?
+</label>
 
-<label>Mostrar</label>
+<select id="flex">
 
-<select id="filtroCompetencia"
-onchange="renderGrilla()">
-
-<option value="">
-Todas las competencias
+<option value="no">
+No
 </option>
 
-<option value="AFA">
-AFA
-</option>
-
-<option value="Promos">
-Promos
-</option>
-
-<option value="Futsala">
-Futsala
+<option value="si">
+Sí
 </option>
 
 </select>
 
 </div>
 
-</div>
-
-<hr>
-
-
-<div class="grilla-scroll">
-
-<div id="weekGrid" class="week-grid"></div>
-
-</div>
-
-
-<div class="legend">
-
-<div class="legend-item">
-<div class="legend-box" style="background:#e8eefc"></div>
-Normal
-</div>
-
-<div class="legend-item">
-<div class="legend-box" style="background:#fee2e2"></div>
-Conflicto
-</div>
-
-<div class="legend-item">
-<div class="legend-box" style="background:#fff7ed"></div>
-Fuera de disponibilidad
-</div>
-
-<div class="legend-item">
-<div class="legend-box" style="background:#dbeafe"></div>
-Propuesta
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-
-<!-- ==========================================
-     CONFLICTOS
-========================================== -->
-
-<section id="conflictos" class="tab">
-
-<div class="card">
-
-<h2>🔴 Conflictos detectados</h2>
-
-<div class="notice">
-
-Los conflictos se recalculan automáticamente cada vez que movés,
-editás o agregás un entrenamiento.
-
-</div>
-
-<div id="listaConflictos"></div>
-
-</div>
-
-</section>
-
-
-<!-- ==========================================
-     OPTIMIZAR
-========================================== -->
-
-<section id="optimizar" class="tab">
-
-<div class="card">
-
-<h2>🧠 Optimización automática</h2>
-
-<p>
-
-El sistema analiza diferentes combinaciones sin modificar tu grilla
-actual. Primero genera una propuesta para que vos la evalúes.
-
-</p>
-
-
-<div class="grid">
-
-<div>
+<div class="field">
 
 <label>
-Mantener horarios actuales
-<span class="range-value" id="vHorario">85%</span>
+¿Priorizar división separada?
 </label>
 
-<input
-id="pesoHorario"
-type="range"
-min="0"
-max="100"
-value="85"
-oninput="actualizarRangos()">
+<select id="separate">
+
+<option value="no">
+No
+</option>
+
+<option value="si">
+Sí
+</option>
+
+</select>
 
 </div>
 
-
-<div>
+<div class="field full">
 
 <label>
-Mantener predio actual
-<span class="range-value" id="vPredio">80%</span>
+Notas
 </label>
 
-<input
-id="pesoPredio"
-type="range"
-min="0"
-max="100"
-value="80"
-oninput="actualizarRangos()">
-
-</div>
-
-
-<div>
-
-<label>
-Separar divisiones
-<span class="range-value" id="vSeparacion">100%</span>
-</label>
-
-<input
-id="pesoSeparacion"
-type="range"
-min="0"
-max="100"
-value="100"
-oninput="actualizarRangos()">
-
-</div>
-
-
-<div>
-
-<label>
-Aumentar minutos
-<span class="range-value" id="vMinutos">100%</span>
-</label>
-
-<input
-id="pesoMinutos"
-type="range"
-min="0"
-max="100"
-value="100"
-oninput="actualizarRangos()">
-
-</div>
-
-
-<div>
-
-<label>
-Evitar espacios muertos
-<span class="range-value" id="vContinuidad">90%</span>
-</label>
-
-<input
-id="pesoContinuidad"
-type="range"
-min="0"
-max="100"
-value="90"
-oninput="actualizarRangos()">
+<input id="notes">
 
 </div>
 
 </div>
-
-
-<hr>
-
-
-<button
-class="btn-primary"
-onclick="optimizar()">
-
-🚀 GENERAR MEJOR ESCENARIO
-
-</button>
-
-</div>
-
-
-<div id="resultadoOptimizacion"></div>
-
-</section>
-
-
-<!-- ==========================================
-     PREDIOS
-========================================== -->
-
-<section id="predios" class="tab">
-
-<div class="card">
-
-<h2>🏟️ Predios</h2>
-
-<button
-class="btn-primary"
-onclick="nuevoPredio()">
-
-+ Agregar predio
-
-</button>
-
-<hr>
-
-<div id="listaPredios"></div>
-
-</div>
-
-</section>
-
-
-<!-- ==========================================
-     EQUIPOS
-========================================== -->
-
-<section id="equipos" class="tab">
-
-<div class="card">
-
-<h2>⚽ Equipos / divisiones</h2>
-
-<button
-class="btn-primary"
-onclick="nuevoEquipo()">
-
-+ Agregar equipo
-
-</button>
-
-<hr>
-
-<div id="listaEquipos"></div>
-
-</div>
-
-</section>
-
-
-<!-- ==========================================
-     ENTRENAMIENTOS
-========================================== -->
-
-<section id="entrenamientos" class="tab">
-
-<div class="card">
-
-<h2>📅 Entrenamientos</h2>
-
-<button
-class="btn-primary"
-onclick="nuevoEntrenamiento()">
-
-+ Agregar entrenamiento
-
-</button>
-
-<hr>
-
-<div id="listaEntrenamientos"></div>
-
-</div>
-
-</section>
-
-
-<!-- ==========================================
-     DATOS
-========================================== -->
-
-<section id="datos" class="tab">
-
-<div class="card">
-
-<h2>💾 Datos y seguridad</h2>
-
-<p>
-
-La información se guarda automáticamente en este navegador.
-
-</p>
 
 <div class="actions">
 
 <button
-class="btn-green"
-onclick="guardarLocal()">
-
-💾 Guardar
-
+class="red"
+id="del"
+onclick="deleteTraining()">
+Eliminar
 </button>
 
 <button
-class="btn-blue"
-onclick="exportarDatos()">
-
-📤 Exportar backup
-
+class="gray"
+onclick="closeModal()">
+Cancelar
 </button>
 
 <button
-class="btn"
-onclick="document.getElementById('importFile').click()">
-
-📥 Importar backup
-
-</button>
-
-<button
-class="btn-red"
-onclick="borrarTodo()">
-
-🗑️ Borrar todo
-
+class="primary"
+onclick="saveTraining()">
+Guardar
 </button>
 
 </div>
 
+</div>
+
+</div>
+
+
+<!-- MODAL PREDIOS -->
+
+<div class="modal" id="vm">
+
+<div class="box">
+
+<h2>🏟️ Predios y disponibilidad</h2>
+
+<div id="venueList"></div>
+
+<hr>
+
+<h3>Agregar predio</h3>
+
+<div class="form">
+
+<div class="field">
+<label>Nombre</label>
+<input id="vn">
+</div>
+
+<div class="field">
+<label>Días</label>
 <input
-type="file"
-id="importFile"
-accept=".json"
-style="display:none"
-onchange="importarDatos(event)">
+id="vd"
+placeholder="lunes,martes,miercoles">
+</div>
+
+<div class="field">
+<label>Desde</label>
+<input
+id="vs"
+type="time"
+value="08:00">
+</div>
+
+<div class="field">
+<label>Hasta</label>
+<input
+id="ve"
+type="time"
+value="23:00">
+</div>
 
 </div>
 
-</section>
+<div class="actions">
 
+<button
+class="gray"
+onclick="closeVenue()">
+Cerrar
+</button>
 
-</main>
+<button
+class="primary"
+onclick="addVenue()">
+Agregar
+</button>
 
-
-<!-- ==========================================
-     MODAL
-========================================== -->
-
-<div id="modal" class="modal">
-
-<div class="modal-box">
-
-<div id="modalContent"></div>
+</div>
 
 </div>
 
@@ -1054,2860 +651,1676 @@ onchange="importarDatos(event)">
 
 <script>
 
-/* ============================================================
-   CONFIGURACIÓN
-============================================================ */
-
-const DIAS = [
-    "Lunes",
-    "Martes",
-    "Miércoles",
-    "Jueves",
-    "Viernes",
-    "Sábado",
-    "Domingo"
+const DAYS = [
+    "lunes",
+    "martes",
+    "miercoles",
+    "jueves",
+    "viernes",
+    "sabado",
+    "domingo"
 ];
 
-const STORAGE_KEY = "libertadores_grilla_v2";
+const DN = {
 
-let data = {
-    predios:[],
-    equipos:[],
-    entrenamientos:[]
+    lunes: "Lunes",
+    martes: "Martes",
+    miercoles: "Miércoles",
+    jueves: "Jueves",
+    viernes: "Viernes",
+    sabado: "Sábado",
+    domingo: "Domingo"
+
 };
 
-let historial = [];
 
+/* =========================
+   PREDIOS
+========================= */
 
-/* ============================================================
-   UTILIDADES
-============================================================ */
+const initialVenues = [
 
-function uid(){
+{
+    id: "rincon",
+    name: "Predio Rincón",
 
-    return Date.now().toString(36)
-    + Math.random().toString(36).substring(2,9);
+    availability:
+        Object.fromEntries(
+            DAYS.map(
+                d => [d, ["08:00", "23:00"]]
+            )
+        )
+},
 
-}
+{
+    id: "satsaid",
+    name: "Predio SATSAID",
 
-function minutos(hora){
+    availability: {
 
-    const [h,m] = hora.split(":").map(Number);
+        martes: ["19:00", "20:30"],
 
-    return h*60+m;
+        miercoles: ["20:00", "22:00"],
 
-}
+        jueves: ["19:00", "20:00"],
 
-function horaTexto(total){
-
-    let h=Math.floor(total/60);
-
-    let m=total%60;
-
-    return String(h).padStart(2,"0")
-    +":"
-    +String(m).padStart(2,"0");
-
-}
-
-function duracion(inicio,fin){
-
-    return minutos(fin)-minutos(inicio);
-
-}
-
-function nombreEquipo(id){
-
-    const e=data.equipos.find(x=>x.id===id);
-
-    return e ? e.nombre : "Equipo eliminado";
-
-}
-
-function nombrePredio(id){
-
-    const p=data.predios.find(x=>x.id===id);
-
-    return p ? p.nombre : "Predio eliminado";
-
-}
-
-function competenciaEquipo(id){
-
-    const e=data.equipos.find(x=>x.id===id);
-
-    return e ? e.competencia : "";
-
-}
-
-function copiar(obj){
-
-    return JSON.parse(JSON.stringify(obj));
-
-}
-
-
-/* ============================================================
-   STORAGE / HISTORIAL
-============================================================ */
-
-function guardarLocal(){
-
-    localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(data)
-    );
-
-    actualizarTodo();
-
-}
-
-function guardarEstadoAnterior(){
-
-    historial.push(copiar(data));
-
-    if(historial.length>20){
-
-        historial.shift();
+        viernes: ["20:00", "21:00"]
 
     }
+},
 
-}
+{
+    id: "manolo",
+    name: "Predio Dean Funes (Manolo)",
 
-function deshacer(){
+    availability: {
 
-    if(!historial.length){
+        lunes: ["20:00", "21:00"],
 
-        alert("No hay cambios para deshacer.");
+        martes: ["18:00", "21:00"],
 
-        return;
+        jueves: ["18:00", "21:00"],
+
+        viernes: ["20:30", "21:30"]
 
     }
-
-    data=historial.pop();
-
-    guardarLocal();
-
-    alert("Cambio deshecho.");
-
 }
 
-function cargarLocal(){
-
-    const guardado=
-        localStorage.getItem(STORAGE_KEY);
-
-    if(guardado){
-
-        try{
-
-            data=JSON.parse(guardado);
-
-        }catch(e){
-
-            cargarEjemplo();
-
-        }
-
-    }else{
-
-        cargarEjemplo();
-
-    }
-
-    actualizarTodo();
-
-}
+];
 
 
-/* ============================================================
-   DATOS INICIALES
-============================================================ */
+/* =========================
+   ENTRENAMIENTOS
+========================= */
 
-function cargarEjemplo(){
+const initialTraining = [
 
-data={
+/* AFA */
 
-predios:[
+["AFA","1ra","martes","satsaid","19:00",60,90,60,"AFA1",3,"no","si"],
 
-{
-id:"rincon",
-nombre:"Rincón",
-canchas:1,
+["AFA","1ra","miercoles","satsaid","20:00",60,90,60,"AFA1",3,"no","si"],
 
-disponibilidad:{
-"Lunes":[["08:00","23:00"]],
-"Martes":[["08:00","23:00"]],
-"Miércoles":[["08:00","23:00"]],
-"Jueves":[["08:00","23:00"]],
-"Viernes":[["08:00","23:00"]],
-"Sábado":[["08:00","23:00"]],
-"Domingo":[["08:00","23:00"]]
-}
+["AFA","1ra","jueves","satsaid","19:00",60,90,60,"AFA1",3,"no","si"],
 
-},
-
-{
-id:"satsaid",
-nombre:"SATSAID",
-canchas:1,
-
-disponibilidad:{
-"Lunes":[],
-"Martes":[["19:00","20:30"]],
-"Miércoles":[["20:00","22:00"]],
-"Jueves":[["19:00","20:00"]],
-"Viernes":[["20:00","21:00"]],
-"Sábado":[],
-"Domingo":[]
-}
-
-},
-
-{
-id:"manolo",
-nombre:"Dean Funes / Manolo",
-canchas:1,
-
-disponibilidad:{
-"Lunes":[["20:00","21:00"]],
-"Martes":[["18:00","21:00"]],
-"Miércoles":[],
-"Jueves":[["18:00","21:00"]],
-"Viernes":[["20:30","21:30"]],
-"Sábado":[],
-"Domingo":[]
-}
-
-}
-
-],
+["AFA","1ra","viernes","satsaid","20:00",60,90,60,"AFA1",3,"no","si"],
 
 
-equipos:[
+["AFA","3ra","martes","rincon","20:30",90,90,60,"AFA3",3,"si","no"],
 
-{
-id:"afa1",
-nombre:"AFA 1ra",
-competencia:"AFA",
-entrenamientosObjetivo:4,
-duracionObjetivo:90,
-grupoStaff:""
-},
+["AFA","3ra","miercoles","satsaid","20:00",60,75,60,"AFA3",3,"si","no"],
 
-{
-id:"afa3",
-nombre:"AFA 3ra",
-competencia:"AFA",
-entrenamientosObjetivo:4,
-duracionObjetivo:90,
-grupoStaff:""
-},
+["AFA","3ra","jueves","rincon","20:15",60,75,60,"AFA3",3,"si","no"],
 
-{
-id:"afa4",
-nombre:"AFA 4ta",
-competencia:"AFA",
-entrenamientosObjetivo:3,
-duracionObjetivo:90,
-grupoStaff:""
-},
-
-{
-id:"afa5",
-nombre:"AFA 5ta",
-competencia:"AFA",
-entrenamientosObjetivo:2,
-duracionObjetivo:90,
-grupoStaff:"afa56"
-},
-
-{
-id:"afa6",
-nombre:"AFA 6ta",
-competencia:"AFA",
-entrenamientosObjetivo:2,
-duracionObjetivo:90,
-grupoStaff:"afa56"
-},
-
-{
-id:"afa7",
-nombre:"AFA 7ma",
-competencia:"AFA",
-entrenamientosObjetivo:2,
-duracionObjetivo:90,
-grupoStaff:"afa78"
-},
-
-{
-id:"afa8",
-nombre:"AFA 8va",
-competencia:"AFA",
-entrenamientosObjetivo:2,
-duracionObjetivo:90,
-grupoStaff:"afa78"
-},
-
-{
-id:"promo1819",
-nombre:"Promos 18-19",
-competencia:"Promos",
-entrenamientosObjetivo:2,
-duracionObjetivo:60,
-grupoStaff:""
-},
-
-{
-id:"promo1617",
-nombre:"Promos 16-17",
-competencia:"Promos",
-entrenamientosObjetivo:2,
-duracionObjetivo:60,
-grupoStaff:""
-},
-
-{
-id:"f1",
-nombre:"Futsala 1ra",
-competencia:"Futsala",
-entrenamientosObjetivo:2,
-duracionObjetivo:60,
-grupoStaff:""
-},
-
-{
-id:"f3",
-nombre:"Futsala 3ra",
-competencia:"Futsala",
-entrenamientosObjetivo:2,
-duracionObjetivo:60,
-grupoStaff:"f34"
-},
-
-{
-id:"f4",
-nombre:"Futsala 4ta",
-competencia:"Futsala",
-entrenamientosObjetivo:2,
-duracionObjetivo:60,
-grupoStaff:"f34"
-},
-
-{
-id:"f5",
-nombre:"Futsala 5ta",
-competencia:"Futsala",
-entrenamientosObjetivo:2,
-duracionObjetivo:90,
-grupoStaff:"f56"
-},
-
-{
-id:"f6",
-nombre:"Futsala 6ta",
-competencia:"Futsala",
-entrenamientosObjetivo:2,
-duracionObjetivo:90,
-grupoStaff:"f56"
-},
-
-{
-id:"f7",
-nombre:"Futsala 7ma",
-competencia:"Futsala",
-entrenamientosObjetivo:2,
-duracionObjetivo:60,
-grupoStaff:"f78"
-},
-
-{
-id:"f8",
-nombre:"Futsala 8va",
-competencia:"Futsala",
-entrenamientosObjetivo:2,
-duracionObjetivo:60,
-grupoStaff:"f78"
-
-}
-
-],
+["AFA","3ra","viernes","rincon","19:00",60,75,60,"AFA3",3,"si","no"],
 
 
-entrenamientos:[
+["AFA","4ta","martes","rincon","19:00",90,120,60,"AFA4",2,"si","si"],
 
-/* AFA 1ra */
+["AFA","4ta","viernes","rincon","20:00",60,120,60,"AFA4",2,"si","si"],
 
-T("afa1","Martes","19:00","20:00","satsaid","preferido"),
-T("afa1","Miércoles","20:00","21:00","satsaid","preferido"),
-T("afa1","Jueves","19:00","20:00","satsaid","preferido"),
-T("afa1","Viernes","20:00","21:00","satsaid","preferido"),
 
-/* AFA 3ra */
+["AFA","5ta","lunes","rincon","19:30",90,90,60,"AFA56",2,"si","si"],
 
-T("afa3","Martes","20:30","22:00","rincon","preferido"),
-T("afa3","Miércoles","20:00","21:00","satsaid","preferido"),
-T("afa3","Jueves","20:15","21:15","rincon","preferido"),
-T("afa3","Viernes","19:00","20:00","rincon","preferido"),
+["AFA","6ta","lunes","rincon","19:30",90,90,60,"AFA56",2,"si","si"],
 
-/* AFA 4ta */
+["AFA","5ta","jueves","rincon","18:00",90,90,60,"AFA56",2,"si","si"],
 
-T("afa4","Martes","19:00","20:30","rincon","preferido"),
-T("afa4","Viernes","20:00","21:00","rincon","preferido"),
+["AFA","6ta","jueves","rincon","18:00",90,90,60,"AFA56",2,"si","si"],
 
-/* AFA 5ta */
 
-T("afa5","Lunes","19:30","21:00","rincon","preferido","afa56"),
-T("afa5","Jueves","18:00","19:30","rincon","preferido","afa56"),
+["AFA","7ma","lunes","rincon","18:00",90,90,60,"AFA78",2,"si","si"],
 
-/* AFA 6ta */
+["AFA","8va","lunes","rincon","18:00",90,90,60,"AFA78",2,"si","si"],
 
-T("afa6","Lunes","19:30","21:00","rincon","preferido","afa56"),
-T("afa6","Jueves","18:00","19:30","rincon","preferido","afa56"),
+["AFA","7ma","viernes","rincon","18:00",60,60,60,"AFA78",2,"si","si"],
 
-/* AFA 7ma */
+["AFA","8va","viernes","rincon","18:00",60,60,60,"AFA78",2,"si","si"],
 
-T("afa7","Lunes","18:00","19:30","rincon","preferido","afa78"),
-T("afa7","Viernes","18:00","19:00","rincon","preferido","afa78"),
-
-/* AFA 8va */
-
-T("afa8","Lunes","18:00","19:30","rincon","preferido","afa78"),
-T("afa8","Viernes","18:00","19:00","rincon","preferido","afa78"),
 
 /* PROMOS */
 
-T("promo1819","Martes","18:00","19:00","manolo","preferido"),
-T("promo1819","Jueves","18:00","19:00","manolo","preferido"),
+["Promos","18-19","martes","manolo","18:00",60,60,45,"P1819",2,"si","no"],
 
-T("promo1617","Martes","19:00","20:00","manolo","preferido"),
-T("promo1617","Jueves","19:00","20:00","manolo","preferido"),
+["Promos","18-19","jueves","manolo","18:00",60,60,45,"P1819",2,"si","no"],
+
+["Promos","16-17","martes","manolo","19:00",60,60,45,"P1617",2,"si","no"],
+
+["Promos","16-17","jueves","manolo","19:00",60,60,45,"P1617",2,"si","no"],
+
 
 /* FUTSALA */
 
-T("f1","Martes","20:00","21:00","manolo","preferido"),
-T("f1","Viernes","20:30","21:30","manolo","preferido"),
+["Futsala","1ra","martes","manolo","20:00",60,60,45,"F1",2,"si","no"],
 
-T("f3","Lunes","20:00","21:00","manolo","preferido","f34"),
-T("f3","Jueves","20:00","21:00","manolo","preferido","f34"),
+["Futsala","1ra","viernes","manolo","20:30",60,60,45,"F1",2,"si","no"],
 
-T("f4","Lunes","20:00","21:00","manolo","preferido","f34"),
-T("f4","Jueves","20:00","21:00","manolo","preferido","f34"),
 
-T("f5","Martes","16:30","18:00","rincon","preferido","f56"),
-T("f5","Viernes","16:30","18:00","rincon","preferido","f56"),
+["Futsala","3ra","lunes","manolo","20:00",60,60,45,"F34",2,"si","si"],
 
-T("f6","Martes","16:30","18:00","rincon","preferido","f56"),
-T("f6","Viernes","16:30","18:00","rincon","preferido","f56"),
+["Futsala","4ta","lunes","manolo","20:00",60,60,45,"F34",2,"si","si"],
 
-T("f7","Lunes","17:00","18:00","rincon","preferido","f78"),
-T("f7","Jueves","17:00","18:00","rincon","preferido","f78"),
+["Futsala","3ra","jueves","manolo","20:00",60,60,45,"F34",2,"si","si"],
 
-T("f8","Lunes","17:00","18:00","rincon","preferido","f78"),
-T("f8","Jueves","17:00","18:00","rincon","preferido","f78")
+["Futsala","4ta","jueves","manolo","20:00",60,60,45,"F34",2,"si","si"],
 
-]
 
-};
+["Futsala","5ta","martes","rincon","16:30",90,90,60,"F56",2,"si","si"],
 
-guardarLocal();
+["Futsala","6ta","martes","rincon","16:30",90,90,60,"F56",2,"si","si"],
+
+["Futsala","5ta","viernes","rincon","16:30",90,90,60,"F56",2,"si","si"],
+
+["Futsala","6ta","viernes","rincon","16:30",90,90,60,"F56",2,"si","si"],
+
+
+["Futsala","7ma","lunes","rincon","17:00",60,60,45,"F78",2,"si","si"],
+
+["Futsala","8va","lunes","rincon","17:00",60,60,45,"F78",2,"si","si"],
+
+["Futsala","7ma","jueves","rincon","17:00",60,60,45,"F78",2,"si","si"],
+
+["Futsala","8va","jueves","rincon","17:00",60,60,45,"F78",2,"si","si"]
+
+];
+
+
+let venues =
+    JSON.parse(
+        localStorage.getItem("futsalVenues")
+        || "null"
+    )
+    || structuredClone(initialVenues);
+
+
+let trainings =
+    JSON.parse(
+        localStorage.getItem("futsalTrainings")
+        || "null"
+    )
+    || initialTraining.map(
+        (x,i) => ({
+
+            id: i + 1,
+
+            cat: x[0],
+
+            grp: x[1],
+
+            day: x[2],
+
+            venue: x[3],
+
+            start: x[4],
+
+            dur: x[5],
+
+            target: x[6],
+
+            minDur: x[7],
+
+            staff: x[8],
+
+            priority: x[9],
+
+            flex: x[10],
+
+            separate: x[11],
+
+            notes: ""
+
+        })
+    );
+
+
+function save() {
+
+    localStorage.setItem(
+        "futsalVenues",
+        JSON.stringify(venues)
+    );
+
+    localStorage.setItem(
+        "futsalTrainings",
+        JSON.stringify(trainings)
+    );
 
 }
 
 
-/*
-  Constructor de entrenamientos iniciales.
-*/
+function tm(s) {
 
-function T(equipo,dia,inicio,fin,predio,tipo="preferido",grupo=""){
+    const [h,m] =
+        s.split(":").map(Number);
 
-    return {
-        id:uid(),
-        equipo,
-        dia,
-        inicio,
-        fin,
-        predio,
-        cancha:1,
-        tipo,
-        grupo
-    };
+    return h * 60 + m;
 
 }
 
 
-/* ============================================================
-   NAVEGACIÓN
-============================================================ */
+function ts(n) {
 
-function showTab(id,btn){
-
-    document
-        .querySelectorAll(".tab")
-        .forEach(x=>x.classList.remove("active"));
-
-    document
-        .getElementById(id)
-        .classList.add("active");
-
-    document
-        .querySelectorAll("nav button")
-        .forEach(x=>x.classList.remove("active"));
-
-    if(btn){
-
-        btn.classList.add("active");
-
-    }
-
-    actualizarTodo();
+    return String(
+        Math.floor(n / 60)
+    ).padStart(2,"0")
+    + ":"
+    +
+    String(
+        n % 60
+    ).padStart(2,"0");
 
 }
 
 
-/* ============================================================
+function end(t) {
+
+    return ts(
+        tm(t.start) + t.dur
+    );
+
+}
+
+
+function getVenue(id) {
+
+    return venues.find(
+        v => v.id === id
+    );
+
+}
+
+
+function overlaps(a,b) {
+
+    return (
+
+        a.day === b.day
+
+        &&
+
+        tm(a.start)
+        <
+        tm(b.start) + b.dur
+
+        &&
+
+        tm(b.start)
+        <
+        tm(a.start) + a.dur
+
+    );
+
+}
+
+
+/* =========================
    CONFLICTOS
-============================================================ */
+========================= */
 
-function disponibilidadPredio(predio,dia,inicio,fin){
+function conflictsOf(arr=trainings) {
 
-    const p=data.predios.find(x=>x.id===predio);
+    const out = [];
 
-    if(!p){
+    for(let i=0;i<arr.length;i++) {
 
-        return {
-            disponible:false,
-            motivo:"Predio inexistente"
-        };
+        const a = arr[i];
 
-    }
+        const v = getVenue(a.venue);
 
-    const bloques=p.disponibilidad[dia]||[];
-
-    const ini=minutos(inicio);
-    const end=minutos(fin);
-
-    const dentro=bloques.some(b=>{
-
-        return ini>=minutos(b[0])
-        && end<=minutos(b[1]);
-
-    });
-
-    if(!dentro){
-
-        return {
-            disponible:false,
-            motivo:"Fuera de disponibilidad del predio"
-        };
-
-    }
-
-    return {
-        disponible:true,
-        motivo:""
-    };
-
-}
+        const av =
+            v &&
+            v.availability[a.day];
 
 
-function calcularConflictos(){
+        if(!av) {
 
-    const conflictos=[];
+            out.push({
 
-    /*
-      Disponibilidad
-    */
+                type:"availability",
 
-    data.entrenamientos.forEach((t,i)=>{
+                ids:[a.id],
 
-        const disp=
-            disponibilidadPredio(
-                t.predio,
-                t.dia,
-                t.inicio,
-                t.fin
-            );
-
-        if(!disp.disponible){
-
-            conflictos.push({
-
-                tipo:"disponibilidad",
-                ids:[t.id],
-                mensaje:
-                `${nombreEquipo(t.equipo)} está fuera de la disponibilidad de ${nombrePredio(t.predio)}.`
+                text:
+                    `${a.cat} ${a.grp}: `
+                    +
+                    `${DN[a.day]} `
+                    +
+                    `no está disponible `
+                    +
+                    `en ${v ? v.name : "ese predio"}.`
 
             });
 
         }
 
-    });
+        else if(
+
+            tm(a.start) < tm(av[0])
+
+            ||
+
+            tm(a.start) + a.dur
+            >
+            tm(av[1])
+
+        ) {
+
+            out.push({
+
+                type:"availability",
+
+                ids:[a.id],
+
+                text:
+                    `${a.cat} ${a.grp}: `
+                    +
+                    `${a.start}-${end(a)} `
+                    +
+                    `queda fuera de `
+                    +
+                    `${v.name} `
+                    +
+                    `(${av[0]}-${av[1]}).`
+
+            });
+
+        }
 
 
-    /*
-      Superposición de entrenamientos
-    */
+        for(let j=i+1;j<arr.length;j++) {
 
-    data.entrenamientos.forEach((a,i)=>{
+            const b = arr[j];
 
-        data.entrenamientos.forEach((b,j)=>{
+            if(!overlaps(a,b))
+                continue;
 
-            if(j<=i)return;
 
-            if(a.dia!==b.dia)return;
+            if(a.venue === b.venue) {
 
-            if(a.predio!==b.predio)return;
+                out.push({
 
-            if(Number(a.cancha)!==Number(b.cancha))return;
-
-            const a1=minutos(a.inicio);
-            const a2=minutos(a.fin);
-
-            const b1=minutos(b.inicio);
-            const b2=minutos(b.fin);
-
-            if(a1<b2 && a2>b1){
-
-                conflictos.push({
-
-                    tipo:"superposicion",
+                    type:"court",
 
                     ids:[a.id,b.id],
 
-                    mensaje:
-                    `${nombreEquipo(a.equipo)} (${a.inicio}-${a.fin}) se superpone con ${nombreEquipo(b.equipo)} (${b.inicio}-${b.fin}) en ${nombrePredio(a.predio)}.`
+                    text:
+                        `CANCHA: `
+                        +
+                        `${DN[a.day]} `
+                        +
+                        `${a.cat} ${a.grp} `
+                        +
+                        `↔ `
+                        +
+                        `${b.cat} ${b.grp} `
+                        +
+                        `en ${getVenue(a.venue)?.name}.`
 
                 });
 
             }
 
-        });
 
-    });
+            if(
 
+                a.staff
+                &&
+                b.staff
+                &&
+                a.staff === b.staff
 
-    /*
-      Más equipos que canchas.
-    */
+            ) {
 
-    data.predios.forEach(p=>{
+                out.push({
 
-        DIAS.forEach(dia=>{
+                    type:"staff",
 
-            const eventos=
-                data.entrenamientos.filter(t=>
-                    t.predio===p.id &&
-                    t.dia===dia
-                );
+                    ids:[a.id,b.id],
 
-            eventos.forEach(t=>{
-
-                let simultaneos=0;
-
-                eventos.forEach(x=>{
-
-                    if(x.id===t.id)return;
-
-                    const a=minutos(t.inicio);
-                    const b=minutos(t.fin);
-
-                    const c=minutos(x.inicio);
-                    const d=minutos(x.fin);
-
-                    if(a<d && b>c){
-
-                        simultaneos++;
-
-                    }
+                    text:
+                        `STAFF "${a.staff}": `
+                        +
+                        `${a.cat} ${a.grp} `
+                        +
+                        `↔ `
+                        +
+                        `${b.cat} ${b.grp} `
+                        +
+                        `se superponen.`
 
                 });
 
-                if(simultaneos>=p.canchas){
-
-                    conflictos.push({
-
-                        tipo:"capacidad",
-
-                        ids:[t.id],
-
-                        mensaje:
-                        `La cantidad de entrenamientos simultáneos puede superar la capacidad de ${p.nombre}.`
-
-                    });
-
-                }
-
-            });
-
-        });
-
-    });
-
-
-    /*
-      Staff compartido simultáneamente.
-    */
-
-    data.entrenamientos.forEach((a,i)=>{
-
-        data.entrenamientos.forEach((b,j)=>{
-
-            if(j<=i)return;
-
-            if(a.dia!==b.dia)return;
-
-            const ea=
-                data.equipos.find(e=>e.id===a.equipo);
-
-            const eb=
-                data.equipos.find(e=>e.id===b.equipo);
-
-            if(!ea || !eb)return;
-
-            if(!ea.grupoStaff)return;
-
-            if(ea.grupoStaff!==eb.grupoStaff)return;
-
-            const a1=minutos(a.inicio);
-            const a2=minutos(a.fin);
-
-            const b1=minutos(b.inicio);
-            const b2=minutos(b.fin);
-
-            if(a1<b2 && a2>b1){
-
-                /*
-                   Si comparten staff no necesariamente es conflicto:
-                   puede ser justamente el mismo entrenamiento.
-
-                   Solamente lo marcamos si están en predios distintos.
-                */
-
-                if(a.predio!==b.predio){
-
-                    conflictos.push({
-
-                        tipo:"staff",
-
-                        ids:[a.id,b.id],
-
-                        mensaje:
-                        `${nombreEquipo(a.equipo)} y ${nombreEquipo(b.equipo)} comparten staff pero están en predios diferentes.`
-
-                    });
-
-                }
-
             }
 
-        });
+        }
 
-    });
+    }
 
-
-    return conflictos;
+    return out;
 
 }
 
 
-function renderConflictos(){
+function renderConflicts() {
 
-    const cont=
-        document.getElementById("listaConflictos");
+    const c = conflictsOf();
 
-    const conflictos=
-        calcularConflictos();
+    const box =
+        document.getElementById("conflicts");
 
-    if(!conflictos.length){
 
-        cont.innerHTML=`
+    if(!c.length) {
 
-        <div class="success">
-
-        <strong>✅ No hay conflictos detectados.</strong>
-
-        <br>
-
-        La grilla actual es compatible con la disponibilidad cargada.
-
-        </div>
-
-        `;
+        box.innerHTML =
+            `<b class="good">
+                🟢 No hay conflictos.
+            </b>`;
 
         return;
 
     }
 
 
-    cont.innerHTML=`
-
-    <div class="danger">
-
-    <strong>
-    🔴 ${conflictos.length} conflicto(s) detectado(s)
-    </strong>
-
-    </div>
-
-    ${conflictos.map((c,i)=>`
-
-        <div class="card conflict-row">
-
-            <div class="conflict-title">
-
-            ${i+1}. ${c.mensaje}
-
-            </div>
-
-            <div class="actions">
-
-                ${c.ids.map(id=>`
-
-                    <button
-                    class="btn"
-                    onclick="editarEntrenamientoPorId('${id}')">
-
-                    Ver / editar
-
-                    </button>
-
-                `).join("")}
-
-            </div>
-
-        </div>
-
-    `).join("")}
-
-    `;
+    box.innerHTML =
+        c.map(
+            x =>
+                `<div style="margin:7px 0">
+                    🔴 ${x.text}
+                </div>`
+        ).join("");
 
 }
 
 
-/* ============================================================
-   DRAG & DROP
-============================================================ */
+/* =========================
+   CALENDARIO
+========================= */
 
-function iniciarDrag(event,id){
+function render() {
 
-    event.dataTransfer.setData(
-        "text/plain",
-        id
-    );
+    const cal =
+        document.getElementById("calendar");
 
-}
+    cal.innerHTML = "";
 
-function permitirDrop(event){
-
-    event.preventDefault();
-
-    event.currentTarget.classList.add("drop-active");
-
-}
-
-function salirDrop(event){
-
-    event.currentTarget.classList.remove("drop-active");
-
-}
-
-function soltar(event,dia,hora){
-
-    event.preventDefault();
-
-    event.currentTarget.classList.remove("drop-active");
-
-    const id=
-        event.dataTransfer.getData("text/plain");
-
-    const t=
-        data.entrenamientos.find(x=>x.id===id);
-
-    if(!t)return;
-
-    guardarEstadoAnterior();
-
-    /*
-      Al arrastrar solamente modificamos día y hora.
-      Conservamos duración.
-    */
-
-    const dur=
-        duracion(t.inicio,t.fin);
-
-    const nuevoInicio=minutos(hora);
-
-    const nuevoFin=nuevoInicio+dur;
-
-    t.dia=dia;
-
-    t.inicio=horaTexto(nuevoInicio);
-
-    t.fin=horaTexto(nuevoFin);
-
-    guardarLocal();
-
-}
-
-
-/* ============================================================
-   EDICIÓN MANUAL
-============================================================ */
-
-function editarEntrenamientoPorId(id){
-
-    const index=
-        data.entrenamientos.findIndex(
-            x=>x.id===id
-        );
-
-    if(index<0)return;
-
-    editarEntrenamiento(index);
-
-}
-
-
-function editarEntrenamiento(index){
-
-    const t=data.entrenamientos[index];
-
-    abrirModal(`
-
-        <h2>✏️ Editar entrenamiento</h2>
-
-        <div class="grid">
-
-            <div>
-
-                <label>Equipo</label>
-
-                <select id="editEquipo">
-
-                    ${data.equipos.map(e=>`
-
-                        <option
-                        value="${e.id}"
-                        ${e.id===t.equipo?"selected":""}>
-
-                        ${e.nombre}
-
-                        </option>
-
-                    `).join("")}
-
-                </select>
-
-            </div>
-
-
-            <div>
-
-                <label>Día</label>
-
-                <select id="editDia">
-
-                    ${DIAS.map(d=>`
-
-                        <option
-                        ${d===t.dia?"selected":""}>
-
-                        ${d}
-
-                        </option>
-
-                    `).join("")}
-
-                </select>
-
-            </div>
-
-
-            <div>
-
-                <label>Inicio</label>
-
-                <input
-                id="editInicio"
-                type="time"
-                value="${t.inicio}">
-
-            </div>
-
-
-            <div>
-
-                <label>Fin</label>
-
-                <input
-                id="editFin"
-                type="time"
-                value="${t.fin}">
-
-            </div>
-
-
-            <div>
-
-                <label>Predio</label>
-
-                <select id="editPredio">
-
-                    ${data.predios.map(p=>`
-
-                        <option
-                        value="${p.id}"
-                        ${p.id===t.predio?"selected":""}>
-
-                        ${p.nombre}
-
-                        </option>
-
-                    `).join("")}
-
-                </select>
-
-            </div>
-
-
-            <div>
-
-                <label>Cancha</label>
-
-                <input
-                id="editCancha"
-                type="number"
-                min="1"
-                value="${t.cancha||1}">
-
-            </div>
-
-
-            <div>
-
-                <label>Tipo de horario</label>
-
-                <select id="editTipo">
-
-                    <option
-                    value="fijo"
-                    ${t.tipo==="fijo"?"selected":""}>
-
-                    Fijo
-
-                    </option>
-
-                    <option
-                    value="preferido"
-                    ${t.tipo==="preferido"?"selected":""}>
-
-                    Preferido
-
-                    </option>
-
-                    <option
-                    value="flexible"
-                    ${t.tipo==="flexible"?"selected":""}>
-
-                    Flexible
-
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <div>
-
-                <label>Grupo / Staff</label>
-
-                <input
-                id="editGrupo"
-                value="${t.grupo||""}"
-                placeholder="Ej: afa56">
-
-            </div>
-
-        </div>
-
-
-        <div id="editPreview"></div>
-
-
-        <div class="actions">
-
-            <button
-            class="btn-green"
-            onclick="guardarEdicionEntrenamiento(${index})">
-
-            💾 Guardar
-
-            </button>
-
-
-            <button
-            class="btn-red"
-            onclick="eliminarEntrenamiento(${index})">
-
-            🗑️ Eliminar
-
-            </button>
-
-
-            <button
-            class="btn"
-            onclick="cerrarModal()">
-
-            Cancelar
-
-            </button>
-
-        </div>
-
-    `);
-
-    actualizarPreviewEdicion();
-
-}
-
-
-function actualizarPreviewEdicion(){
-
-    const dia=
-        document.getElementById("editDia")?.value;
-
-    const inicio=
-        document.getElementById("editInicio")?.value;
-
-    const fin=
-        document.getElementById("editFin")?.value;
-
-    const predio=
-        document.getElementById("editPredio")?.value;
-
-    const preview=
-        document.getElementById("editPreview");
-
-    if(!preview)return;
-
-    if(!inicio || !fin)return;
-
-    const disp=
-        disponibilidadPredio(
-            predio,
-            dia,
-            inicio,
-            fin
-        );
-
-    preview.innerHTML=disp.disponible
-        ? `<div class="success">✅ Horario disponible en este predio.</div>`
-        : `<div class="warning">⚠️ ${disp.motivo}</div>`;
-
-}
-
-
-function guardarEdicionEntrenamiento(index){
-
-    const t=data.entrenamientos[index];
-
-    const inicio=
-        document.getElementById("editInicio").value;
-
-    const fin=
-        document.getElementById("editFin").value;
-
-    if(!inicio || !fin){
-
-        alert("Completá el horario.");
-
-        return;
-
-    }
-
-    if(minutos(fin)<=minutos(inicio)){
-
-        alert("El horario de finalización debe ser posterior al inicio.");
-
-        return;
-
-    }
-
-    guardarEstadoAnterior();
-
-    t.equipo=
-        document.getElementById("editEquipo").value;
-
-    t.dia=
-        document.getElementById("editDia").value;
-
-    t.inicio=inicio;
-
-    t.fin=fin;
-
-    t.predio=
-        document.getElementById("editPredio").value;
-
-    t.cancha=
-        Number(document.getElementById("editCancha").value)||1;
-
-    t.tipo=
-        document.getElementById("editTipo").value;
-
-    t.grupo=
-        document.getElementById("editGrupo").value;
-
-    guardarLocal();
-
-    cerrarModal();
-
-}
-
-
-function eliminarEntrenamiento(index){
-
-    if(!confirm(
-        "¿Eliminar este entrenamiento?"
-    ))return;
-
-    guardarEstadoAnterior();
-
-    data.entrenamientos.splice(
-        index,
-        1
-    );
-
-    guardarLocal();
-
-    cerrarModal();
-
-}
-
-
-/* ============================================================
-   NUEVO ENTRENAMIENTO
-============================================================ */
-
-function nuevoEntrenamiento(){
-
-    if(!data.equipos.length ||
-       !data.predios.length){
-
-        alert(
-        "Primero cargá al menos un equipo y un predio."
-        );
-
-        return;
-
-    }
-
-    abrirModal(`
-
-    <h2>➕ Nuevo entrenamiento</h2>
-
-    <div class="grid">
-
-        <div>
-
-            <label>Equipo</label>
-
-            <select id="newEquipo">
-
-                ${data.equipos.map(e=>`
-
-                    <option value="${e.id}">
-                    ${e.nombre}
-                    </option>
-
-                `).join("")}
-
-            </select>
-
-        </div>
-
-
-        <div>
-
-            <label>Día</label>
-
-            <select id="newDia">
-
-                ${DIAS.map(d=>`
-
-                    <option>${d}</option>
-
-                `).join("")}
-
-            </select>
-
-        </div>
-
-
-        <div>
-
-            <label>Inicio</label>
-
-            <input
-            id="newInicio"
-            type="time"
-            value="18:00">
-
-        </div>
-
-
-        <div>
-
-            <label>Fin</label>
-
-            <input
-            id="newFin"
-            type="time"
-            value="19:00">
-
-        </div>
-
-
-        <div>
-
-            <label>Predio</label>
-
-            <select id="newPredio">
-
-                ${data.predios.map(p=>`
-
-                    <option value="${p.id}">
-                    ${p.nombre}
-                    </option>
-
-                `).join("")}
-
-            </select>
-
-        </div>
-
-
-        <div>
-
-            <label>Cancha</label>
-
-            <input
-            id="newCancha"
-            type="number"
-            min="1"
-            value="1">
-
-        </div>
-
-
-        <div>
-
-            <label>Tipo</label>
-
-            <select id="newTipo">
-
-                <option value="fijo">
-                Fijo
-                </option>
-
-                <option
-                value="preferido"
-                selected>
-                Preferido
-                </option>
-
-                <option value="flexible">
-                Flexible
-                </option>
-
-            </select>
-
-        </div>
-
-
-        <div>
-
-            <label>Grupo / Staff</label>
-
-            <input
-            id="newGrupo"
-            placeholder="Opcional">
-
-        </div>
-
-    </div>
-
-
-    <div class="actions">
-
-        <button
-        class="btn-green"
-        onclick="guardarNuevoEntrenamiento()">
-
-        Guardar
-
-        </button>
-
-        <button
-        class="btn"
-        onclick="cerrarModal()">
-
-        Cancelar
-
-        </button>
-
-    </div>
-
-    `);
-
-}
-
-
-function guardarNuevoEntrenamiento(){
-
-    const inicio=
-        document.getElementById("newInicio").value;
-
-    const fin=
-        document.getElementById("newFin").value;
-
-    if(minutos(fin)<=minutos(inicio)){
-
-        alert(
-        "El horario de finalización debe ser posterior al inicio."
-        );
-
-        return;
-
-    }
-
-    guardarEstadoAnterior();
-
-    data.entrenamientos.push({
-
-        id:uid(),
-
-        equipo:
-        document.getElementById("newEquipo").value,
-
-        dia:
-        document.getElementById("newDia").value,
-
-        inicio,
-
-        fin,
-
-        predio:
-        document.getElementById("newPredio").value,
-
-        cancha:
-        Number(document.getElementById("newCancha").value)||1,
-
-        tipo:
-        document.getElementById("newTipo").value,
-
-        grupo:
-        document.getElementById("newGrupo").value
-
-    });
-
-    guardarLocal();
-
-    cerrarModal();
-
-}
-
-
-/* ============================================================
-   RENDER GRILLA
-============================================================ */
-
-function renderGrilla(){
-
-    const cont=
-        document.getElementById("weekGrid");
-
-    if(!cont)return;
-
-    const filtroPredio=
-        document.getElementById("filtroPredio")?.value||"";
-
-    const filtroComp=
-        document.getElementById("filtroCompetencia")?.value||"";
-
-
-    /*
-      Grilla cada 15 minutos.
-    */
-
-    const inicioDia=8*60;
-
-    const finDia=23*60;
-
-    const paso=15;
-
-    const filas=
-        Math.floor(
-            (finDia-inicioDia)/paso
+    const bad =
+        new Set(
+            conflictsOf()
+            .flatMap(x => x.ids)
         );
 
 
-    cont.innerHTML="";
+    DAYS.forEach(d => {
 
-    cont.style.gridTemplateRows=
-        `40px repeat(${filas},55px)`;
+        const col =
+            document.createElement("div");
 
 
-    /*
-      Cabecera
-    */
-
-    cont.innerHTML+=`
-        <div class="grid-head">
-        Hora
-        </div>
-    `;
-
-    DIAS.forEach(d=>{
-
-        cont.innerHTML+=`
-            <div class="grid-head">
-            ${d}
+        col.innerHTML =
+            `
+            <div class="dayhead">
+                ${DN[d]}
             </div>
-        `;
-
-    });
-
-
-    /*
-      Celdas
-    */
-
-    for(let i=0;i<filas;i++){
-
-        const hora=
-            inicioDia+i*paso;
-
-        const horaTxt=
-            horaTexto(hora);
-
-
-        cont.innerHTML+=`
 
             <div
-            class="time-cell"
-            style="grid-row:span 1">
-
-            ${horaTxt}
-
+                class="daybody"
+                data-day="${d}">
             </div>
+            `;
 
-        `;
+
+        const body =
+            col.querySelector(".daybody");
 
 
-        DIAS.forEach(dia=>{
+        body.ondragover =
+            e => e.preventDefault();
 
-            const cell=
+
+        body.ondrop = e => {
+
+            const id =
+                +e.dataTransfer.getData("id");
+
+            const t =
+                trainings.find(
+                    x => x.id === id
+                );
+
+            if(t) {
+
+                t.day = d;
+
+                save();
+
+                render();
+
+            }
+
+        };
+
+
+        trainings
+
+        .filter(
+            t => t.day === d
+        )
+
+        .sort(
+            (a,b) =>
+                tm(a.start)
+                -
+                tm(b.start)
+        )
+
+        .forEach(t => {
+
+            const x =
                 document.createElement("div");
 
-            cell.className="day-cell";
 
-            cell.dataset.dia=dia;
-
-            cell.dataset.hora=horaTxt;
-
-            cell.ondragover=permitirDrop;
-
-            cell.ondragleave=salirDrop;
-
-            cell.ondrop=
-                e=>soltar(
-                    e,
-                    dia,
-                    horaTxt
+            x.className =
+                "card"
+                +
+                (
+                    bad.has(t.id)
+                    ?
+                    " conflict"
+                    :
+                    ""
                 );
 
 
-            /*
-              Solamente eventos cuyo inicio
-              coincide con la celda.
-            */
-
-            data.entrenamientos.forEach(t=>{
-
-                if(t.dia!==dia)return;
-
-                if(filtroPredio &&
-                   t.predio!==filtroPredio)return;
-
-                if(filtroComp &&
-                   competenciaEquipo(t.equipo)!==filtroComp)return;
-
-                const eventStart=
-                    minutos(t.inicio);
-
-                if(
-                    eventStart<inicioDia+i*paso ||
-                    eventStart>=inicioDia+(i+1)*paso
-                )return;
+            x.draggable = true;
 
 
-                const div=
-                    document.createElement("div");
-
-                div.className="event";
-
-                div.draggable=true;
-
-                div.ondragstart=
-                    e=>iniciarDrag(
-                        e,
+            x.ondragstart =
+                e =>
+                    e.dataTransfer.setData(
+                        "id",
                         t.id
                     );
 
-                div.ondblclick=
-                    ()=>editarEntrenamientoPorId(t.id);
 
+            x.ondblclick =
+                () =>
+                    editTraining(t.id);
 
-                const conflictos=
-                    calcularConflictos()
-                    .filter(c=>
-                        c.ids.includes(t.id)
-                    );
 
+            x.innerHTML = `
 
-                if(conflictos.length){
+                <b>
+                    ${t.cat} — ${t.grp}
+                </b>
 
-                    div.classList.add("conflict");
-
-                }
-
-
-                const disp=
-                    disponibilidadPredio(
-                        t.predio,
-                        t.dia,
-                        t.inicio,
-                        t.fin
-                    );
-
-                if(!disp.disponible){
-
-                    div.classList.add("outside");
-
-                }
-
-
-                if(t.propuesta){
-
-                    div.classList.add("proposal");
-
-                }
-
-
-                /*
-                  Altura proporcional a duración.
-                */
-
-                const dur=
-                    duracion(
-                        t.inicio,
-                        t.fin
-                    );
-
-                const altura=
-                    Math.max(
-                        50,
-                        (dur/15)*55-5
-                    );
-
-                div.style.height=
-                    altura+"px";
-
-
-                div.innerHTML=`
-
-                    <div class="event-title">
-
-                    ${nombreEquipo(t.equipo)}
-
-                    </div>
-
-                    <div class="event-meta">
-
-                    ${t.inicio}–${t.fin}
-
-                    </div>
-
-                    <div class="event-meta">
-
-                    ${nombrePredio(t.predio)}
-                    · cancha ${t.cancha||1}
-
-                    </div>
-
-                    ${
-                        conflictos.length
-                        ?
-                        `<div class="event-conflict">
-                        ⚠️ ${conflictos.length} conflicto(s)
-                        </div>`
-                        :""
-                    }
-
-                `;
-
-
-                cell.appendChild(div);
-
-            });
-
-
-            cont.appendChild(cell);
-
-        });
-
-    }
-
-}
-
-
-/* ============================================================
-   RENDER ENTRENAMIENTOS
-============================================================ */
-
-function renderEntrenamientos(){
-
-    const cont=
-        document.getElementById(
-            "listaEntrenamientos"
-        );
-
-    if(!data.entrenamientos.length){
-
-        cont.innerHTML=
-            `<div class="empty">
-            No hay entrenamientos.
-            </div>`;
-
-        return;
-
-    }
-
-
-    cont.innerHTML=`
-
-    <table>
-
-        <tr>
-
-            <th>Equipo</th>
-            <th>Competencia</th>
-            <th>Día</th>
-            <th>Horario</th>
-            <th>Predio</th>
-            <th>Cancha</th>
-            <th>Duración</th>
-            <th>Tipo</th>
-            <th></th>
-
-        </tr>
-
-
-        ${data.entrenamientos.map((t,i)=>`
-
-            <tr>
-
-                <td>
-                <strong>
-                ${nombreEquipo(t.equipo)}
-                </strong>
-                </td>
-
-                <td>
-                ${competenciaEquipo(t.equipo)}
-                </td>
-
-                <td>
-                ${t.dia}
-                </td>
-
-                <td>
-                ${t.inicio}–${t.fin}
-                </td>
-
-                <td>
-                ${nombrePredio(t.predio)}
-                </td>
-
-                <td>
-                ${t.cancha||1}
-                </td>
-
-                <td>
-                ${duracion(t.inicio,t.fin)} min
-                </td>
-
-                <td>
-
-                <span class="badge badge-${t.tipo}">
-                ${t.tipo}
-                </span>
-
-                </td>
-
-                <td>
-
-                <button
-                class="btn"
-                onclick="editarEntrenamiento(${i})">
-
-                Editar
-
-                </button>
-
-                </td>
-
-            </tr>
-
-        `).join("")}
-
-    </table>
-
-    `;
-
-}
-
-
-/* ============================================================
-   PREDIOS
-============================================================ */
-
-function nuevoPredio(){
-
-    abrirModal(`
-
-    <h2>🏟️ Nuevo predio</h2>
-
-    <div class="grid">
-
-        <div>
-
-            <label>Nombre</label>
-
-            <input
-            id="pNombre"
-            placeholder="Ej: Rincón">
-
-        </div>
-
-        <div>
-
-            <label>Cantidad de canchas</label>
-
-            <input
-            id="pCanchas"
-            type="number"
-            min="1"
-            value="1">
-
-        </div>
-
-    </div>
-
-    <hr>
-
-    <h3>Disponibilidad semanal</h3>
-
-    <div id="dispForm"></div>
-
-    <div class="actions">
-
-        <button
-        class="btn-green"
-        onclick="guardarPredio()">
-
-        Guardar
-
-        </button>
-
-        <button
-        class="btn"
-        onclick="cerrarModal()">
-
-        Cancelar
-
-        </button>
-
-    </div>
-
-    `);
-
-    construirDisponibilidad();
-
-}
-
-
-function construirDisponibilidad(valores={}){
-
-    const cont=
-        document.getElementById("dispForm");
-
-    cont.innerHTML=
-        DIAS.map(d=>{
-
-            const v=
-                valores[d]?.[0]||"";
-
-            const h=
-                valores[d]?.[1]||"";
-
-            return `
-
-            <div style="margin-bottom:9px">
-
-                <strong>${d}</strong>
-
-                <div
-                style="
-                display:grid;
-                grid-template-columns:1fr 1fr;
-                gap:6px;
-                margin-top:4px">
-
-                    <input
-                    type="time"
-                    id="desde_${d}"
-                    value="${v}">
-
-                    <input
-                    type="time"
-                    id="hasta_${d}"
-                    value="${h}">
-
+                <div>
+                    ${t.start}
+                    →
+                    ${end(t)}
+                    ·
+                    ${t.dur}'
                 </div>
 
-            </div>
+                <small>
+                    ${getVenue(t.venue)?.name || "Sin predio"}
+                </small>
+
+                <small>
+                    Staff:
+                    ${t.staff || "-"}
+                </small>
+
+                ${
+                    bad.has(t.id)
+                    ?
+                    `<span class="tag">
+                        CONFLICTO
+                    </span>`
+                    :
+                    ""
+                }
 
             `;
 
-        }).join("");
 
-}
+            body.appendChild(x);
+
+        });
 
 
-function obtenerDisponibilidad(){
-
-    const disponibilidad={};
-
-    DIAS.forEach(d=>{
-
-        const desde=
-            document.getElementById(
-                "desde_"+d
-            )?.value;
-
-        const hasta=
-            document.getElementById(
-                "hasta_"+d
-            )?.value;
-
-        disponibilidad[d]=
-            (desde && hasta)
-            ? [[desde,hasta]]
-            : [];
+        cal.appendChild(col);
 
     });
 
-    return disponibilidad;
+
+    const c =
+        conflictsOf();
+
+
+    const mins =
+        trainings.reduce(
+            (s,t) => s + t.dur,
+            0
+        );
+
+
+    const obj =
+        trainings.filter(
+            t =>
+                t.dur >= t.target
+        ).length;
+
+
+    document.getElementById("nT")
+        .textContent =
+        trainings.length;
+
+
+    document.getElementById("nC")
+        .textContent =
+        c.length;
+
+
+    document.getElementById("nH")
+        .textContent =
+        (mins / 60).toFixed(1);
+
+
+    document.getElementById("nV")
+        .textContent =
+        venues.length;
+
+
+    document.getElementById("nO")
+        .textContent =
+        obj;
+
+
+    renderConflicts();
 
 }
 
 
-function guardarPredio(){
+/* =========================
+   FORMULARIO
+========================= */
 
-    const nombre=
-        document.getElementById(
-            "pNombre"
-        ).value.trim();
+function fillSelects() {
 
-    if(!nombre){
+    day.innerHTML =
+        DAYS.map(
+            d =>
+                `<option value="${d}">
+                    ${DN[d]}
+                </option>`
+        ).join("");
 
-        alert("Ingresá el nombre del predio.");
+
+    venue.innerHTML =
+        venues.map(
+            v =>
+                `<option value="${v.id}">
+                    ${v.name}
+                </option>`
+        ).join("");
+
+}
+
+
+function newTraining() {
+
+    fillSelects();
+
+    tid.value = "";
+
+    cat.value = "";
+
+    grp.value = "";
+
+    day.value = "lunes";
+
+    venue.value =
+        venues[0]?.id || "";
+
+    start.value = "18:00";
+
+    dur.value = 60;
+
+    target.value = 60;
+
+    minDur.value = 45;
+
+    staff.value = "";
+
+    priority.value = 2;
+
+    flex.value = "si";
+
+    separate.value = "no";
+
+    notes.value = "";
+
+    del.style.display = "none";
+
+    document
+        .getElementById("tm")
+        .classList.add("on");
+
+}
+
+
+function editTraining(id) {
+
+    const t =
+        trainings.find(
+            x => x.id === id
+        );
+
+    if(!t)
+        return;
+
+
+    fillSelects();
+
+    tid.value = t.id;
+
+    cat.value = t.cat;
+
+    grp.value = t.grp;
+
+    day.value = t.day;
+
+    venue.value = t.venue;
+
+    start.value = t.start;
+
+    dur.value = t.dur;
+
+    target.value = t.target;
+
+    minDur.value = t.minDur;
+
+    staff.value = t.staff;
+
+    priority.value = t.priority;
+
+    flex.value = t.flex;
+
+    separate.value = t.separate;
+
+    notes.value = t.notes || "";
+
+    del.style.display = "block";
+
+
+    document
+        .getElementById("tm")
+        .classList.add("on");
+
+}
+
+
+function closeModal() {
+
+    document
+        .getElementById("tm")
+        .classList.remove("on");
+
+}
+
+
+function saveTraining() {
+
+    const o = {
+
+        cat: cat.value.trim(),
+
+        grp: grp.value.trim(),
+
+        day: day.value,
+
+        venue: venue.value,
+
+        start: start.value,
+
+        dur: +dur.value,
+
+        target: +target.value,
+
+        minDur: +minDur.value,
+
+        staff: staff.value.trim(),
+
+        priority: +priority.value,
+
+        flex: flex.value,
+
+        separate: separate.value,
+
+        notes: notes.value
+
+    };
+
+
+    if(
+        !o.cat
+        ||
+        !o.grp
+        ||
+        !o.start
+        ||
+        !o.dur
+    ) {
+
+        alert(
+            "Completá los datos principales."
+        );
 
         return;
 
     }
 
-    guardarEstadoAnterior();
 
-    data.predios.push({
+    const id = +tid.value;
 
-        id:uid(),
 
-        nombre,
+    if(id) {
 
-        canchas:
-            Number(
-                document.getElementById(
-                    "pCanchas"
-                ).value
-            )||1,
+        Object.assign(
+            trainings.find(
+                t => t.id === id
+            ),
+            o
+        );
 
-        disponibilidad:
-            obtenerDisponibilidad()
+    }
 
-    });
+    else {
 
-    guardarLocal();
+        o.id = Date.now();
 
-    cerrarModal();
+        trainings.push(o);
+
+    }
+
+
+    save();
+
+    closeModal();
+
+    render();
 
 }
 
 
-function editarPredio(id){
+function deleteTraining() {
 
-    const p=
-        data.predios.find(
-            x=>x.id===id
+    const id = +tid.value;
+
+
+    if(
+        confirm(
+            "¿Eliminar este entrenamiento?"
+        )
+    ) {
+
+        trainings =
+            trainings.filter(
+                t => t.id !== id
+            );
+
+        save();
+
+        closeModal();
+
+        render();
+
+    }
+
+}
+
+
+/* =========================
+   PREDIOS
+========================= */
+
+function venuesModal() {
+
+    renderVenueList();
+
+    document
+        .getElementById("vm")
+        .classList.add("on");
+
+}
+
+
+function closeVenue() {
+
+    document
+        .getElementById("vm")
+        .classList.remove("on");
+
+}
+
+
+function renderVenueList() {
+
+    venueList.innerHTML =
+        venues.map(
+            v => `
+
+            <div class="proposal">
+
+                <b>
+                    ${v.name}
+                </b>
+
+                <br>
+
+                ${
+                    Object.entries(
+                        v.availability
+                    )
+                    .map(
+                        ([d,a]) =>
+                            `${DN[d]} ${a[0]}-${a[1]}`
+                    )
+                    .join(" · ")
+                }
+
+                <br><br>
+
+                <button
+                    class="red"
+                    onclick="
+                        removeVenue('${v.id}')
+                    ">
+                    Eliminar
+                </button>
+
+            </div>
+
+            `
+        ).join("");
+
+}
+
+
+function addVenue() {
+
+    const name =
+        vn.value.trim();
+
+
+    const ds =
+        vd.value
+        .split(",")
+        .map(
+            x => x.trim().toLowerCase()
+        )
+        .filter(
+            d => DAYS.includes(d)
         );
 
-    abrirModal(`
 
-    <h2>✏️ Editar predio</h2>
+    if(
+        !name
+        ||
+        !ds.length
+    ) {
 
-    <div class="grid">
+        alert(
+            "Completá nombre y días."
+        );
 
-        <div>
+        return;
 
-            <label>Nombre</label>
+    }
 
-            <input
-            id="epNombre"
-            value="${p.nombre}">
 
-        </div>
+    const av = {};
 
-        <div>
 
-            <label>Canchas</label>
-
-            <input
-            id="epCanchas"
-            type="number"
-            min="1"
-            value="${p.canchas}">
-
-        </div>
-
-    </div>
-
-    <hr>
-
-    <h3>Disponibilidad</h3>
-
-    <div id="dispForm"></div>
-
-    <div class="actions">
-
-        <button
-        class="btn-green"
-        onclick="guardarEdicionPredio('${id}')">
-
-        Guardar
-
-        </button>
-
-        <button
-        class="btn"
-        onclick="cerrarModal()">
-
-        Cancelar
-
-        </button>
-
-    </div>
-
-    `);
-
-    construirDisponibilidad(
-        convertirDisponibilidad(p.disponibilidad)
+    ds.forEach(
+        d =>
+            av[d] =
+                [
+                    vs.value,
+                    ve.value
+                ]
     );
 
-}
 
+    venues.push({
 
-function convertirDisponibilidad(disp){
+        id:
+            "v" + Date.now(),
 
-    const obj={};
+        name,
 
-    DIAS.forEach(d=>{
-
-        if(disp[d]?.length){
-
-            obj[d]=disp[d][0];
-
-        }
+        availability: av
 
     });
 
-    return obj;
+
+    save();
+
+    renderVenueList();
+
+    render();
 
 }
 
 
-function guardarEdicionPredio(id){
+function removeVenue(id) {
 
-    const p=
-        data.predios.find(
-            x=>x.id===id
-        );
-
-    guardarEstadoAnterior();
-
-    p.nombre=
-        document.getElementById(
-            "epNombre"
-        ).value;
-
-    p.canchas=
-        Number(
-            document.getElementById(
-                "epCanchas"
-            ).value
-        )||1;
-
-    p.disponibilidad=
-        obtenerDisponibilidad();
-
-    guardarLocal();
-
-    cerrarModal();
-
-}
-
-
-function eliminarPredio(id){
-
-    const tiene=
-        data.entrenamientos.some(
-            t=>t.predio===id
-        );
-
-    if(tiene){
+    if(
+        trainings.some(
+            t => t.venue === id
+        )
+    ) {
 
         alert(
-        "No se puede eliminar un predio que todavía tiene entrenamientos. Movelos primero."
+            "Primero mové los entrenamientos de este predio."
         );
 
         return;
 
     }
 
-    if(!confirm(
-        "¿Eliminar este predio?"
-    ))return;
 
-    guardarEstadoAnterior();
+    if(
+        confirm(
+            "¿Eliminar predio?"
+        )
+    ) {
 
-    data.predios=
-        data.predios.filter(
-            p=>p.id!==id
-        );
+        venues =
+            venues.filter(
+                v => v.id !== id
+            );
 
-    guardarLocal();
+        save();
 
-}
+        renderVenueList();
 
-
-function renderPredios(){
-
-    const cont=
-        document.getElementById(
-            "listaPredios"
-        );
-
-    if(!data.predios.length){
-
-        cont.innerHTML=
-        `<div class="empty">
-        No hay predios cargados.
-        </div>`;
-
-        return;
+        render();
 
     }
 
-
-    cont.innerHTML=
-        data.predios.map(p=>`
-
-        <div class="card">
-
-            <h3>
-            🏟️ ${p.nombre}
-            </h3>
-
-            <p>
-            <strong>${p.canchas}</strong>
-            cancha(s)
-            </p>
-
-            <table>
-
-                <tr>
-
-                    <th>Día</th>
-                    <th>Disponibilidad</th>
-
-                </tr>
-
-
-                ${DIAS.map(d=>`
-
-                    <tr>
-
-                        <td>${d}</td>
-
-                        <td>
-
-                        ${
-                            (p.disponibilidad[d]||[])
-                            .map(x=>x[0]+" – "+x[1])
-                            .join("<br>")
-                            ||
-                            "No disponible"
-                        }
-
-                        </td>
-
-                    </tr>
-
-                `).join("")}
-
-            </table>
-
-
-            <div class="actions">
-
-                <button
-                class="btn"
-                onclick="editarPredio('${p.id}')">
-
-                Editar
-
-                </button>
-
-                <button
-                class="btn-red"
-                onclick="eliminarPredio('${p.id}')">
-
-                Eliminar
-
-                </button>
-
-            </div>
-
-        </div>
-
-        `).join("");
-
 }
 
 
-/* ============================================================
-   EQUIPOS
-============================================================ */
-
-function nuevoEquipo(){
-
-    abrirModal(`
-
-    <h2>⚽ Nuevo equipo</h2>
-
-    <div class="grid">
-
-        <div>
-
-            <label>Nombre</label>
-
-            <input
-            id="eqNombre"
-            placeholder="Ej: AFA 4ta">
-
-        </div>
-
-
-        <div>
-
-            <label>Competencia</label>
-
-            <select id="eqCompetencia">
-
-                <option>AFA</option>
-                <option>Promos</option>
-                <option>Futsala</option>
-                <option>Otro</option>
-
-            </select>
-
-        </div>
-
-
-        <div>
-
-            <label>Entrenamientos objetivo</label>
-
-            <input
-            id="eqCantidad"
-            type="number"
-            min="0"
-            value="2">
-
-        </div>
-
-
-        <div>
-
-            <label>Duración objetivo</label>
-
-            <input
-            id="eqDuracion"
-            type="number"
-            min="15"
-            step="15"
-            value="90">
-
-        </div>
-
-
-        <div>
-
-            <label>Grupo de staff</label>
-
-            <input
-            id="eqStaff"
-            placeholder="Ej: afa56">
-
-            <div class="small">
-            Las categorías con el mismo grupo comparten staff.
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <div class="actions">
-
-        <button
-        class="btn-green"
-        onclick="guardarEquipo()">
-
-        Guardar
-
-        </button>
-
-        <button
-        class="btn"
-        onclick="cerrarModal()">
-
-        Cancelar
-
-        </button>
-
-    </div>
-
-    `);
-
-}
-
-
-function guardarEquipo(){
-
-    const nombre=
-        document.getElementById(
-            "eqNombre"
-        ).value.trim();
-
-    if(!nombre){
-
-        alert("Ingresá un nombre.");
-
-        return;
-
-    }
-
-    guardarEstadoAnterior();
-
-    data.equipos.push({
-
-        id:uid(),
-
-        nombre,
-
-        competencia:
-            document.getElementById(
-                "eqCompetencia"
-            ).value,
-
-        entrenamientosObjetivo:
-            Number(
-                document.getElementById(
-                    "eqCantidad"
-                ).value
-            )||0,
-
-        duracionObjetivo:
-            Number(
-                document.getElementById(
-                    "eqDuracion"
-                ).value
-            )||60,
-
-        grupoStaff:
-            document.getElementById(
-                "eqStaff"
-            ).value
-
-    });
-
-    guardarLocal();
-
-    cerrarModal();
-
-}
-
-
-function eliminarEquipo(id){
-
-    const tiene=
-        data.entrenamientos.some(
-            t=>t.equipo===id
-        );
-
-    if(tiene){
-
-        alert(
-        "No se puede eliminar un equipo que tiene entrenamientos cargados."
-        );
-
-        return;
-
-    }
-
-    if(!confirm(
-        "¿Eliminar este equipo?"
-    ))return;
-
-    guardarEstadoAnterior();
-
-    data.equipos=
-        data.equipos.filter(
-            e=>e.id!==id
-        );
-
-    guardarLocal();
-
-}
-
-
-function renderEquipos(){
-
-    const cont=
-        document.getElementById(
-            "listaEquipos"
-        );
-
-    cont.innerHTML=`
-
-    <table>
-
-        <tr>
-
-            <th>Equipo</th>
-            <th>Competencia</th>
-            <th>Objetivo</th>
-            <th>Duración</th>
-            <th>Staff</th>
-            <th></th>
-
-        </tr>
-
-
-        ${data.equipos.map(e=>`
-
-            <tr>
-
-                <td>
-                <strong>
-                ${e.nombre}
-                </strong>
-                </td>
-
-                <td>
-                ${e.competencia}
-                </td>
-
-                <td>
-                ${e.entrenamientosObjetivo}
-                </td>
-
-                <td>
-                ${e.duracionObjetivo} min
-                </td>
-
-                <td>
-                ${e.grupoStaff||"—"}
-                </td>
-
-                <td>
-
-                <button
-                class="btn-red"
-                onclick="eliminarEquipo('${e.id}')">
-
-                Eliminar
-
-                </button>
-
-                </td>
-
-            </tr>
-
-        `).join("")}
-
-    </table>
-
-    `;
-
-}
-
-
-/* ============================================================
-   OPTIMIZACIÓN
-============================================================ */
+/* =========================================================
+   MOTOR DE OPTIMIZACIÓN
+========================================================= */
 
 
 /*
-  Devuelve los espacios libres del predio.
+    Genera todos los horarios posibles en bloques de 15 minutos.
 */
 
-function obtenerEspacios(predioId,dia){
+function candidateOptions(t) {
 
-    const p=
-        data.predios.find(
-            x=>x.id===predioId
-        );
-
-    if(!p)return[];
-
-    const bloques=
-        p.disponibilidad[dia]||[];
-
-    const ocupados=
-        data.entrenamientos.filter(
-            t=>
-            t.predio===predioId &&
-            t.dia===dia
-        );
-
-    let espacios=[];
-
-    bloques.forEach(b=>{
-
-        const desde=
-            minutos(b[0]);
-
-        const hasta=
-            minutos(b[1]);
+    const opts = [];
 
 
-        /*
-          Generamos intervalos de 15 min.
-        */
+    for(const d of DAYS) {
 
-        for(
-            let ini=desde;
-            ini<hasta;
-            ini+=15
-        ){
+        for(const v of venues) {
 
-            const siguiente=ini+15;
+            const av =
+                v.availability[d];
 
-            if(siguiente>hasta)break;
 
-            const ocupado=
-                ocupados.some(t=>{
+            if(!av)
+                continue;
 
-                    const a=
-                        minutos(t.inicio);
 
-                    const z=
-                        minutos(t.fin);
+            let durations = [
 
-                    return ini<z &&
-                           siguiente>a;
+                t.target,
 
-                });
+                t.dur
 
-            if(!ocupado){
+            ];
 
-                espacios.push({
 
-                    inicio:horaTexto(ini),
+            if(t.flex === "si") {
 
-                    fin:horaTexto(siguiente)
+                durations.push(
+                    t.minDur
+                );
 
-                });
+                durations.push(
+                    Math.max(
+                        t.minDur,
+                        t.target - 15
+                    )
+                );
+
+                durations.push(
+                    Math.max(
+                        t.minDur,
+                        t.target - 30
+                    )
+                );
+
+            }
+
+
+            durations =
+                [
+                    ...new Set(
+                        durations.filter(
+                            x => x >= 15
+                        )
+                    )
+                ];
+
+
+            for(const du of durations) {
+
+                const lo =
+                    tm(av[0]);
+
+
+                const hi =
+                    tm(av[1]) - du;
+
+
+                for(
+                    let s = lo;
+                    s <= hi;
+                    s += 15
+                ) {
+
+                    opts.push({
+
+                        ...t,
+
+                        day: d,
+
+                        venue: v.id,
+
+                        start: ts(s),
+
+                        dur: du
+
+                    });
+
+                }
 
             }
 
         }
 
-    });
+    }
 
-    return espacios;
+
+    /*
+        Primero candidatos cercanos
+        al horario original.
+    */
+
+    opts.sort(
+        (a,b) =>
+            localScore(b,t)
+            -
+            localScore(a,t)
+    );
+
+
+    return opts.slice(0,250);
 
 }
 
 
 /*
-  Comprueba si un horario cabe.
+    Valor de mantener la situación actual.
 */
 
-function espacioLibre(
-    predio,
-    dia,
-    inicio,
-    fin,
-    ignorarIds=[]
-){
+function localScore(c,t) {
 
-    const p=
-        data.predios.find(
-            x=>x.id===predio
-        );
-
-    if(!p)return false;
+    let s = 0;
 
 
-    const disp=
-        disponibilidadPredio(
-            predio,
-            dia,
-            inicio,
-            fin
-        );
-
-    if(!disp.disponible)return false;
+    if(
+        c.day === t.day
+    )
+        s += 100;
 
 
-    const ini=minutos(inicio);
-
-    const end=minutos(fin);
-
-
-    const eventos=
-        data.entrenamientos.filter(
-            t=>
-            t.predio===predio &&
-            t.dia===dia &&
-            !ignorarIds.includes(t.id)
-        );
+    if(
+        c.venue === t.venue
+    )
+        s += 80;
 
 
-    /*
-      Para cada cancha comprobamos
-      si existe alguna libre.
-    */
+    s -=
+        Math.abs(
+            tm(c.start)
+            -
+            tm(t.start)
+        ) / 5;
 
-    for(
-        let cancha=1;
-        cancha<=p.canchas;
-        cancha++
-    ){
 
-        const conflicto=
-            eventos.some(t=>{
+    if(
+        c.dur >= t.target
+    )
+        s += 80;
 
-                if(
-                    Number(t.cancha||1)
-                    !==cancha
-                )return false;
 
-                const a=minutos(t.inicio);
+    if(
+        t.separate === "si"
+    )
+        s += 5;
 
-                const b=minutos(t.fin);
 
-                return ini<b &&
-                       end>a;
-
-            });
-
-        if(!conflicto){
-
-            return cancha;
-
-        }
-
-    }
-
-    return false;
+    return s;
 
 }
 
 
 /*
-  Calcula puntuación de una posición.
+    Penalización de un candidato
+    al agregarlo a la grilla.
 */
 
-function puntuarPosicion(
-    equipo,
-    candidato,
-    preferencias,
-    pesos
-){
+function placementPenalty(
+    c,
+    placed,
+    original
+) {
 
-    let score=0;
-
-
-    /*
-      Mantener día.
-    */
-
-    if(
-        preferencias.some(
-            x=>x.dia===candidato.dia
-        )
-    ){
-
-        score+=pesos.horario*1.5;
-
-    }
+    let p = 0;
 
 
-    /*
-      Mantener predio.
-    */
-
-    if(
-        preferencias.some(
-            x=>x.predio===candidato.predio
-        )
-    ){
-
-        score+=pesos.predio*2;
-
-    }
-
-
-    /*
-      Mantener horario exacto.
-    */
-
-    if(
-        preferencias.some(
-            x=>
-            x.dia===candidato.dia &&
-            x.inicio===candidato.inicio
-        )
-    ){
-
-        score+=pesos.horario*3;
-
-    }
-
-
-    /*
-      Penalizamos cambio de predio.
-    */
-
-    if(
-        preferencias.length &&
-        !preferencias.some(
-            x=>x.predio===candidato.predio
-        )
-    ){
-
-        score-=pesos.predio*1.5;
-
-    }
-
-
-    /*
-      Preferimos horarios consecutivos
-      con otros entrenamientos del equipo.
-    */
-
-    const equipoEvents=
-        data.entrenamientos.filter(
-            t=>t.equipo===equipo.id
-        );
-
-
-    equipoEvents.forEach(t=>{
-
-        if(t.dia!==candidato.dia)return;
-
-        const a=minutos(t.inicio);
-
-        const b=minutos(t.fin);
-
-        const c=minutos(candidato.inicio);
-
-        const d=minutos(candidato.fin);
+    for(const b of placed) {
 
         if(
-            Math.abs(c-b)<=15 ||
-            Math.abs(a-d)<=15
-        ){
-
-            score+=pesos.continuidad*2;
-
-        }
-
-    });
+            c.day !== b.day
+        )
+            continue;
 
 
-    /*
-      Separar categorías agrupadas.
-    */
+        if(
+            overlaps(c,b)
+        ) {
 
-    if(equipo.grupoStaff){
-
-        const mismoGrupo=
-            data.entrenamientos.filter(t=>{
-
-                const e=
-                    data.equipos.find(
-                        x=>x.id===t.equipo
-                    );
-
-                return e &&
-                       e.grupoStaff===
-                       equipo.grupoStaff &&
-                       t.equipo!==equipo.id &&
-                       t.dia===candidato.dia;
-
-            });
+            if(
+                c.venue === b.venue
+            )
+                p += 20000;
 
 
-        if(mismoGrupo.length){
-
-            /*
-              Si coincide en día pero no horario,
-              puede permitir staff compartido
-              de manera consecutiva.
-            */
-
-            score+=pesos.separacion*2;
+            if(
+                c.staff
+                &&
+                b.staff
+                &&
+                c.staff === b.staff
+            )
+                p += 18000;
 
         }
 
     }
+
+
+    /*
+        Cambiar de día.
+    */
+
+    if(
+        c.day !== original.day
+    )
+        p += 80;
+
+
+    /*
+        Cambiar de predio.
+    */
+
+    if(
+        c.venue !== original.venue
+    )
+        p += 70;
+
+
+    /*
+        Cambiar horario.
+    */
+
+    p +=
+        Math.abs(
+            tm(c.start)
+            -
+            tm(original.start)
+        ) / 4;
+
+
+    /*
+        No alcanzar objetivo.
+    */
+
+    if(
+        c.dur < original.target
+    ) {
+
+        p +=
+            (
+                original.target
+                -
+                c.dur
+            ) * 15;
+
+    }
+
+
+    /*
+        Premia continuidad.
+    */
+
+    for(const b of placed) {
+
+        if(
+            b.day !== c.day
+            ||
+            b.venue !== c.venue
+        )
+            continue;
+
+
+        const endB =
+            tm(b.start) + b.dur;
+
+
+        const startC =
+            tm(c.start);
+
+
+        const endC =
+            tm(c.start) + c.dur;
+
+
+        const gap1 =
+            Math.abs(
+                startC - endB
+            );
+
+
+        const gap2 =
+            Math.abs(
+                tm(b.start) - endC
+            );
+
+
+        const gap =
+            Math.min(
+                gap1,
+                gap2
+            );
+
+
+        if(gap === 0)
+            p -= 70;
+
+        else if(gap <= 15)
+            p -= 40;
+
+        else if(gap <= 30)
+            p -= 15;
+
+    }
+
+
+    return p;
+
+}
+
+
+/*
+    Evalúa una grilla completa.
+*/
+
+function globalScore(sol) {
+
+    let score = 0;
+
+
+    const conflicts =
+        conflictsOf(sol);
+
+
+    const court =
+        conflicts.filter(
+            x => x.type === "court"
+        ).length;
+
+
+    const staff =
+        conflicts.filter(
+            x => x.type === "staff"
+        ).length;
+
+
+    const availability =
+        conflicts.filter(
+            x => x.type === "availability"
+        ).length;
+
+
+    /*
+        CONFLICTOS SON CASI IMPOSIBLES
+        DE COMPENSAR CON OTRA COSA.
+    */
+
+    score -=
+        court * 100000;
+
+
+    score -=
+        staff * 90000;
+
+
+    score -=
+        availability * 80000;
+
+
+    for(const t of sol) {
+
+        const original =
+            trainings.find(
+                x => x.id === t.id
+            );
+
+
+        /*
+            Duración.
+        */
+
+        score +=
+            t.dur * 5;
+
+
+        /*
+            Alcanzar objetivo.
+        */
+
+        if(
+            t.dur >= original.target
+        ) {
+
+            score += 500;
+
+        }
+
+        else {
+
+            score -=
+                (
+                    original.target
+                    -
+                    t.dur
+                ) * 30;
+
+        }
+
+
+        /*
+            Mantener día.
+        */
+
+        if(
+            t.day === original.day
+        )
+            score += 250;
+
+
+        /*
+            Mantener predio.
+        */
+
+        if(
+            t.venue === original.venue
+        )
+            score += 220;
+
+
+        /*
+            Mantener horario.
+        */
+
+        score -=
+            Math.abs(
+                tm(t.start)
+                -
+                tm(original.start)
+            ) / 2;
+
+
+        /*
+            Prioridad.
+        */
+
+        score +=
+            original.priority * 100;
+
+    }
+
+
+    /*
+        Continuidad de bloques.
+    */
+
+    for(let i=0;i<sol.length;i++) {
+
+        for(let j=i+1;j<sol.length;j++) {
+
+            const a = sol[i];
+
+            const b = sol[j];
+
+
+            if(
+                a.day !== b.day
+                ||
+                a.venue !== b.venue
+            )
+                continue;
+
+
+            if(
+                a.id === b.id
+            )
+                continue;
+
+
+            if(
+                overlaps(a,b)
+            )
+                continue;
+
+
+            const gap1 =
+                Math.abs(
+                    tm(a.start)
+                    +
+                    a.dur
+                    -
+                    tm(b.start)
+                );
+
+
+            const gap2 =
+                Math.abs(
+                    tm(b.start)
+                    +
+                    b.dur
+                    -
+                    tm(a.start)
+                );
+
+
+            const gap =
+                Math.min(
+                    gap1,
+                    gap2
+                );
+
+
+            if(gap === 0)
+                score += 150;
+
+            else if(gap <= 15)
+                score += 70;
+
+            else if(gap <= 30)
+                score += 30;
+
+        }
+
+    }
+
+
+    /*
+        Penalización por demasiados
+        cambios.
+    */
+
+    const changes =
+        sol.reduce(
+            (n,t) => {
+
+                const o =
+                    trainings.find(
+                        x => x.id === t.id
+                    );
+
+
+                return n +
+
+                    (
+                        t.day !== o.day
+                        ||
+                        t.venue !== o.venue
+                        ||
+                        t.start !== o.start
+                        ||
+                        t.dur !== o.dur
+                    )
+                    ? 1
+                    : 0;
+
+            },
+            0
+        );
+
+
+    score -=
+        changes * 8;
 
 
     return score;
@@ -3916,1841 +2329,684 @@ function puntuarPosicion(
 
 
 /*
-  Genera candidatos reales.
+    Beam Search.
+
+    En vez de quedarse con una sola
+    solución, conserva varias
+    soluciones prometedoras.
 */
 
-function generarCandidatos(equipo){
+function generateSolutions() {
 
-    const dur=
-        equipo.duracionObjetivo||60;
-
-    const preferencias=
-        data.entrenamientos.filter(
-            t=>t.equipo===equipo.id
+    let ordered =
+        [...trainings].sort(
+            (a,b) =>
+                b.priority - a.priority
+                ||
+                b.target - a.target
         );
 
-    const pesos={
 
-        horario:
-            Number(
-                document.getElementById(
-                    "pesoHorario"
-                )?.value||85
-            ),
+    let beam = [
 
-        predio:
-            Number(
-                document.getElementById(
-                    "pesoPredio"
-                )?.value||80
-            ),
-
-        separacion:
-            Number(
-                document.getElementById(
-                    "pesoSeparacion"
-                )?.value||100
-            ),
-
-        minutos:
-            Number(
-                document.getElementById(
-                    "pesoMinutos"
-                )?.value||100
-            ),
-
-        continuidad:
-            Number(
-                document.getElementById(
-                    "pesoContinuidad"
-                )?.value||90
-            )
-
-    };
-
-
-    const candidatos=[];
-
-
-    data.predios.forEach(p=>{
-
-        DIAS.forEach(dia=>{
-
-            const bloques=
-                p.disponibilidad[dia]||[];
-
-
-            bloques.forEach(b=>{
-
-                const desde=
-                    minutos(b[0]);
-
-                const hasta=
-                    minutos(b[1]);
-
-
-                for(
-                    let ini=desde;
-                    ini+dur<=hasta;
-                    ini+=15
-                ){
-
-                    const fin=
-                        ini+dur;
-
-                    const inicioTxt=
-                        horaTexto(ini);
-
-                    const finTxt=
-                        horaTexto(fin);
-
-
-                    const cancha=
-                        espacioLibre(
-                            p.id,
-                            dia,
-                            inicioTxt,
-                            finTxt
-                        );
-
-
-                    if(!cancha)continue;
-
-
-                    const candidato={
-
-                        dia,
-
-                        inicio:inicioTxt,
-
-                        fin:finTxt,
-
-                        predio:p.id,
-
-                        cancha
-
-                    };
-
-
-                    candidato.score=
-                        puntuarPosicion(
-                            equipo,
-                            candidato,
-                            preferencias,
-                            pesos
-                        );
-
-
-                    candidatos.push(
-                        candidato
-                    );
-
-                }
-
-            });
-
-        });
-
-    });
-
-
-    candidatos.sort(
-        (a,b)=>b.score-a.score
-    );
-
-    return candidatos;
-
-}
-
-
-/*
-  Encuentra espacios opcionales.
-*/
-
-function buscarOpcionales(){
-
-    const opcionales=[];
-
-
-    data.equipos.forEach(e=>{
-
-        const actuales=
-            data.entrenamientos.filter(
-                t=>t.equipo===e.id
-            ).length;
-
-        /*
-          No agregamos automáticamente.
-          Solo mostramos posibles espacios.
-        */
-
-        if(actuales>=e.entrenamientosObjetivo){
-
-            /*
-              Aun así buscamos un tercer entrenamiento
-              como opcional.
-            */
-
+        {
+            sol: [],
+            score: 0
         }
 
-
-        const candidatos=
-            generarCandidatos(e);
+    ];
 
 
-        /*
-          Evitar mostrar exactamente los actuales.
-        */
+    for(
+        const t of ordered
+    ) {
 
-        candidatos.forEach(c=>{
-
-            const existe=
-                data.entrenamientos.some(t=>
-
-                    t.equipo===e.id &&
-                    t.dia===c.dia &&
-                    t.inicio===c.inicio &&
-                    t.fin===c.fin &&
-                    t.predio===c.predio
-
-                );
+        const opts =
+            candidateOptions(t);
 
 
-            if(!existe){
+        const next = [];
 
-                opcionales.push({
 
-                    equipo:e.id,
+        for(
+            const state of beam
+        ) {
 
-                    candidato:c
+            /*
+                Probamos los candidatos
+                más interesantes.
+            */
+
+            for(
+                const c
+                of opts.slice(0,120)
+            ) {
+
+                let penalty =
+                    placementPenalty(
+                        c,
+                        state.sol,
+                        t
+                    );
+
+
+                const ns =
+                    state.sol.concat(c);
+
+
+                const sc =
+                    state.score
+                    -
+                    penalty;
+
+
+                next.push({
+
+                    sol: ns,
+
+                    score: sc
 
                 });
 
             }
 
-        });
+        }
 
-    });
+
+        next.sort(
+            (a,b) =>
+                b.score - a.score
+        );
+
+
+        /*
+            Mantener diversidad.
+
+            No queremos 50 soluciones
+            prácticamente idénticas.
+        */
+
+        const seen =
+            new Set();
+
+
+        beam = [];
+
+
+        for(
+            const x of next
+        ) {
+
+            const last =
+                x.sol[
+                    x.sol.length - 1
+                ];
+
+
+            const key =
+                last.day
+                +
+                "|"
+                +
+                last.venue
+                +
+                "|"
+                +
+                last.start
+                +
+                "|"
+                +
+                last.dur;
+
+
+            if(
+                !seen.has(key)
+                ||
+                beam.length < 20
+            ) {
+
+                seen.add(key);
+
+                beam.push(x);
+
+            }
+
+
+            if(
+                beam.length >= 45
+            )
+                break;
+
+        }
+
+    }
 
 
     /*
-      Máximo 2 por equipo para no saturar.
+        Recalcular score REAL
+        de cada solución completa.
     */
 
-    const resultado=[];
+    return beam
 
-    data.equipos.forEach(e=>{
+        .map(
+            x => ({
 
-        const arr=
-            opcionales.filter(
-                x=>x.equipo===e.id
-            );
+                sol: x.sol,
 
-        arr.slice(0,2)
-           .forEach(x=>resultado.push(x));
+                score:
+                    globalScore(x.sol)
 
-    });
+            })
+        )
 
-
-    return resultado;
+        .sort(
+            (a,b) =>
+                b.score - a.score
+        );
 
 }
 
 
 /*
-  Optimización principal.
+    Generar y mostrar escenarios.
 */
 
-function optimizar(){
+function runOptimizer() {
 
-    const resultado=
-        document.getElementById(
-            "resultadoOptimizacion"
+    let quantity =
+        prompt(
+            "¿Cuántas grillas querés generar? (1 a 10)",
+            "5"
         );
 
-    resultado.innerHTML=`
 
-    <div class="card">
-
-        <div class="notice">
-
-        🧠 Analizando combinaciones...
-
-        </div>
-
-    </div>
-
-    `;
-
-
-    setTimeout(()=>{
-
-        ejecutarOptimizacion();
-
-    },100);
-
-}
-
-
-function ejecutarOptimizacion(){
-
-    const pesos={
-
-        horario:
-            Number(
-                document.getElementById(
-                    "pesoHorario"
-                ).value
-            ),
-
-        predio:
-            Number(
-                document.getElementById(
-                    "pesoPredio"
-                ).value
-            ),
-
-        separacion:
-            Number(
-                document.getElementById(
-                    "pesoSeparacion"
-                ).value
-            ),
-
-        minutos:
-            Number(
-                document.getElementById(
-                    "pesoMinutos"
-                ).value
-            ),
-
-        continuidad:
-            Number(
-                document.getElementById(
-                    "pesoContinuidad"
-                ).value
+    quantity =
+        Math.max(
+            1,
+            Math.min(
+                10,
+                Number(quantity) || 5
             )
+        );
 
-    };
 
+    const scenarios =
+        generateSolutions();
 
-    const propuesta=
-        copiar(data.entrenamientos);
 
-    const cambios=[];
+    const unique = [];
 
+    const seen =
+        new Set();
 
-    /*
-      Ordenamos primero los grupos compartidos.
-      Son los que más nos interesa separar.
-    */
 
-    const equipos=
-        copiar(data.equipos)
-        .sort((a,b)=>{
+    for(
+        const s of scenarios
+    ) {
 
-            const ea=
-                data.entrenamientos.filter(
-                    t=>t.equipo===a.id
-                ).length;
+        const key =
+            s.sol
+            .map(
+                t =>
+                    `${t.id}-${t.day}-${t.venue}-${t.start}-${t.dur}`
+            )
+            .join("|");
 
-            const eb=
-                data.entrenamientos.filter(
-                    t=>t.equipo===b.id
-                ).length;
-
-            return ea-eb;
-
-        });
-
-
-    /*
-      IMPORTANTE:
-      Para buscar espacios vamos a usar la grilla actual,
-      pero necesitamos evitar los eventos que estamos
-      intentando mover.
-
-      Para esta V2 generamos propuestas individuales.
-    */
-
-
-    equipos.forEach(e=>{
-
-        const actuales=
-            propuesta.filter(
-                t=>t.equipo===e.id
-            );
-
-        /*
-          Detectamos si el equipo pertenece a un grupo
-          que actualmente comparte exactamente horarios.
-        */
-
-        const agrupados=
-            actuales.filter(t=>{
-
-                if(!e.grupoStaff)return false;
-
-                const iguales=
-                    actuales.filter(x=>
-                        x.dia===t.dia &&
-                        x.inicio===t.inicio &&
-                        x.fin===t.fin &&
-                        x.predio===t.predio
-                    );
-
-                return iguales.length>1;
-
-            });
-
-
-        if(!agrupados.length)return;
-
-
-        /*
-          Tomamos uno de los entrenamientos compartidos
-          como candidato a separación.
-        */
-
-        const mover=
-            agrupados[agrupados.length-1];
-
-
-        /*
-          Buscamos candidatos considerando la grilla real.
-        */
-
-        const candidatos=
-            generarCandidatos(e);
-
-
-        /*
-          Filtramos para que no sea el mismo lugar.
-        */
-
-        const utiles=
-            candidatos.filter(c=>
-
-                !(
-                    c.dia===mover.dia &&
-                    c.inicio===mover.inicio &&
-                    c.fin===mover.fin &&
-                    c.predio===mover.predio
-                )
-
-            );
-
-
-        if(!utiles.length)return;
-
-
-        const mejor=
-            utiles[0];
-
-
-        /*
-          Comprobamos nuevamente
-          que la nueva ubicación sea posible.
-        */
-
-        const cancha=
-            espacioLibre(
-                mejor.predio,
-                mejor.dia,
-                mejor.inicio,
-                mejor.fin,
-                [mover.id]
-            );
-
-
-        if(!cancha)return;
-
-
-        cambios.push({
-
-            id:mover.id,
-
-            equipo:e.id,
-
-            anterior:{
-
-                dia:mover.dia,
-
-                inicio:mover.inicio,
-
-                fin:mover.fin,
-
-                predio:mover.predio,
-
-                cancha:mover.cancha
-
-            },
-
-            nuevo:{
-
-                dia:mejor.dia,
-
-                inicio:mejor.inicio,
-
-                fin:mejor.fin,
-
-                predio:mejor.predio,
-
-                cancha
-
-            },
-
-            motivo:
-            "Separar divisiones que actualmente comparten entrenamiento.",
-
-            score:mejor.score,
-
-            estado:"pendiente"
-
-        });
-
-    });
-
-
-    /*
-      Segunda búsqueda:
-      intentamos resolver conflictos existentes.
-    */
-
-    const conflictos=
-        calcularConflictos();
-
-
-    conflictos.forEach(c=>{
-
-        const id=c.ids[0];
-
-        const t=
-            data.entrenamientos.find(
-                x=>x.id===id
-            );
-
-        if(!t)return;
-
-
-        /*
-          Si ya tiene una propuesta,
-          no duplicamos.
-        */
 
         if(
-            cambios.some(
-                x=>x.id===id
-            )
-        )return;
+            !seen.has(key)
+        ) {
 
+            seen.add(key);
 
-        const e=
-            data.equipos.find(
-                x=>x.id===t.equipo
-            );
-
-        if(!e)return;
-
-
-        const candidatos=
-            generarCandidatos(e);
-
-
-        const mejor=
-            candidatos.find(x=>
-
-                !(
-                    x.dia===t.dia &&
-                    x.inicio===t.inicio &&
-                    x.fin===t.fin &&
-                    x.predio===t.predio
-                )
-
-            );
-
-
-        if(!mejor)return;
-
-
-        cambios.push({
-
-            id:t.id,
-
-            equipo:t.equipo,
-
-            anterior:{
-
-                dia:t.dia,
-
-                inicio:t.inicio,
-
-                fin:t.fin,
-
-                predio:t.predio,
-
-                cancha:t.cancha
-
-            },
-
-            nuevo:{
-
-                dia:mejor.dia,
-
-                inicio:mejor.inicio,
-
-                fin:mejor.fin,
-
-                predio:mejor.predio,
-
-                cancha:mejor.cancha
-
-            },
-
-            motivo:
-            "Resolver conflicto detectado.",
-
-            score:mejor.score,
-
-            estado:"pendiente"
-
-        });
-
-    });
-
-
-    /*
-      Opcionales
-    */
-
-    const opcionales=
-        buscarOpcionales();
-
-
-    mostrarResultadoOptimización(
-        cambios,
-        opcionales
-    );
-
-}
-
-
-function mostrarResultadoOptimización(
-    cambios,
-    opcionales
-){
-
-    const cont=
-        document.getElementById(
-            "resultadoOptimizacion"
-        );
-
-
-    const conflictosActuales=
-        calcularConflictos();
-
-
-    if(!cambios.length &&
-       !opcionales.length){
-
-        cont.innerHTML=`
-
-        <div class="card">
-
-            <div class="success">
-
-            <strong>
-            ✅ No se encontraron mejoras automáticas con los parámetros actuales.
-            </strong>
-
-            <br><br>
-
-            Podés modificar las prioridades y volver a ejecutar
-            la optimización.
-
-            </div>
-
-        </div>
-
-        `;
-
-        return;
-
-    }
-
-
-    cont.innerHTML=`
-
-    <div class="card">
-
-        <h2>📈 Resultado de optimización</h2>
-
-        <div class="stat-grid">
-
-            <div class="stat">
-
-            <span>Cambios encontrados</span>
-
-            <strong>
-            ${cambios.length}
-            </strong>
-
-            </div>
-
-
-            <div class="stat">
-
-            <span>Conflictos actuales</span>
-
-            <strong>
-            ${conflictosActuales.length}
-            </strong>
-
-            </div>
-
-
-            <div class="stat">
-
-            <span>Opcionales</span>
-
-            <strong>
-            ${opcionales.length}
-            </strong>
-
-            </div>
-
-        </div>
-
-        <br>
-
-        <div class="warning">
-
-        ⚠️
-        <strong>
-        La grilla actual NO fue modificada.
-        </strong>
-
-        Revisá cada propuesta antes de aplicarla.
-
-        </div>
-
-    </div>
-
-
-    ${
-        cambios.length
-        ?
-        `
-
-        <div class="card">
-
-            <h2>🔄 Cambios propuestos</h2>
-
-            <div id="listaPropuestas">
-
-            ${cambios.map((c,i)=>
-
-                renderPropuesta(c,i)
-
-            ).join("")}
-
-            </div>
-
-
-            <div class="actions">
-
-                <button
-                class="btn-green"
-                onclick="aplicarCambiosAceptados()">
-
-                ✅ Aplicar aceptados
-
-                </button>
-
-
-                <button
-                class="btn-blue"
-                onclick="aceptarTodosCambios()">
-
-                ☑️ Aceptar todos
-
-                </button>
-
-
-                <button
-                class="btn-red"
-                onclick="rechazarTodosCambios()">
-
-                ❌ Rechazar todos
-
-                </button>
-
-            </div>
-
-        </div>
-
-        `
-        :""
-    }
-
-
-    ${
-        opcionales.length
-        ?
-
-        `
-
-        <div class="card">
-
-            <h2>⭐ Espacios opcionales encontrados</h2>
-
-            <p>
-
-            Estos horarios no se agregan automáticamente.
-            Son posibilidades para que evalúes.
-
-            </p>
-
-
-            <table>
-
-                <tr>
-
-                    <th>Equipo</th>
-                    <th>Día</th>
-                    <th>Horario</th>
-                    <th>Predio</th>
-                    <th></th>
-
-                </tr>
-
-
-                ${opcionales.map((o,i)=>`
-
-                    <tr>
-
-                        <td>
-                        <strong>
-                        ${nombreEquipo(o.equipo)}
-                        </strong>
-                        </td>
-
-                        <td>
-                        ${o.candidato.dia}
-                        </td>
-
-                        <td>
-                        ${o.candidato.inicio}
-                        –
-                        ${o.candidato.fin}
-                        </td>
-
-                        <td>
-                        ${nombrePredio(
-                            o.candidato.predio
-                        )}
-                        </td>
-
-                        <td>
-
-                        <button
-                        class="btn-blue"
-                        onclick='agregarOpcional(${JSON.stringify(o)})'>
-
-                        + Agregar
-
-                        </button>
-
-                        </td>
-
-                    </tr>
-
-                `).join("")}
-
-            </table>
-
-        </div>
-
-        `
-        :""
-    }
-
-    `;
-
-
-    window.currentProposals=
-        cambios;
-
-}
-
-
-function renderPropuesta(c,index){
-
-    return `
-
-    <div
-    class="proposal-card"
-    id="proposal-${index}">
-
-        <div>
-
-            <strong>
-            ${nombreEquipo(c.equipo)}
-            </strong>
-
-            <span
-            class="badge badge-flexible">
-
-            PROPUESTA
-
-            </span>
-
-        </div>
-
-
-        <hr>
-
-
-        <div class="grid">
-
-            <div>
-
-                <strong>Actual</strong>
-
-                <br>
-
-                ${c.anterior.dia}
-
-                <br>
-
-                ${c.anterior.inicio}
-                –
-                ${c.anterior.fin}
-
-                <br>
-
-                ${nombrePredio(
-                    c.anterior.predio
-                )}
-
-            </div>
-
-
-            <div>
-
-                <strong>Propuesto</strong>
-
-                <br>
-
-                ${c.nuevo.dia}
-
-                <br>
-
-                ${c.nuevo.inicio}
-                –
-                ${c.nuevo.fin}
-
-                <br>
-
-                ${nombrePredio(
-                    c.nuevo.predio
-                )}
-
-            </div>
-
-        </div>
-
-
-        <p class="small">
-
-        💡 ${c.motivo}
-
-        </p>
-
-
-        <div class="actions">
-
-            <button
-            class="btn-green"
-            onclick="aceptarPropuesta(${index})">
-
-            ✅ Aceptar
-
-            </button>
-
-
-            <button
-            class="btn-red"
-            onclick="rechazarPropuesta(${index})">
-
-            ❌ Rechazar
-
-            </button>
-
-
-            <button
-            class="btn"
-            onclick="editarPropuesta(${index})">
-
-            ✏️ Modificar
-
-            </button>
-
-        </div>
-
-    </div>
-
-    `;
-
-}
-
-
-function aceptarPropuesta(index){
-
-    const c=
-        window.currentProposals[index];
-
-    if(!c)return;
-
-    c.estado="aceptado";
-
-    const box=
-        document.getElementById(
-            "proposal-"+index
-        );
-
-    box.classList.add("accepted");
-
-    box.querySelector(".actions")
-        .innerHTML=`
-
-        <strong>
-        ✅ Cambio aceptado
-        </strong>
-
-        `;
-
-}
-
-
-function rechazarPropuesta(index){
-
-    const c=
-        window.currentProposals[index];
-
-    if(!c)return;
-
-    c.estado="rechazado";
-
-    const box=
-        document.getElementById(
-            "proposal-"+index
-        );
-
-    box.classList.add("rejected");
-
-    box.querySelector(".actions")
-        .innerHTML=`
-
-        <strong>
-        ❌ Cambio rechazado
-        </strong>
-
-        `;
-
-}
-
-
-function aceptarTodosCambios(){
-
-    window.currentProposals.forEach(
-        (c,i)=>{
-
-            c.estado="aceptado";
-
-            const box=
-                document.getElementById(
-                    "proposal-"+i
-                );
-
-            if(box){
-
-                box.classList.add(
-                    "accepted"
-                );
-
-                box.querySelector(
-                    ".actions"
-                ).innerHTML=
-                    `<strong>✅ Aceptado</strong>`;
-
-            }
+            unique.push(s);
 
         }
-    );
+
+
+        if(
+            unique.length >= quantity
+        )
+            break;
+
+    }
+
+
+    renderScenarios(unique);
 
 }
 
 
-function rechazarTodosCambios(){
+/* =========================
+   MOSTRAR ESCENARIOS
+========================= */
 
-    window.currentProposals.forEach(
-        (c,i)=>{
+function renderScenarios(arr) {
 
-            c.estado="rechazado";
+    const box =
+        document.getElementById(
+            "scenarios"
+        );
 
-            const box=
-                document.getElementById(
-                    "proposal-"+i
+
+    if(!arr.length) {
+
+        box.innerHTML =
+            `<b class="bad">
+                No se pudo generar una grilla.
+            </b>`;
+
+        return;
+
+    }
+
+
+    box.innerHTML = "";
+
+
+    arr.forEach(
+        (s,index) => {
+
+            const conflicts =
+                conflictsOf(
+                    s.sol
                 );
 
-            if(box){
 
-                box.classList.add(
-                    "rejected"
+            const mins =
+                s.sol.reduce(
+                    (a,t) =>
+                        a + t.dur,
+                    0
                 );
 
-                box.querySelector(
-                    ".actions"
-                ).innerHTML=
-                    `<strong>❌ Rechazado</strong>`;
 
-            }
-
-        }
-    );
-
-}
-
-
-function aplicarCambiosAceptados(){
-
-    const aceptados=
-        window.currentProposals.filter(
-            c=>c.estado==="aceptado"
-        );
-
-
-    if(!aceptados.length){
-
-        alert(
-        "No hay cambios aceptados para aplicar."
-        );
-
-        return;
-
-    }
-
-
-    guardarEstadoAnterior();
-
-
-    aceptados.forEach(c=>{
-
-        const t=
-            data.entrenamientos.find(
-                x=>x.id===c.id
-            );
-
-        if(!t)return;
-
-        t.dia=c.nuevo.dia;
-
-        t.inicio=c.nuevo.inicio;
-
-        t.fin=c.nuevo.fin;
-
-        t.predio=c.nuevo.predio;
-
-        t.cancha=c.nuevo.cancha;
-
-    });
-
-
-    guardarLocal();
-
-
-    alert(
-    `Se aplicaron ${aceptados.length} cambio(s).`
-    );
-
-
-    window.currentProposals=[];
-
-}
-
-
-function editarPropuesta(index){
-
-    const c=
-        window.currentProposals[index];
-
-    if(!c)return;
-
-
-    /*
-      Creamos un entrenamiento temporal
-      con la posición propuesta.
-    */
-
-    const temp={
-        id:c.id,
-        equipo:c.equipo,
-        dia:c.nuevo.dia,
-        inicio:c.nuevo.inicio,
-        fin:c.nuevo.fin,
-        predio:c.nuevo.predio,
-        cancha:c.nuevo.cancha,
-        tipo:"flexible",
-        grupo:""
-    };
-
-
-    abrirModal(`
-
-        <h2>✏️ Modificar propuesta</h2>
-
-        <div class="grid">
-
-            <div>
-
-                <label>Día</label>
-
-                <select id="propDia">
-
-                ${DIAS.map(d=>`
-
-                    <option
-                    ${d===temp.dia?"selected":""}>
-
-                    ${d}
-
-                    </option>
-
-                `).join("")}
-
-                </select>
-
-            </div>
-
-
-            <div>
-
-                <label>Inicio</label>
-
-                <input
-                id="propInicio"
-                type="time"
-                value="${temp.inicio}">
-
-            </div>
-
-
-            <div>
-
-                <label>Fin</label>
-
-                <input
-                id="propFin"
-                type="time"
-                value="${temp.fin}">
-
-            </div>
-
-
-            <div>
-
-                <label>Predio</label>
-
-                <select id="propPredio">
-
-                ${data.predios.map(p=>`
-
-                    <option
-                    value="${p.id}"
-                    ${p.id===temp.predio?"selected":""}>
-
-                    ${p.nombre}
-
-                    </option>
-
-                `).join("")}
-
-                </select>
-
-            </div>
-
-        </div>
-
-
-        <div class="actions">
-
-            <button
-            class="btn-green"
-            onclick="guardarPropuestaEditada(${index})">
-
-            Guardar propuesta
-
-            </button>
-
-
-            <button
-            class="btn"
-            onclick="cerrarModal()">
-
-            Cancelar
-
-            </button>
-
-        </div>
-
-    `);
-
-}
-
-
-function guardarPropuestaEditada(index){
-
-    const c=
-        window.currentProposals[index];
-
-    const dia=
-        document.getElementById(
-            "propDia"
-        ).value;
-
-    const inicio=
-        document.getElementById(
-            "propInicio"
-        ).value;
-
-    const fin=
-        document.getElementById(
-            "propFin"
-        ).value;
-
-    const predio=
-        document.getElementById(
-            "propPredio"
-        ).value;
-
-
-    if(minutos(fin)<=minutos(inicio)){
-
-        alert("Horario inválido.");
-
-        return;
-
-    }
-
-
-    const cancha=
-        espacioLibre(
-            predio,
-            dia,
-            inicio,
-            fin,
-            [c.id]
-        );
-
-
-    if(!cancha){
-
-        alert(
-        "Ese horario genera un conflicto o está fuera de disponibilidad."
-        );
-
-        return;
-
-    }
-
-
-    c.nuevo={
-
-        dia,
-
-        inicio,
-
-        fin,
-
-        predio,
-
-        cancha
-
-    };
-
-    c.estado="aceptado";
-
-
-    cerrarModal();
-
-
-    /*
-      Volvemos a mostrar las propuestas.
-    */
-
-    document.getElementById(
-        "resultadoOptimizacion"
-    ).innerHTML="";
-
-
-    mostrarResultadoOptimización(
-        window.currentProposals,
-        []
-    );
-
-}
-
-
-function agregarOpcional(o){
-
-    guardarEstadoAnterior();
-
-    data.entrenamientos.push({
-
-        id:uid(),
-
-        equipo:o.equipo,
-
-        dia:o.candidato.dia,
-
-        inicio:o.candidato.inicio,
-
-        fin:o.candidato.fin,
-
-        predio:o.candidato.predio,
-
-        cancha:o.candidato.cancha,
-
-        tipo:"flexible",
-
-        grupo:""
-
-    });
-
-
-    guardarLocal();
-
-
-    alert(
-    "Entrenamiento opcional agregado."
-    );
-
-}
-
-
-/* ============================================================
-   RANGOS
-============================================================ */
-
-function actualizarRangos(){
-
-    document.getElementById(
-        "vHorario"
-    ).innerText=
-        document.getElementById(
-            "pesoHorario"
-        ).value+"%";
-
-
-    document.getElementById(
-        "vPredio"
-    ).innerText=
-        document.getElementById(
-            "pesoPredio"
-        ).value+"%";
-
-
-    document.getElementById(
-        "vSeparacion"
-    ).innerText=
-        document.getElementById(
-            "pesoSeparacion"
-        ).value+"%";
-
-
-    document.getElementById(
-        "vMinutos"
-    ).innerText=
-        document.getElementById(
-            "pesoMinutos"
-        ).value+"%";
-
-
-    document.getElementById(
-        "vContinuidad"
-    ).innerText=
-        document.getElementById(
-            "pesoContinuidad"
-        ).value+"%";
-
-}
-
-
-/* ============================================================
-   DASHBOARD
-============================================================ */
-
-function actualizarDashboard(){
-
-    document.getElementById(
-        "statPredios"
-    ).innerText=
-        data.predios.length;
-
-
-    document.getElementById(
-        "statEquipos"
-    ).innerText=
-        data.equipos.length;
-
-
-    document.getElementById(
-        "statEntrenamientos"
-    ).innerText=
-        data.entrenamientos.length;
-
-
-    const totalMin=
-        data.entrenamientos.reduce(
-            (sum,t)=>
-                sum+
-                duracion(
-                    t.inicio,
-                    t.fin
-                ),
-            0
-        );
-
-
-    document.getElementById(
-        "statHoras"
-    ).innerText=
-        (totalMin/60).toFixed(1)+" h";
-
-
-    document.getElementById(
-        "statConflictos"
-    ).innerText=
-        calcularConflictos().length;
-
-
-    /*
-      Disponibilidad semanal.
-    */
-
-    let disponibles=0;
-
-    data.predios.forEach(p=>{
-
-        DIAS.forEach(d=>{
-
-            (p.disponibilidad[d]||[])
-            .forEach(b=>{
-
-                disponibles+=
-                    duracion(
-                        b[0],
-                        b[1]
-                    )*
-                    p.canchas;
-
-            });
-
-        });
-
-    });
-
-
-    document.getElementById(
-        "statDisponibles"
-    ).innerText=
-        disponibles+" min";
-
-
-    const resumen=
-        document.getElementById(
-            "dashboardResumen"
-        );
-
-
-    const conflictos=
-        calcularConflictos();
-
-
-    resumen.innerHTML=`
-
-    <div class="card">
-
-        <h2>Estado de la grilla</h2>
-
-        ${
-            conflictos.length
-            ?
-
-            `<div class="danger">
-
-            🔴 Hay
-            <strong>
-            ${conflictos.length}
-            </strong>
-            conflicto(s).
-
-            <br><br>
-
-            <button
-            class="btn-red"
-            onclick="showTab('conflictos')">
-
-            Ver conflictos
-
-            </button>
-
-            </div>`
-
-            :
-
-            `<div class="success">
-
-            ✅ No se detectan conflictos
-            de disponibilidad o superposición.
-
-            </div>`
-        }
-
-    </div>
-
-    `;
-
-}
-
-
-/* ============================================================
-   FILTROS
-============================================================ */
-
-function renderFiltros(){
-
-    const select=
-        document.getElementById(
-            "filtroPredio"
-        );
-
-    if(!select)return;
-
-    const actual=
-        select.value;
-
-    select.innerHTML=`
-
-        <option value="">
-        Todos los predios
-        </option>
-
-        ${data.predios.map(p=>`
-
-            <option
-            value="${p.id}">
-
-            ${p.nombre}
-
-            </option>
-
-        `).join("")}
-
-    `;
-
-    select.value=actual;
-
-}
-
-
-/* ============================================================
-   MODAL
-============================================================ */
-
-function abrirModal(html){
-
-    document
-        .getElementById(
-            "modalContent"
-        )
-        .innerHTML=html;
-
-    document
-        .getElementById(
-            "modal"
-        )
-        .classList.add("show");
-
-}
-
-
-function cerrarModal(){
-
-    document
-        .getElementById(
-            "modal"
-        )
-        .classList.remove("show");
-
-}
-
-
-/* ============================================================
-   DATOS
-============================================================ */
-
-function exportarDatos(){
-
-    const blob=
-        new Blob(
-            [
-                JSON.stringify(
-                    data,
-                    null,
-                    2
-                )
-            ],
-            {
-                type:
-                "application/json"
-            }
-        );
-
-
-    const url=
-        URL.createObjectURL(blob);
-
-
-    const a=
-        document.createElement("a");
-
-    a.href=url;
-
-    a.download=
-        "libertadores-grilla-backup.json";
-
-    a.click();
-
-    URL.revokeObjectURL(url);
-
-}
-
-
-function importarDatos(event){
-
-    const file=
-        event.target.files[0];
-
-    if(!file)return;
-
-
-    const reader=
-        new FileReader();
-
-
-    reader.onload=
-        function(e){
-
-            try{
-
-                const nuevo=
-                    JSON.parse(
-                        e.target.result
-                    );
-
-
-                if(
-                    !nuevo.predios ||
-                    !nuevo.equipos ||
-                    !nuevo.entrenamientos
-                ){
-
-                    throw new Error();
-
+            const objective =
+                s.sol.filter(
+                    t => {
+
+                        const o =
+                            trainings.find(
+                                x => x.id === t.id
+                            );
+
+                        return (
+                            t.dur >= o.target
+                        );
+
+                    }
+                ).length;
+
+
+            const changes =
+                s.sol.reduce(
+                    (n,t) => {
+
+                        const o =
+                            trainings.find(
+                                x => x.id === t.id
+                            );
+
+
+                        return n +
+
+                        (
+                            t.day !== o.day
+                            ||
+                            t.venue !== o.venue
+                            ||
+                            t.start !== o.start
+                            ||
+                            t.dur !== o.dur
+                        )
+                        ? 1
+                        : 0;
+
+                    },
+                    0
+                );
+
+
+            const div =
+                document.createElement(
+                    "div"
+                );
+
+
+            div.className =
+                "scenario"
+                +
+                (
+                    index === 0
+                    ?
+                    " best"
+                    :
+                    ""
+                );
+
+
+            div.innerHTML = `
+
+                <div class="score
+                    ${
+                        conflicts.length
+                        ?
+                        "bad"
+                        :
+                        "good"
+                    }">
+
+                    ${
+                        index === 0
+                        ?
+                        "⭐ "
+                        :
+                        ""
+                    }
+
+                    Escenario ${index+1}
+
+                </div>
+
+
+                <div style="margin-top:7px">
+
+                    <span class="metric">
+                        Score:
+                        <b>
+                            ${Math.round(s.score)}
+                        </b>
+                    </span>
+
+                    <span class="metric">
+                        Conflictos:
+                        <b>
+                            ${conflicts.length}
+                        </b>
+                    </span>
+
+                    <span class="metric">
+                        Horas:
+                        <b>
+                            ${(mins/60).toFixed(1)}
+                        </b>
+                    </span>
+
+                    <span class="metric">
+                        Objetivos:
+                        <b>
+                            ${objective}/${trainings.length}
+                        </b>
+                    </span>
+
+                    <span class="metric">
+                        Cambios:
+                        <b>
+                            ${changes}
+                        </b>
+                    </span>
+
+                </div>
+
+
+                ${
+                    conflicts.length
+                    ?
+                    `
+                    <div class="bad"
+                         style="margin-top:8px">
+
+                        ⚠️ Esta propuesta todavía
+                        tiene ${conflicts.length}
+                        conflicto(s).
+
+                    </div>
+                    `
+                    :
+                    `
+                    <div class="good"
+                         style="margin-top:8px">
+
+                        🟢 Grilla sin conflictos.
+
+                    </div>
+                    `
                 }
 
 
-                guardarEstadoAnterior();
+                <div style="margin-top:10px">
 
-                data=nuevo;
+                    <button
+                        class="green"
+                        onclick='applyScenario(${JSON.stringify(s.sol)})'>
 
-                guardarLocal();
+                        Aplicar grilla completa
 
-                alert(
-                "Backup importado correctamente."
+                    </button>
+
+                </div>
+
+
+                <table
+                    style="margin-top:12px">
+
+                    <tr>
+
+                        <th>
+                            Equipo
+                        </th>
+
+                        <th>
+                            Actual
+                        </th>
+
+                        <th>
+                            Propuesta
+                        </th>
+
+                        <th>
+                            Cambio
+                        </th>
+
+                    </tr>
+
+
+                    ${
+                        s.sol.map(
+                            t => {
+
+                                const o =
+                                    trainings.find(
+                                        x =>
+                                            x.id === t.id
+                                    );
+
+
+                                const changed =
+                                    (
+                                        t.day !== o.day
+                                        ||
+                                        t.venue !== o.venue
+                                        ||
+                                        t.start !== o.start
+                                        ||
+                                        t.dur !== o.dur
+                                    );
+
+
+                                return `
+
+                                <tr
+                                    class="
+                                    ${
+                                        changed
+                                        ?
+                                        "change"
+                                        :
+                                        ""
+                                    }">
+
+                                    <td>
+                                        <b>
+                                            ${t.cat}
+                                            ${t.grp}
+                                        </b>
+                                    </td>
+
+                                    <td>
+
+                                        ${DN[o.day]}
+                                        <br>
+
+                                        ${o.start}
+                                        -
+                                        ${end(o)}
+                                        (${o.dur}')
+
+                                        <br>
+
+                                        ${getVenue(o.venue)?.name}
+
+                                    </td>
+
+
+                                    <td>
+
+                                        <b>
+
+                                            ${DN[t.day]}
+                                            <br>
+
+                                            ${t.start}
+                                            -
+                                            ${end(t)}
+                                            (${t.dur}')
+
+                                        </b>
+
+                                        <br>
+
+                                        ${getVenue(t.venue)?.name}
+
+                                    </td>
+
+
+                                    <td>
+
+                                        ${
+                                            changed
+                                            ?
+                                            "🔄"
+                                            :
+                                            "—"
+                                        }
+
+                                    </td>
+
+                                </tr>
+
+                                `;
+
+                            }
+                        ).join("")
+                    }
+
+                </table>
+
+            `;
+
+
+            box.appendChild(div);
+
+        }
+    );
+
+}
+
+
+/*
+    Aplicar escenario completo.
+*/
+
+function applyScenario(sol) {
+
+    if(
+        !confirm(
+            "¿Aplicar esta grilla completa?"
+            +
+            "\n\n"
+            +
+            "Se reemplazarán los horarios actuales."
+        )
+    )
+        return;
+
+
+    sol.forEach(
+        x => {
+
+            const t =
+                trainings.find(
+                    t => t.id === x.id
                 );
 
 
-            }catch(error){
-
-                alert(
-                "El archivo no tiene un formato válido."
+            if(t)
+                Object.assign(
+                    t,
+                    x
                 );
 
-            }
-
-        };
-
-
-    reader.readAsText(file);
-
-}
+        }
+    );
 
 
-function borrarTodo(){
+    save();
 
-    if(!confirm(
-        "¿Seguro que querés borrar toda la grilla?"
-    ))return;
+    render();
 
 
-    guardarEstadoAnterior();
-
-
-    data={
-        predios:[],
-        equipos:[],
-        entrenamientos:[]
-    };
-
-
-    guardarLocal();
+    alert(
+        "✅ Grilla aplicada correctamente."
+    );
 
 }
 
 
-/* ============================================================
-   ACTUALIZACIÓN GENERAL
-============================================================ */
+/* =========================
+   RESTAURAR
+========================= */
 
-function actualizarTodo(){
+function resetData() {
 
-    renderPredios();
+    if(
+        !confirm(
+            "¿Restaurar los datos iniciales?"
+        )
+    )
+        return;
 
-    renderEquipos();
 
-    renderEntrenamientos();
+    localStorage.removeItem(
+        "futsalVenues"
+    );
 
-    renderFiltros();
+    localStorage.removeItem(
+        "futsalTrainings"
+    );
 
-    renderGrilla();
 
-    renderConflictos();
-
-    actualizarDashboard();
-
-    actualizarRangos();
+    location.reload();
 
 }
 
 
-/* ============================================================
+/* =========================
    INICIO
-============================================================ */
+========================= */
 
-cargarLocal();
+render();
 
 </script>
 
