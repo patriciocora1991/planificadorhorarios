@@ -1,3164 +1,449 @@
-```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-
-<title>Optimizador Inteligente de Grilla Futsal</title>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-<style>
-
-*{
-box-sizing:border-box;
-}
-
-body{
-margin:0;
-font-family:Arial,Helvetica,sans-serif;
-background:#eef1f5;
-color:#17202a;
-}
-
-header{
-background:#101820;
-color:white;
-padding:20px 25px;
-}
-
-header h1{
-margin:0;
-font-size:25px;
-}
-
-header p{
-margin:6px 0 0;
-opacity:.75;
-}
-
-.container{
-max-width:1900px;
-margin:auto;
-padding:20px;
-}
-
-.panel{
-background:white;
-border-radius:12px;
-padding:18px;
-margin-bottom:18px;
-box-shadow:0 2px 8px rgba(0,0,0,.07);
-}
-
-.toolbar{
-display:flex;
-flex-wrap:wrap;
-gap:8px;
-align-items:center;
-}
-
-button{
-border:0;
-border-radius:7px;
-padding:9px 13px;
-font-weight:bold;
-cursor:pointer;
-background:#1769e0;
-color:white;
-}
-
-button:hover{
-opacity:.9;
-}
-
-.green{background:#159447}
-.orange{background:#e87500}
-.red{background:#c92828}
-.gray{background:#66717d}
-.dark{background:#17202a}
-.purple{background:#7048b8}
-
-select,
-input{
-border:1px solid #cbd3dc;
-border-radius:6px;
-padding:8px;
-font:inherit;
-}
-
-.stats{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-gap:10px;
-}
-
-.stat{
-background:#f4f6f8;
-border-radius:9px;
-padding:14px;
-}
-
-.stat span{
-font-size:12px;
-color:#65717d;
-}
-
-.stat strong{
-display:block;
-font-size:25px;
-margin-top:4px;
-}
-
-.good{
-background:#d9f6df!important;
-border:1px solid #67b879!important;
-}
-
-.bad{
-background:#ffdcdc!important;
-border:1px solid #db4444!important;
-}
-
-.warning{
-background:#fff1cf!important;
-border:1px solid #dfa32c!important;
-}
-
-.grid-wrapper{
-overflow:auto;
-}
-
-.week-grid{
-display:grid;
-grid-template-columns:90px repeat(3,minmax(260px,1fr));
-min-width:1000px;
-border:1px solid #d4d9df;
-}
-
-.grid-header{
-background:#17202a;
-color:white;
-padding:10px;
-font-weight:bold;
-text-align:center;
-}
-
-.time-cell{
-background:#f6f7f9;
-padding:7px;
-border:1px solid #e0e4e8;
-font-size:12px;
-text-align:center;
-min-height:58px;
-}
-
-.slot-cell{
-border:1px solid #e0e4e8;
-min-height:58px;
-padding:3px;
-background:white;
-}
-
-.training{
-border-radius:7px;
-padding:7px;
-margin:2px;
-background:#dbeafe;
-border-left:5px solid #1769e0;
-cursor:grab;
-font-size:12px;
-}
-
-.training:active{
-cursor:grabbing;
-}
-
-.training strong{
-display:block;
-font-size:13px;
-}
-
-.training small{
-display:block;
-margin-top:3px;
-color:#475569;
-}
-
-.training.conflict{
-background:#ffd2d2;
-border-left-color:#c92828;
-}
-
-.training.outside{
-background:#fff0ca;
-border-left-color:#e87500;
-}
-
-.training.fixed{
-box-shadow:inset 0 0 0 2px #7048b8;
-}
-
-.training.together{
-border-left-color:#159447;
-}
-
-.training.consecutive{
-border-bottom:3px solid #7048b8;
-}
-
-.day-section{
-margin-bottom:25px;
-}
-
-.day-title{
-background:#17202a;
-color:white;
-padding:10px;
-font-weight:bold;
-}
-
-.conflict-item{
-padding:9px;
-margin:6px 0;
-border-radius:7px;
-background:#ffe0e0;
-border-left:5px solid #c92828;
-}
-
-.warning-item{
-padding:9px;
-margin:6px 0;
-border-radius:7px;
-background:#fff0c9;
-border-left:5px solid #e87500;
-}
-
-.card-grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(310px,1fr));
-gap:12px;
-}
-
-.card{
-border:1px solid #d8dee5;
-border-radius:10px;
-padding:13px;
-background:#fafbfc;
-}
-
-.card h3{
-margin-top:0;
-}
-
-.badge{
-display:inline-block;
-padding:3px 7px;
-margin:2px;
-border-radius:5px;
-font-size:11px;
-background:#e5e9ee;
-}
-
-.training-list{
-border-top:1px solid #ddd;
-margin-top:10px;
-}
-
-.training-row{
-padding:10px 0;
-border-bottom:1px solid #ddd;
-display:flex;
-justify-content:space-between;
-align-items:center;
-gap:10px;
-flex-wrap:wrap;
-}
-
-.modal{
-display:none;
-position:fixed;
-inset:0;
-background:rgba(0,0,0,.65);
-z-index:999;
-align-items:center;
-justify-content:center;
-padding:20px;
-}
-
-.modal-content{
-background:white;
-border-radius:12px;
-width:min(850px,100%);
-max-height:92vh;
-overflow:auto;
-padding:20px;
-}
-
-.form-grid{
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:12px;
-}
-
-.form-group{
-display:flex;
-flex-direction:column;
-gap:5px;
-}
-
-.full{
-grid-column:1/-1;
-}
-
-label{
-font-size:13px;
-font-weight:bold;
-}
-
-.check{
-display:flex;
-flex-direction:row;
-align-items:center;
-gap:8px;
-font-weight:normal;
-}
-
-.scenario{
-border:2px solid #d7dde4;
-border-radius:10px;
-padding:15px;
-margin-bottom:12px;
-}
-
-.scenario.best{
-border-color:#159447;
-background:#f0fff3;
-}
-
-.scenario h3{
-margin-top:0;
-}
-
-.metric{
-display:inline-block;
-margin:4px;
-padding:6px 9px;
-border-radius:6px;
-background:#edf0f3;
-font-size:12px;
-}
-
-.change{
-padding:7px;
-margin:4px 0;
-border-radius:6px;
-background:#f5f6f8;
-font-size:12px;
-}
-
-.change.move{
-background:#fff0ce;
-}
-
-.change.improve{
-background:#dcf7e1;
-}
-
-.change.warning{
-background:#ffdcdc;
-}
-
-hr{
-border:0;
-border-top:1px solid #ddd;
-margin:18px 0;
-}
-
-.empty{
-text-align:center;
-padding:20px;
-color:#697580;
-}
-
-@media(max-width:700px){
-
-.form-grid{
-grid-template-columns:1fr;
-}
-
-.container{
-padding:10px;
-}
-
-}
-
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Rendimiento | Preparación Física</title>
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: #131826;
+            --accent-color: #00ff88;
+            --accent-glow: rgba(0, 255, 136, 0.15);
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --border-color: #1f293d;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        aside {
+            width: 260px;
+            background-color: var(--card-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+        }
+
+        .logo-area {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            letter-spacing: 1px;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex-grow: 1;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background-color: var(--accent-glow);
+            color: var(--accent-color);
+            border-left: 4px solid var(--accent-color);
+        }
+
+        /* Main Content */
+        main {
+            flex-grow: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .header-title h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .header-title p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--card-bg);
+            padding: 8px 16px;
+            border-radius: 30px;
+            border: 1px solid var(--border-color);
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            background-color: var(--accent-color);
+            color: var(--bg-color);
+            font-weight: bold;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .metric-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--accent-color);
+        }
+
+        .metric-title {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .metric-trend {
+            font-size: 0.8rem;
+            color: var(--accent-color);
+            margin-top: 8px;
+        }
+
+        /* Section Layout */
+        .dashboard-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .panel-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Table Style */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+        }
+
+        tr:hover {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge.optimal { background: rgba(0, 255, 136, 0.1); color: var(--accent-color); }
+        .badge.warning { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+        .badge.fatigue { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+
+        /* Calculator Form */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px 14px;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .btn {
+            background-color: var(--accent-color);
+            color: var(--bg-color);
+            font-weight: 700;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            width: 100%;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .result-box {
+            margin-top: 16px;
+            padding: 12px;
+            background-color: var(--bg-color);
+            border-radius: 8px;
+            border: 1px dashed var(--border-color);
+            text-align: center;
+            font-size: 0.95rem;
+        }
+    </style>
 </head>
-
 <body>
 
-<header>
-
-<h1>⚽ Optimizador Inteligente de Grilla Futsal</h1>
-
-<p>
-Predios · disponibilidad · entrenamientos · conflictos · escenarios · optimización
-</p>
-
-</header>
-
-<div class="container">
-
-<!-- TOOLBAR -->
-
-<div class="panel">
-
-<div class="toolbar">
-
-<label>
-Predio
-<select id="filterVenue" onchange="renderAll()">
-<option value="TODOS">Todos</option>
-</select>
-</label>
-
-<label>
-Área
-<select id="filterArea" onchange="renderAll()">
-<option value="TODOS">Todas</option>
-<option value="AFA">AFA</option>
-<option value="PROMOS">Promos</option>
-<option value="FUTSALA">Futsala</option>
-</select>
-</label>
-
-<button onclick="generateScenarios()" class="purple">
-🧠 Generar escenarios
-</button>
-
-<button onclick="nuevoEntrenamiento()" class="green">
-＋ Entrenamiento
-</button>
-
-<button onclick="nuevoPredio()" class="orange">
-＋ Predio
-</button>
-
-<button onclick="exportPNG()" class="gray">
-🖼 PNG
-</button>
-
-<button onclick="exportPDF()" class="gray">
-📄 PDF
-</button>
-
-<button onclick="resetData()" class="red">
-↺ Datos iniciales
-</button>
-
-</div>
-
-</div>
-
-<!-- STATS -->
-
-<div class="panel">
-
-<h2>📊 Estado actual</h2>
-
-<div class="stats" id="stats"></div>
-
-</div>
-
-<!-- SCENARIOS -->
-
-<div class="panel">
-
-<h2>🧠 Escenarios de optimización</h2>
-
-<div id="scenarios">
-
-<div class="empty">
-Presioná <strong>Generar escenarios</strong> para que el sistema busque distintas alternativas.
-</div>
-
-</div>
-
-</div>
-
-<!-- CONFLICTS -->
-
-<div class="panel">
-
-<h2>⚠️ Conflictos actuales</h2>
-
-<div id="conflicts"></div>
-
-</div>
-
-<!-- GRID -->
-
-<div class="panel" id="captureArea">
-
-<h2>📅 Grilla semanal</h2>
-
-<div id="grid"></div>
-
-</div>
-
-<!-- TRAININGS -->
-
-<div class="panel">
-
-<h2>👥 Entrenamientos</h2>
-
-<p>
-Cada entrenamiento puede modificarse individualmente. Los cambios se guardan automáticamente.
-</p>
-
-<div id="trainings"></div>
-
-</div>
-
-<!-- VENUES -->
-
-<div class="panel">
-
-<h2>🏟️ Predios y disponibilidad</h2>
-
-<div id="venues"></div>
-
-</div>
-
-</div>
-
-
-<!-- TRAINING MODAL -->
-
-<div class="modal" id="trainingModal">
-
-<div class="modal-content">
-
-<h2 id="trainingModalTitle">Entrenamiento</h2>
-
-<input type="hidden" id="trainingId">
-
-<div class="form-grid">
-
-<div class="form-group">
-
-<label>Área</label>
-
-<select id="fArea">
-<option value="AFA">AFA</option>
-<option value="PROMOS">PROMOS</option>
-<option value="FUTSALA">FUTSALA</option>
-</select>
-
-</div>
-
-<div class="form-group">
-
-<label>División</label>
-
-<input id="fDivision">
-
-</div>
-
-<div class="form-group">
-
-<label>Día</label>
-
-<select id="fDay">
-
-<option>lunes</option>
-<option>martes</option>
-<option>miércoles</option>
-<option>jueves</option>
-<option>viernes</option>
-<option>sábado</option>
-<option>domingo</option>
-
-</select>
-
-</div>
-
-<div class="form-group">
-
-<label>Predio</label>
-
-<select id="fVenue"></select>
-
-</div>
-
-<div class="form-group">
-
-<label>Inicio</label>
-
-<input id="fStart" type="time">
-
-</div>
-
-<div class="form-group">
-
-<label>Fin</label>
-
-<input id="fEnd" type="time">
-
-</div>
-
-<div class="form-group">
-
-<label>Minutos mínimos deseados</label>
-
-<input id="fMin" type="number" min="15" step="15">
-
-</div>
-
-<div class="form-group">
-
-<label>Prioridad</label>
-
-<select id="fPriority">
-
-<option value="3">Alta</option>
-<option value="2">Media</option>
-<option value="1">Baja</option>
-
-</select>
-
-</div>
-
-<div class="form-group">
-
-<label class="check">
-
-<input type="checkbox" id="fTogether">
-
-Puede / debe entrenar junto con otra división
-
-</label>
-
-</div>
-
-<div class="form-group">
-
-<label>Grupo conjunto</label>
-
-<input id="fGroup" placeholder="Ej: AFA-5TA-6TA">
-
-</div>
-
-<div class="form-group">
-
-<label class="check">
-
-<input type="checkbox" id="fConsecutive">
-
-Preferir entrenamiento consecutivo
-
-</label>
-
-</div>
-
-<div class="form-group">
-
-<label>Grupo staff</label>
-
-<input id="fStaff" placeholder="Ej: STAFF-AFA">
-
-</div>
-
-<div class="form-group full">
-
-<label class="check">
-
-<input type="checkbox" id="fFixed">
-
-🔒 Horario fijo: el optimizador NO puede moverlo
-
-</label>
-
-</div>
-
-</div>
-
-<hr>
-
-<div class="toolbar">
-
-<button onclick="saveTraining()">Guardar</button>
-
-<button class="gray" onclick="closeTraining()">Cancelar</button>
-
-<button class="red" onclick="deleteTraining()">Eliminar</button>
-
-</div>
-
-</div>
-
-</div>
-
-
-<!-- VENUE MODAL -->
-
-<div class="modal" id="venueModal">
-
-<div class="modal-content">
-
-<h2>🏟️ Predio</h2>
-
-<input type="hidden" id="venueId">
-
-<div class="form-group">
-
-<label>Nombre</label>
-
-<input id="venueName">
-
-</div>
-
-<hr>
-
-<h3>Disponibilidad semanal</h3>
-
-<div id="availability"></div>
-
-<hr>
-
-<div class="toolbar">
-
-<button onclick="saveVenue()">Guardar</button>
-
-<button class="gray" onclick="closeVenue()">Cancelar</button>
-
-<button class="red" onclick="deleteVenue()">Eliminar</button>
-
-</div>
-
-</div>
-
-</div>
-
-
-<script>
-
-/* ======================================================
-   DATOS INICIALES
-====================================================== */
-
-const DAYS=[
-"lunes",
-"martes",
-"miércoles",
-"jueves",
-"viernes",
-"sábado",
-"domingo"
-];
-
-const STORAGE="FUTSAL_OPTIMIZER_V6";
-
-
-const initialData={
-
-venues:[
-
-{
-id:"rincon",
-name:"Predio Rincón",
-availability:{
-lunes:[["08:00","23:00"]],
-martes:[["08:00","23:00"]],
-miércoles:[["08:00","23:00"]],
-jueves:[["08:00","23:00"]],
-viernes:[["08:00","23:00"]],
-sábado:[["08:00","23:00"]],
-domingo:[["08:00","23:00"]]
-}
-},
-
-{
-id:"satsaid",
-name:"Predio Satsaid",
-availability:{
-lunes:[],
-martes:[["19:00","20:30"]],
-miércoles:[["20:00","22:00"]],
-jueves:[["19:00","20:00"]],
-viernes:[["20:00","21:00"]],
-sábado:[],
-domingo:[]
-}
-},
-
-{
-id:"manolo",
-name:"Predio Dean Funes (Manolo)",
-availability:{
-lunes:[["20:00","21:00"]],
-martes:[["18:00","21:00"]],
-miércoles:[],
-jueves:[["18:00","21:00"]],
-viernes:[["20:30","21:30"]],
-sábado:[],
-domingo:[]
-}
-}
-
-],
-
-trainings:[
-
-/* AFA */
-
-T(1,"AFA","1ra","martes","satsaid","19:00","20:00",90,3),
-T(2,"AFA","1ra","miércoles","satsaid","20:00","21:00",90,3),
-T(3,"AFA","1ra","jueves","satsaid","19:00","20:00",90,3),
-T(4,"AFA","1ra","viernes","satsaid","20:00","21:00",90,3),
-
-T(5,"AFA","3ra","martes","rincon","20:30","22:00",90,3),
-T(6,"AFA","3ra","miércoles","satsaid","20:00","21:00",90,3),
-T(7,"AFA","3ra","jueves","rincon","20:15","21:15",90,3),
-T(8,"AFA","3ra","viernes","rincon","19:00","20:00",90,3),
-
-T(9,"AFA","4ta","martes","rincon","19:00","20:30",150,3),
-T(10,"AFA","4ta","viernes","rincon","20:00","21:00",120,3),
-
-T(11,"AFA","5ta","lunes","rincon","19:30","21:00",90,3,true,"AFA-5TA-6TA"),
-T(12,"AFA","6ta","lunes","rincon","19:30","21:00",90,3,true,"AFA-5TA-6TA"),
-
-T(13,"AFA","5ta","jueves","rincon","18:00","19:30",90,3,true,"AFA-5TA-6TA"),
-T(14,"AFA","6ta","jueves","rincon","18:00","19:30",90,3,true,"AFA-5TA-6TA"),
-
-T(15,"AFA","7ma","lunes","rincon","18:00","19:30",90,3,true,"AFA-7MA-8VA"),
-T(16,"AFA","8va","lunes","rincon","18:00","19:30",90,3,true,"AFA-7MA-8VA"),
-
-T(17,"AFA","7ma","viernes","rincon","18:00","19:00",60,3,true,"AFA-7MA-8VA"),
-T(18,"AFA","8va","viernes","rincon","18:00","19:00",60,3,true,"AFA-7MA-8VA"),
-
-/* PROMOS */
-
-T(19,"PROMOS","18-19","martes","manolo","18:00","19:00",60,3),
-T(20,"PROMOS","18-19","jueves","manolo","18:00","19:00",60,3),
-
-T(21,"PROMOS","16-17","martes","manolo","19:00","20:00",60,3),
-T(22,"PROMOS","16-17","jueves","manolo","19:00","20:00",60,3),
-
-/* FUTSALA */
-
-T(23,"FUTSALA","1ra","martes","manolo","20:00","21:00",60,3),
-T(24,"FUTSALA","1ra","viernes","manolo","20:30","21:30",60,3),
-
-T(25,"FUTSALA","3ra","lunes","manolo","20:00","21:00",60,3,true,"FUT-3RA-4TA"),
-T(26,"FUTSALA","4ta","lunes","manolo","20:00","21:00",60,3,true,"FUT-3RA-4TA"),
-
-T(27,"FUTSALA","3ra","jueves","manolo","20:00","21:00",60,3,true,"FUT-3RA-4TA"),
-T(28,"FUTSALA","4ta","jueves","manolo","20:00","21:00",60,3,true,"FUT-3RA-4TA"),
-
-T(29,"FUTSALA","5ta","martes","rincon","16:30","18:00",90,3,true,"FUT-5TA-6TA"),
-T(30,"FUTSALA","6ta","martes","rincon","16:30","18:00",90,3,true,"FUT-5TA-6TA"),
-
-T(31,"FUTSALA","5ta","viernes","rincon","16:30","18:00",90,3,true,"FUT-5TA-6TA"),
-T(32,"FUTSALA","6ta","viernes","rincon","16:30","18:00",90,3,true,"FUT-5TA-6TA"),
-
-T(33,"FUTSALA","7ma","lunes","rincon","17:00","18:00",60,3,true,"FUT-7MA-8VA"),
-T(34,"FUTSALA","8va","lunes","rincon","17:00","18:00",60,3,true,"FUT-7MA-8VA"),
-
-T(35,"FUTSALA","7ma","jueves","rincon","17:00","18:00",60,3,true,"FUT-7MA-8VA"),
-T(36,"FUTSALA","8va","jueves","rincon","17:00","18:00",60,3,true,"FUT-7MA-8VA")
-
-]
-
-};
-
-
-/* Constructor de entrenamiento */
-
-function T(
-id,
-area,
-division,
-day,
-venue,
-start,
-end,
-min,
-priority,
-together=false,
-group=""
-){
-
-return{
-
-id,
-area,
-division,
-day,
-venue,
-start,
-end,
-min,
-priority,
-together,
-group,
-consecutive:false,
-staff:"",
-fixed:false
-
-};
-
-}
-
-
-/* ======================================================
-   STORAGE
-====================================================== */
-
-let data=load();
-
-function load(){
-
-const saved=localStorage.getItem(STORAGE);
-
-if(saved){
-
-try{
-
-return JSON.parse(saved);
-
-}catch(e){}
-
-}
-
-return JSON.parse(JSON.stringify(initialData));
-
-}
-
-function save(){
-
-localStorage.setItem(
-STORAGE,
-JSON.stringify(data)
-);
-
-}
-
-
-/* ======================================================
-   UTILIDADES
-====================================================== */
-
-function mins(t){
-
-const [h,m]=t.split(":").map(Number);
-
-return h*60+m;
-
-}
-
-function time(m){
-
-return String(Math.floor(m/60)).padStart(2,"0")
-+":"+
-String(m%60).padStart(2,"0");
-
-}
-
-function duration(t){
-
-return mins(t.end)-mins(t.start);
-
-}
-
-function venueName(id){
-
-const v=data.venues.find(v=>v.id===id);
-
-return v?v.name:id;
-
-}
-
-function overlap(a,b){
-
-return mins(a.start)<mins(b.end)
-&&
-mins(b.start)<mins(a.end);
-
-}
-
-
-/* ======================================================
-   DISPONIBILIDAD
-====================================================== */
-
-function isAvailable(t){
-
-const v=data.venues.find(
-v=>v.id===t.venue
-);
-
-if(!v)return false;
-
-const slots=v.availability[t.day]||[];
-
-return slots.some(s=>
-mins(t.start)>=mins(s[0])
-&&
-mins(t.end)<=mins(s[1])
-);
-
-}
-
-
-/* ======================================================
-   CONFLICTOS
-====================================================== */
-
-function conflictsOf(list){
-
-const conflicts=[];
-
-for(let i=0;i<list.length;i++){
-
-const a=list[i];
-
-if(!isAvailable(a)){
-
-conflicts.push({
-
-type:"availability",
-a,
-message:
-`${a.area} ${a.division}: ${a.day} ${a.start}-${a.end} está fuera de disponibilidad de ${venueName(a.venue)}.`
-
-});
-
-}
-
-for(let j=i+1;j<list.length;j++){
-
-const b=list[j];
-
-if(
-a.day===b.day
-&&
-a.venue===b.venue
-&&
-overlap(a,b)
-){
-
-/*
-   Se permite si forman un grupo conjunto.
-*/
-
-if(
-a.together
-&&
-b.together
-&&
-a.group
-&&
-a.group===b.group
-){
-
-continue;
-
-}
-
-conflicts.push({
-
-type:"overlap",
-a,
-b,
-
-message:
-`${a.area} ${a.division} y ${b.area} ${b.division} se superponen el ${a.day} en ${venueName(a.venue)}.`
-
-});
-
-}
-
-}
-
-}
-
-return conflicts;
-
-}
-
-
-/* ======================================================
-   MÉTRICAS
-====================================================== */
-
-function metrics(list){
-
-const c=conflictsOf(list);
-
-let total=0;
-
-list.forEach(t=>{
-total+=duration(t);
-});
-
-let outside=c.filter(
-x=>x.type==="availability"
-).length;
-
-let overlaps=c.filter(
-x=>x.type==="overlap"
-).length;
-
-let fixedViolations=0;
-
-return{
-
-total,
-conflicts:c.length,
-outside,
-overlaps,
-fixedViolations
-
-};
-
-}
-
-
-/* ======================================================
-   SCORE
-======================================================
-
-   Cuanto mayor, mejor.
-
-   PRIORIDAD ABSOLUTA:
-
-   1. Sin conflictos
-   2. No mover fijos
-   3. Mantener duración
-   4. Separar cuando sea posible
-   5. Mantener día
-   6. Mantener predio
-   7. Mantener horario
-   8. Optimizar continuidad
-====================================================== */
-
-function score(original,list){
-
-const m=metrics(list);
-
-let score=0;
-
-score-=m.conflicts*100000;
-score-=m.overlaps*50000;
-score-=m.outside*50000;
-
-list.forEach(t=>{
-
-const o=original.find(
-x=>x.id===t.id
-);
-
-if(!o)return;
-
-/* Mantener minutos */
-
-const d=duration(t);
-
-score+=d*25;
-
-/* Bonus por cumplir mínimo */
-
-if(d>=o.min){
-
-score+=1000;
-
-}
-
-/* Mantener día */
-
-if(t.day===o.day){
-
-score+=1200;
-
-}else{
-
-score-=500;
-
-}
-
-/* Mantener predio */
-
-if(t.venue===o.venue){
-
-score+=800;
-
-}else{
-
-score-=500;
-
-}
-
-/* Mantener horario */
-
-const diff=
-Math.abs(
-mins(t.start)-mins(o.start)
-);
-
-score-=diff*2;
-
-/* Preferir no tocar */
-
-if(
-t.day===o.day &&
-t.venue===o.venue &&
-t.start===o.start &&
-t.end===o.end
-){
-
-score+=1800;
-
-}
-
-/* Prioridad */
-
-score+=o.priority*150;
-
-/* Si logró más minutos */
-
-if(d>duration(o)){
-
-score+=500;
-
-}
-
-});
-
-return score;
-
-}
-
-
-/* ======================================================
-   CANDIDATOS
-====================================================== */
-
-function candidates(t){
-
-const result=[];
-
-const wanted=Math.max(
-duration(t),
-t.min||duration(t)
-);
-
-const daysOrder=[
-t.day,
-"lunes",
-"martes",
-"miércoles",
-"jueves",
-"viernes"
-];
-
-const uniqueDays=[
-...new Set(daysOrder)
-];
-
-uniqueDays.forEach(day=>{
-
-data.venues.forEach(v=>{
-
-const slots=v.availability[day]||[];
-
-slots.forEach(slot=>{
-
-const a=mins(slot[0]);
-const b=mins(slot[1]);
-
-/*
-   Generar duraciones.
-
-   Primero la duración deseada.
-   Después alternativas más cortas.
-*/
-
-const durations=[
-wanted,
-Math.min(wanted+15,b-a),
-Math.min(wanted+30,b-a),
-Math.min(wanted+60,b-a),
-Math.min(wanted+90,b-a),
-Math.min(wanted+120,b-a),
-90,
-75,
-60
-];
-
-[...new Set(durations)]
-.filter(d=>d>0 && d<=b-a)
-.forEach(d=>{
-
-/*
-   Varias posiciones.
-*/
-
-for(
-let s=a;
-s+d<=b;
-s+=15
-){
-
-result.push({
-
-...t,
-
-day,
-venue:v.id,
-start:time(s),
-end:time(s+d)
-
-});
-
-}
-
-});
-
-});
-
-});
-
-});
-
-return result;
-
-}
-
-
-/* ======================================================
-   VALIDACIÓN DE CANDIDATO
-====================================================== */
-
-function candidateLegal(t,c,list){
-
-/*
-   Fijo
-*/
-
-if(t.fixed){
-
-return(
-c.day===t.day &&
-c.venue===t.venue &&
-c.start===t.start &&
-c.end===t.end
-);
-
-}
-
-/*
-   Disponibilidad
-*/
-
-if(!isAvailable(c)){
-
-return false;
-
-}
-
-/*
-   Conflicto
-*/
-
-for(const other of list){
-
-if(other.id===t.id)continue;
-
-if(
-c.day===other.day &&
-c.venue===other.venue &&
-overlap(c,other)
-){
-
-if(
-c.together &&
-other.together &&
-c.group &&
-c.group===other.group
-){
-
-continue;
-
-}
-
-return false;
-
-}
-
-}
-
-return true;
-
-}
-
-
-/* ======================================================
-   OPTIMIZACIÓN INTELIGENTE
-======================================================
-
-   Beam Search simplificado.
-
-   No intenta solamente mover un entrenamiento:
-   genera muchas combinaciones parciales y conserva
-   las mejores.
-
-====================================================== */
-
-function generateScenario(seed){
-
-const original=
-JSON.parse(
-JSON.stringify(data.trainings)
-);
-
-/*
-   Ordenar:
-   - fijos primero
-   - prioridad
-   - mayor duración
-*/
-
-const order=[...original].sort((a,b)=>{
-
-if(a.fixed!==b.fixed){
-
-return a.fixed?-1:1;
-
-}
-
-if(b.priority!==a.priority){
-
-return b.priority-a.priority;
-
-}
-
-return duration(b)-duration(a);
-
-});
-
-
-let states=[
-[]
-];
-
-const BEAM=45;
-
-
-/*
-   Construcción progresiva
-*/
-
-for(const originalTraining of order){
-
-const next=[];
-
-for(const state of states){
-
-const candidatesList=
-candidates(originalTraining);
-
-/*
-   Para evitar que el algoritmo sea demasiado pesado,
-   tomar candidatos variados.
-*/
-
-const sampled=
-candidatesList
-.sort(()=>Math.random()-.5)
-.slice(0,120);
-
-for(const c of sampled){
-
-if(
-candidateLegal(
-originalTraining,
-c,
-state
-)
-){
-
-const newState=[
-...state,
-c
-];
-
-next.push(newState);
-
-}
-
-}
-
-}
-
-/*
-   Evaluar estados parciales
-*/
-
-next.sort(
-(a,b)=>
-partialScore(original,nextState(b))
--
-partialScore(original,nextState(a))
-);
-
-states=
-next.slice(0,BEAM);
-
-}
-
-
-/*
-   Completar por si acaso
-*/
-
-let best=null;
-let bestScore=-Infinity;
-
-states.forEach(s=>{
-
-const sc=score(original,s);
-
-if(sc>bestScore){
-
-bestScore=sc;
-best=s;
-
-}
-
-});
-
-return{
-
-trainings:best||original,
-score:bestScore
-
-};
-
-}
-
-
-/* Helper */
-
-function nextState(x){
-
-return x;
-
-}
-
-
-/*
-   Score parcial.
-*/
-
-function partialScore(original,list){
-
-let s=0;
-
-list.forEach(t=>{
-
-const o=original.find(
-x=>x.id===t.id
-);
-
-if(!o)return;
-
-s+=duration(t)*10;
-
-if(t.day===o.day)s+=500;
-
-if(t.venue===o.venue)s+=400;
-
-if(t.start===o.start)s+=300;
-
-});
-
-const c=conflictsOf(list);
-
-s-=c.length*100000;
-
-return s;
-
-}
-
-
-/* ======================================================
-   GENERACIÓN DE ESCENARIOS
-====================================================== */
-
-function generateScenarios(){
-
-const box=document.getElementById(
-"scenarios"
-);
-
-box.innerHTML=`
-<div class="warning-item">
-🧠 Analizando posibilidades...
-<br>
-El sistema está buscando alternativas sin conflictos y tratando de mantener días, predios y horarios actuales.
-</div>
-`;
-
-setTimeout(()=>{
-
-const scenarios=[];
-
-/*
-   Variar semillas.
-*/
-
-for(let i=0;i<5;i++){
-
-scenarios.push(
-generateScenario(i)
-);
-
-}
-
-/*
-   Ordenar por score.
-*/
-
-scenarios.sort(
-(a,b)=>b.score-a.score
-);
-
-
-/*
-   Eliminar escenarios prácticamente iguales.
-*/
-
-const unique=[];
-
-for(const s of scenarios){
-
-const signature=s.trainings
-.map(t=>
-`${t.id}-${t.day}-${t.venue}-${t.start}-${t.end}`
-)
-.join("|");
-
-if(
-!unique.some(x=>x.signature===signature)
-){
-
-unique.push({
-...s,
-signature
-});
-
-}
-
-}
-
-renderScenarios(unique);
-
-},50);
-
-}
-
-
-/* ======================================================
-   MOSTRAR ESCENARIOS
-====================================================== */
-
-function renderScenarios(scenarios){
-
-const box=
-document.getElementById("scenarios");
-
-if(!scenarios.length){
-
-box.innerHTML=
-`<div class="empty">
-No se encontraron alternativas.
-</div>`;
-
-return;
-
-}
-
-const original=data.trainings;
-
-box.innerHTML=scenarios.map(
-(s,index)=>{
-
-const m=metrics(s.trainings);
-
-const changes=[];
-
-s.trainings.forEach(t=>{
-
-const o=original.find(
-x=>x.id===t.id
-);
-
-if(!o)return;
-
-if(
-t.day!==o.day ||
-t.venue!==o.venue ||
-t.start!==o.start ||
-t.end!==o.end
-){
-
-let text=
-`${o.area} ${o.division}: `+
-`${o.day} ${o.start}-${o.end} `+
-`→ ${t.day} ${t.start}-${t.end} `+
-`(${venueName(t.venue)})`;
-
-let cls="move";
-
-if(duration(t)>duration(o)){
-cls="improve";
-}
-
-changes.push(
-`<div class="change ${cls}">
-${text}
-</div>`
-);
-
-}
-
-});
-
-
-return`
-
-<div class="scenario ${index===0?"best":""}">
-
-<h3>
-${index===0?"🏆 ":""}Escenario ${index+1}
-</h3>
-
-<div>
-
-<span class="metric">
-Conflictos: <strong>${m.conflicts}</strong>
-</span>
-
-<span class="metric">
-Minutos: <strong>${m.total}</strong>
-</span>
-
-<span class="metric">
-Fuera disponibilidad: <strong>${m.outside}</strong>
-</span>
-
-<span class="metric">
-Cambios: <strong>${changes.length}</strong>
-</span>
-
-</div>
-
-<hr>
-
-<strong>
-${changes.length
-?`Cambios propuestos (${changes.length})`
-:"✅ Mantiene la configuración actual"}
-</strong>
-
-<div style="margin-top:8px">
-
-${
-changes.length
-?
-changes.slice(0,15).join("")
-:
-`<div class="good" style="padding:8px;margin-top:8px">
-No necesita cambios.
-</div>`
-}
-
-${
-changes.length>15
-?
-`<div class="small">
-+ ${changes.length-15} cambios adicionales
-</div>`
-:""
-}
-
-</div>
-
-<hr>
-
-<div class="toolbar">
-
-<button onclick="applyScenario(${index})">
-✅ Aplicar escenario
-</button>
-
-<button class="gray"
-onclick="showScenario(${index})">
-👁 Ver detalle
-</button>
-
-</div>
-
-</div>`;
-
-}).join("");
-
-window.generatedScenarios=scenarios;
-
-}
-
-
-/* ======================================================
-   APLICAR ESCENARIO
-====================================================== */
-
-function applyScenario(index){
-
-const s=
-window.generatedScenarios[index];
-
-if(!s)return;
-
-const conflicts=
-metrics(s.trainings).conflicts;
-
-if(conflicts>0){
-
-if(!confirm(
-`Este escenario todavía tiene ${conflicts} conflicto(s).
-¿Querés aplicarlo igualmente?`
-))return;
-
-}else{
-
-if(!confirm(
-"Este escenario no presenta conflictos. ¿Aplicarlo?"
-))return;
-
-}
-
-data.trainings=
-JSON.parse(
-JSON.stringify(s.trainings)
-);
-
-save();
-
-renderAll();
-
-alert(
-"✅ Escenario aplicado.\n\n" +
-"Ahora podés modificarlo manualmente."
-);
-
-}
-
-
-/* ======================================================
-   DETALLE
-====================================================== */
-
-function showScenario(index){
-
-const s=
-window.generatedScenarios[index];
-
-if(!s)return;
-
-const original=data.trainings;
-
-let html="";
-
-DAYS.forEach(day=>{
-
-const ts=s.trainings
-.filter(t=>t.day===day)
-.sort((a,b)=>mins(a.start)-mins(b.start));
-
-if(!ts.length)return;
-
-html+=`
-<h3>${day.toUpperCase()}</h3>
-`;
-
-ts.forEach(t=>{
-
-html+=`
-<div class="change">
-
-<strong>
-${t.area} — ${t.division}
-</strong>
-
-<br>
-
-${t.start} - ${t.end}
-· ${duration(t)} min
-· ${venueName(t.venue)}
-
-</div>
-`;
-
-});
-
-});
-
-const modal=document.getElementById("scenarios");
-
-modal.innerHTML=`
-
-<div class="scenario">
-
-<h3>Detalle del escenario ${index+1}</h3>
-
-${html}
-
-<hr>
-
-<button onclick="renderScenarios(window.generatedScenarios)">
-Volver a escenarios
-</button>
-
-</div>
-
-`;
-
-}
-
-
-/* ======================================================
-   RENDER STATS
-====================================================== */
-
-function renderStats(){
-
-const m=metrics(data.trainings);
-
-const extra=data.trainings.filter(
-t=>duration(t)>t.min
-).length;
-
-document.getElementById("stats").innerHTML=`
-
-<div class="stat">
-<span>Entrenamientos</span>
-<strong>${data.trainings.length}</strong>
-</div>
-
-<div class="stat">
-<span>Minutos semanales</span>
-<strong>${m.total}</strong>
-</div>
-
-<div class="stat ${m.conflicts?"bad":"good"}">
-<span>Conflictos</span>
-<strong>${m.conflicts}</strong>
-</div>
-
-<div class="stat ${m.outside?"bad":"good"}">
-<span>Fuera de disponibilidad</span>
-<strong>${m.outside}</strong>
-</div>
-
-<div class="stat">
-<span>Con minutos extra</span>
-<strong>${extra}</strong>
-</div>
-
-`;
-
-}
-
-
-/* ======================================================
-   RENDER CONFLICTS
-====================================================== */
-
-function renderConflicts(){
-
-const el=
-document.getElementById("conflicts");
-
-const c=conflictsOf(
-data.trainings
-);
-
-if(!c.length){
-
-el.innerHTML=`
-<div class="good" style="padding:14px;border-radius:8px">
-✅ La grilla actual no presenta conflictos.
-</div>
-`;
-
-return;
-
-}
-
-el.innerHTML=c.map(x=>{
-
-if(x.type==="availability"){
-
-return`
-<div class="warning-item">
-⚠️ ${x.message}
-</div>
-`;
-
-}
-
-return`
-<div class="conflict-item">
-🔴 ${x.message}
-</div>
-`;
-
-}).join("");
-
-}
-
-
-/* ======================================================
-   RENDER GRID
-====================================================== */
-
-function renderGrid(){
-
-const filterVenue=
-document.getElementById("filterVenue").value;
-
-const filterArea=
-document.getElementById("filterArea").value;
-
-const venues=
-data.venues.filter(v=>
-filterVenue==="TODOS"
-||
-v.id===filterVenue
-);
-
-const ts=data.trainings.filter(t=>
-(filterVenue==="TODOS"||t.venue===filterVenue)
-&&
-(filterArea==="TODOS"||t.area===filterArea)
-);
-
-let html="";
-
-DAYS.forEach(day=>{
-
-const dayTs=
-ts.filter(t=>t.day===day)
-.sort((a,b)=>mins(a.start)-mins(b.start));
-
-/*
-   Crear intervalos a partir de entrenamientos
-   y disponibilidad.
-*/
-
-const points=[];
-
-dayTs.forEach(t=>{
-points.push(mins(t.start),mins(t.end));
-});
-
-venues.forEach(v=>{
-
-(v.availability[day]||[]).forEach(s=>{
-points.push(mins(s[0]),mins(s[1]));
-});
-
-});
-
-const unique=[
-...new Set(points)
-].sort((a,b)=>a-b);
-
-if(!unique.length)return;
-
-html+=`
-
-<div class="day-section">
-
-<div class="day-title">
-${day.toUpperCase()}
-</div>
-
-<div class="grid-wrapper">
-
-<div class="week-grid">
-
-<div class="grid-header">
-Horario
-</div>
-
-${venues.map(v=>
-`<div class="grid-header">${v.name}</div>`
-).join("")}
-
-`;
-
-for(let i=0;i<unique.length-1;i++){
-
-const start=unique[i];
-const end=unique[i+1];
-
-html+=`
-
-<div class="time-cell">
-${time(start)}
-<br>
-${time(end)}
-</div>
-`;
-
-venues.forEach(v=>{
-
-const inside=
-dayTs.filter(t=>
-t.venue===v.id
-&&
-mins(t.start)<=start
-&&
-mins(t.end)>=end
-);
-
-const conflict=
-inside.length>1
-&&
-!inside.every(
-t=>t.together
-);
-
-html+=`
-
-<div
-class="slot-cell ${conflict?"bad":""}"
-data-day="${day}"
-data-venue="${v.id}"
-data-start="${time(start)}"
->
-
-`;
-
-inside.forEach(t=>{
-
-const outside=!isAvailable(t);
-
-html+=`
-
-<div
-class="training
-${outside?"outside":""}
-${conflict?"conflict":""}
-${t.fixed?"fixed":""}
-${t.together?"together":""}
-${t.consecutive?"consecutive":""}
-"
-draggable="true"
-data-id="${t.id}"
-onclick="editTraining(${t.id})"
-ondragstart="dragStart(event,${t.id})"
->
-
-<strong>
-${t.area} — ${t.division}
-</strong>
-
-${t.start} - ${t.end}
-
-<small>
-${duration(t)} min
-${t.together?" · 👥 "+t.group:""}
-${t.staff?" · 👔 "+t.staff:""}
-${t.fixed?" · 🔒":""}
-</small>
-
-</div>
-
-`;
-
-});
-
-html+=`</div>`;
-
-});
-
-}
-
-html+=`
-
-</div>
-
-</div>
-
-</div>
-
-`;
-
-});
-
-document.getElementById("grid").innerHTML=html;
-
-
-/*
-   Drop handlers
-*/
-
-document
-.querySelectorAll(".slot-cell")
-.forEach(cell=>{
-
-cell.ondragover=e=>{
-e.preventDefault();
-};
-
-cell.ondrop=e=>{
-
-e.preventDefault();
-
-const id=
-Number(e.dataTransfer.getData("id"));
-
-const t=
-data.trainings.find(x=>x.id===id);
-
-if(!t)return;
-
-const day=cell.dataset.day;
-const venue=cell.dataset.venue;
-const start=cell.dataset.start;
-
-const d=duration(t);
-
-const candidate={
-...t,
-day,
-venue,
-start,
-end:time(mins(start)+d)
-};
-
-if(!isAvailable(candidate)){
-
-if(!confirm(
-"El movimiento queda fuera de la disponibilidad del predio. ¿Continuar?"
-))return;
-
-}
-
-t.day=day;
-t.venue=venue;
-t.start=start;
-t.end=candidate.end;
-
-save();
-renderAll();
-
-};
-
-});
-
-}
-
-
-/* ======================================================
-   DRAG
-====================================================== */
-
-function dragStart(e,id){
-
-e.dataTransfer.setData(
-"id",
-id
-);
-
-}
-
-
-/* ======================================================
-   TRAININGS
-====================================================== */
-
-function renderTrainings(){
-
-const area=
-document.getElementById("filterArea").value;
-
-const venue=
-document.getElementById("filterVenue").value;
-
-let ts=data.trainings.filter(t=>
-(area==="TODOS"||t.area===area)
-&&
-(venue==="TODOS"||t.venue===venue)
-);
-
-const grouped={};
-
-ts.forEach(t=>{
-
-const key=
-`${t.area}-${t.division}`;
-
-if(!grouped[key])
-grouped[key]=[];
-
-grouped[key].push(t);
-
-});
-
-let html="";
-
-Object.values(grouped)
-.sort((a,b)=>
-(a[0].area+a[0].division)
-.localeCompare(b[0].area+b[0].division)
-)
-.forEach(group=>{
-
-const t0=group[0];
-
-html+=`
-
-<div class="card">
-
-<h3>
-${t0.area} — ${t0.division}
-</h3>
-
-<div class="training-list">
-
-${group
-.sort((a,b)=>
-DAYS.indexOf(a.day)-DAYS.indexOf(b.day)
-)
-.map(t=>`
-
-<div class="training-row">
-
-<div>
-
-<strong>
-${t.day}
-</strong>
-
-· ${t.start}-${t.end}
-
-· ${duration(t)} min
-
-<br>
-
-<span class="badge">
-${venueName(t.venue)}
-</span>
-
-${t.together?
-`<span class="badge">👥 ${t.group}</span>`:""}
-
-${t.staff?
-`<span class="badge">👔 ${t.staff}</span>`:""}
-
-${t.consecutive?
-`<span class="badge">🔗 Consecutivo</span>`:""}
-
-${t.fixed?
-`<span class="badge">🔒 Fijo</span>`:""}
-
-${!isAvailable(t)?
-`<span class="badge" style="background:#ffd3d3">
-⚠ Fuera de disponibilidad
-</span>`:""}
-
-</div>
-
-<button onclick="editTraining(${t.id})">
-✏️ Modificar
-</button>
-
-</div>
-
-`).join("")}
-
-</div>
-
-</div>
-
-`;
-
-});
-
-document.getElementById(
-"trainings"
-).innerHTML=html||`
-<div class="empty">
-No hay entrenamientos.
-</div>
-`;
-
-}
-
-
-/* ======================================================
-   VENUES
-====================================================== */
-
-function renderVenues(){
-
-document.getElementById("venues").innerHTML=`
-
-<div class="card-grid">
-
-${data.venues.map(v=>`
-
-<div class="card">
-
-<h3>
-🏟️ ${v.name}
-</h3>
-
-${DAYS.map(day=>`
-
-<div style="margin:5px 0">
-
-<strong>${day}</strong>
-
-:
-
-${
-(v.availability[day]||[]).length
-?
-v.availability[day]
-.map(s=>
-`<span class="badge">${s[0]}-${s[1]}</span>`
-)
-.join("")
-:
-`<span style="color:#888">sin disponibilidad</span>`
-}
-
-</div>
-
-`).join("")}
-
-<br>
-
-<button onclick="editVenue('${v.id}')">
-✏️ Modificar
-</button>
-
-</div>
-
-`).join("")}
-
-</div>
-`;
-
-}
-
-
-/* ======================================================
-   FILTERS
-====================================================== */
-
-function updateVenueFilters(){
-
-const select=
-document.getElementById("filterVenue");
-
-const current=select.value;
-
-select.innerHTML=
-`<option value="TODOS">Todos</option>`
-+
-data.venues.map(v=>
-`<option value="${v.id}">${v.name}</option>`
-).join("");
-
-if(
-data.venues.some(v=>v.id===current)
-){
-
-select.value=current;
-
-}
-
-}
-
-
-/* ======================================================
-   MODAL TRAINING
-====================================================== */
-
-function fillVenueSelect(){
-
-document.getElementById("fVenue").innerHTML=
-data.venues.map(v=>
-`<option value="${v.id}">
-${v.name}
-</option>`
-).join("");
-
-}
-
-
-function nuevoEntrenamiento(){
-
-fillVenueSelect();
-
-document.getElementById(
-"trainingModalTitle"
-).innerText="Nuevo entrenamiento";
-
-document.getElementById(
-"trainingId"
-).value="";
-
-document.getElementById("fArea").value="AFA";
-document.getElementById("fDivision").value="";
-document.getElementById("fDay").value="lunes";
-document.getElementById("fVenue").value=
-data.venues[0]?.id||"";
-document.getElementById("fStart").value="18:00";
-document.getElementById("fEnd").value="19:00";
-document.getElementById("fMin").value=60;
-document.getElementById("fPriority").value=2;
-document.getElementById("fTogether").checked=false;
-document.getElementById("fGroup").value="";
-document.getElementById("fConsecutive").checked=false;
-document.getElementById("fStaff").value="";
-document.getElementById("fFixed").checked=false;
-
-document.getElementById(
-"trainingModal"
-).style.display="flex";
-
-}
-
-
-function editTraining(id){
-
-const t=data.trainings.find(
-x=>x.id===id
-);
-
-if(!t)return;
-
-fillVenueSelect();
-
-document.getElementById(
-"trainingModalTitle"
-).innerText=
-`Modificar ${t.area} — ${t.division}`;
-
-document.getElementById(
-"trainingId"
-).value=t.id;
-
-document.getElementById("fArea").value=t.area;
-document.getElementById("fDivision").value=t.division;
-document.getElementById("fDay").value=t.day;
-document.getElementById("fVenue").value=t.venue;
-document.getElementById("fStart").value=t.start;
-document.getElementById("fEnd").value=t.end;
-document.getElementById("fMin").value=t.min;
-document.getElementById("fPriority").value=t.priority;
-document.getElementById("fTogether").checked=!!t.together;
-document.getElementById("fGroup").value=t.group||"";
-document.getElementById("fConsecutive").checked=!!t.consecutive;
-document.getElementById("fStaff").value=t.staff||"";
-document.getElementById("fFixed").checked=!!t.fixed;
-
-document.getElementById(
-"trainingModal"
-).style.display="flex";
-
-}
-
-
-function saveTraining(){
-
-const id=
-document.getElementById("trainingId").value;
-
-const obj={
-
-area:
-document.getElementById("fArea").value,
-
-division:
-document.getElementById("fDivision").value.trim(),
-
-day:
-document.getElementById("fDay").value,
-
-venue:
-document.getElementById("fVenue").value,
-
-start:
-document.getElementById("fStart").value,
-
-end:
-document.getElementById("fEnd").value,
-
-min:
-Number(document.getElementById("fMin").value)||60,
-
-priority:
-Number(document.getElementById("fPriority").value)||2,
-
-together:
-document.getElementById("fTogether").checked,
-
-group:
-document.getElementById("fGroup").value.trim(),
-
-consecutive:
-document.getElementById("fConsecutive").checked,
-
-staff:
-document.getElementById("fStaff").value.trim(),
-
-fixed:
-document.getElementById("fFixed").checked
-
-};
-
-if(!obj.division){
-
-alert("Ingresá la división.");
-
-return;
-
-}
-
-if(
-mins(obj.end)<=mins(obj.start)
-){
-
-alert(
-"La hora de finalización debe ser posterior al inicio."
-);
-
-return;
-
-}
-
-if(id){
-
-const index=
-data.trainings.findIndex(
-t=>t.id==id
-);
-
-data.trainings[index]={
-...data.trainings[index],
-...obj
-};
-
-}else{
-
-obj.id=Date.now();
-
-data.trainings.push(obj);
-
-}
-
-save();
-
-closeTraining();
-
-renderAll();
-
-}
-
-
-function deleteTraining(){
-
-const id=
-document.getElementById("trainingId").value;
-
-if(!id)return;
-
-if(!confirm(
-"¿Eliminar este entrenamiento?"
-))return;
-
-data.trainings=
-data.trainings.filter(
-t=>t.id!=id
-);
-
-save();
-
-closeTraining();
-
-renderAll();
-
-}
-
-
-function closeTraining(){
-
-document.getElementById(
-"trainingModal"
-).style.display="none";
-
-}
-
-
-/* ======================================================
-   VENUES
-====================================================== */
-
-function nuevoPredio(){
-
-document.getElementById("venueId").value="";
-document.getElementById("venueName").value="";
-
-renderAvailability();
-
-document.getElementById(
-"venueModal"
-).style.display="flex";
-
-}
-
-
-function editVenue(id){
-
-const v=data.venues.find(
-x=>x.id===id
-);
-
-if(!v)return;
-
-document.getElementById("venueId").value=id;
-document.getElementById("venueName").value=v.name;
-
-renderAvailability(v);
-
-document.getElementById(
-"venueModal"
-).style.display="flex";
-
-}
-
-
-function renderAvailability(v=null){
-
-const el=
-document.getElementById(
-"availability"
-);
-
-el.innerHTML=DAYS.map(day=>{
-
-const slots=
-v?.availability?.[day]||[];
-
-return`
-
-<div class="card" style="margin-bottom:8px">
-
-<strong>${day}</strong>
-
-<div id="slots-${day}">
-
-${slots.map(s=>`
-
-<div class="toolbar"
-style="margin-top:6px">
-
-<input type="time"
-value="${s[0]}"
-class="av-start"
-data-day="${day}">
-
-<input type="time"
-value="${s[1]}"
-class="av-end"
-data-day="${day}">
-
-<button
-class="red"
-onclick="this.parentElement.remove()">
-×
-</button>
-
-</div>
-
-`).join("")}
-
-</div>
-
-<button
-class="gray"
-onclick="addAvailability('${day}')"
-style="margin-top:6px">
-
-＋ Horario
-
-</button>
-
-</div>
-
-`;
-
-}).join("");
-
-}
-
-
-function addAvailability(day){
-
-const box=
-document.getElementById(
-"slots-"+day
-);
-
-const row=document.createElement("div");
-
-row.className="toolbar";
-
-row.style.marginTop="6px";
-
-row.innerHTML=`
-
-<input type="time"
-value="08:00"
-class="av-start"
-data-day="${day}">
-
-<input type="time"
-value="23:00"
-class="av-end"
-data-day="${day}">
-
-<button
-class="red"
-onclick="this.parentElement.remove()">
-×
-</button>
-
-`;
-
-box.appendChild(row);
-
-}
-
-
-function saveVenue(){
-
-const id=
-document.getElementById("venueId").value;
-
-const name=
-document.getElementById("venueName").value.trim();
-
-if(!name){
-
-alert("Ingresá el nombre.");
-
-return;
-
-}
-
-const availability={};
-
-DAYS.forEach(day=>{
-
-const starts=
-[
-...document.querySelectorAll(
-`.av-start[data-day="${day}"]`
-)
-];
-
-const ends=
-[
-...document.querySelectorAll(
-`.av-end[data-day="${day}"]`
-)
-];
-
-availability[day]=starts.map(
-(s,i)=>{
-
-return[
-s.value,
-ends[i]?.value||""
-];
-
-}
-).filter(
-x=>
-x[0] &&
-x[1] &&
-mins(x[1])>mins(x[0])
-);
-
-});
-
-if(id){
-
-const v=data.venues.find(
-x=>x.id===id
-);
-
-v.name=name;
-v.availability=availability;
-
-}else{
-
-data.venues.push({
-
-id:"venue-"+Date.now(),
-
-name,
-
-availability
-
-});
-
-}
-
-save();
-
-closeVenue();
-
-renderAll();
-
-}
-
-
-function deleteVenue(){
-
-const id=
-document.getElementById("venueId").value;
-
-if(!id)return;
-
-const used=
-data.trainings.some(
-t=>t.venue===id
-);
-
-if(used){
-
-alert(
-"No se puede eliminar este predio porque tiene entrenamientos asignados. Primero reasignalos."
-);
-
-return;
-
-}
-
-if(!confirm(
-"¿Eliminar predio?"
-))return;
-
-data.venues=
-data.venues.filter(
-v=>v.id!==id
-);
-
-save();
-
-closeVenue();
-
-renderAll();
-
-}
-
-
-function closeVenue(){
-
-document.getElementById(
-"venueModal"
-).style.display="none";
-
-}
-
-
-/* ======================================================
-   EXPORTACIÓN
-====================================================== */
-
-async function exportPNG(){
-
-const el=
-document.getElementById("captureArea");
-
-const canvas=
-await html2canvas(
-el,
-{
-scale:2,
-backgroundColor:"#eef1f5"
-}
-);
-
-const link=
-document.createElement("a");
-
-link.download=
-"grilla-futsal.png";
-
-link.href=
-canvas.toDataURL("image/png");
-
-link.click();
-
-}
-
-
-async function exportPDF(){
-
-const el=
-document.getElementById("captureArea");
-
-const canvas=
-await html2canvas(
-el,
-{
-scale:2,
-backgroundColor:"#eef1f5"
-}
-);
-
-const img=
-canvas.toDataURL("image/png");
-
-const {jsPDF}=
-window.jspdf;
-
-const pdf=
-new jsPDF(
-"landscape",
-"mm",
-"a4"
-);
-
-const pageW=
-pdf.internal.pageSize.getWidth();
-
-const pageH=
-pdf.internal.pageSize.getHeight();
-
-const margin=5;
-
-const width=
-pageW-margin*2;
-
-const height=
-canvas.height/canvas.width*width;
-
-let y=margin;
-
-pdf.addImage(
-img,
-"PNG",
-margin,
-y,
-width,
-height
-);
-
-let remaining=
-height-(pageH-margin*2);
-
-while(remaining>0){
-
-pdf.addPage();
-
-y=-(height-remaining)+margin;
-
-pdf.addImage(
-img,
-"PNG",
-margin,
-y,
-width,
-height
-);
-
-remaining-=pageH-margin*2;
-
-}
-
-pdf.save(
-"grilla-futsal.pdf"
-);
-
-}
-
-
-/* ======================================================
-   RESET
-====================================================== */
-
-function resetData(){
-
-if(!confirm(
-"Esto restaurará todos los datos iniciales y eliminará tus modificaciones. ¿Continuar?"
-))return;
-
-data=
-JSON.parse(
-JSON.stringify(initialData)
-);
-
-save();
-
-renderAll();
-
-}
-
-
-/* ======================================================
-   RENDER GENERAL
-====================================================== */
-
-function renderAll(){
-
-updateVenueFilters();
-
-renderStats();
-
-renderConflicts();
-
-renderGrid();
-
-renderTrainings();
-
-renderVenues();
-
-}
-
-
-/* ======================================================
-   START
-====================================================== */
-
-renderAll();
-
-</script>
-
+    <!-- Sidebar -->
+    <aside>
+        <div class="logo-area">
+            ⚡ PREP-FÍSICA
+        </div>
+        <ul class="nav-links">
+            <li><a href="#" class="active">📊 Dashboard</a></li>
+            <li><a href="#">👥 Plantel / Jugadores</a></li>
+            <li><a href="#">⚡ Cargas & RPE</a></li>
+            <li><a href="#">🥗 Nutrición & Plan</a></li>
+            <li><a href="#">⚙️ Configuración</a></li>
+        </ul>
+    </aside>
+
+    <!-- Main Section -->
+    <main>
+        <header>
+            <div class="header-title">
+                <h1>Panel de Control de Rendimiento</h1>
+                <p>Monitoreo diario de cargas físicas y bienestar del plantel.</p>
+            </div>
+            <div class="user-profile">
+                <div class="user-avatar">PC</div>
+                <span style="font-weight: 600; font-size: 0.9rem;">Lic. Patricio Cora</span>
+            </div>
+        </header>
+
+        <!-- KPI Metrics Grid -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-title">Jugadores Activos</div>
+                <div class="metric-value">18</div>
+                <div class="metric-trend">100% Disponibilidad física</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">Carga Promedio (RPE)</div>
+                <div class="metric-value">640 AU</div>
+                <div class="metric-trend">↑ 8% vs semana anterior</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">Índice de Fatiga</div>
+                <div class="metric-value" style="color: var(--accent-color);">Bajo</div>
+                <div class="metric-trend">Estado óptimo de recuperación</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">Próxima Sesión</div>
+                <div class="metric-value">19:30 hs</div>
+                <div class="metric-trend">Fuerza & Preventivo</div>
+            </div>
+        </div>
+
+        <!-- Dashboard Content Grid -->
+        <div class="dashboard-row">
+            <!-- Table Panel -->
+            <div class="panel">
+                <div class="panel-title">
+                    Estado Actual del Plantel
+                    <span style="font-size: 0.8rem; color: var(--text-secondary);">Actualizado hoy</span>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Jugador</th>
+                            <th>Posición</th>
+                            <th>RPE Sesión</th>
+                            <th>Fatiga (1-10)</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="font-weight: 600;">Mateo G.</td>
+                            <td>Cierre</td>
+                            <td>7</td>
+                            <td>3</td>
+                            <td><span class="badge optimal">Óptimo</span></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 600;">Lucas R.</td>
+                            <td>Ala</td>
+                            <td>8</td>
+                            <td>5</td>
+                            <td><span class="badge warning">Atención</span></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 600;">Joaquín M.</td>
+                            <td>Pivot</td>
+                            <td>9</td>
+                            <td>7</td>
+                            <td><span class="badge fatigue">Fatiga Alta</span></td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 600;">Franco B.</td>
+                            <td>Arquero</td>
+                            <td>6</td>
+                            <td>2</td>
+                            <td><span class="badge optimal">Óptimo</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Calculator / Quick Tool Panel -->
+            <div class="panel">
+                <div class="panel-title">Calculadora de Carga (Session-RPE)</div>
+                <form id="rpeForm">
+                    <div class="form-group">
+                        <label for="duration">Duración de la sesión (minutos):</label>
+                        <input type="number" id="duration" placeholder="Ej. 90" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="rpeValue">Intensidad Percibida (RPE 1-10):</label>
+                        <select id="rpeValue">
+                            <option value="1">1 - Muy, muy suave</option>
+                            <option value="3">3 - Moderado</option>
+                            <option value="5">5 - Duro</option>
+                            <option value="7">7 - Muy duro</option>
+                            <option value="10">10 - Máximo absoluto</option>
+                        </select>
+                    </div>
+                    <button type="button" class="btn" onclick="calcularCarga()">Calcular Carga (AU)</button>
+                </form>
+                <div class="result-box" id="resultadoCarga">
+                    Carga de entrenamiento: <strong>- AU</strong>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function calcularCarga() {
+            const duration = document.getElementById('duration').value;
+            const rpe = document.getElementById('rpeValue').value;
+            const resultBox = document.getElementById('resultadoCarga');
+
+            if (!duration || duration <= 0) {
+                resultBox.innerHTML = '<span style="color: var(--danger);">Ingresá una duración válida.</span>';
+                return;
+            }
+
+            const cargaTotal = duration * rpe;
+            let nivelCarga = "Baja";
+            let color = "var(--accent-color)";
+
+            if (cargaTotal > 500 && cargaTotal <= 800) {
+                nivelCarga = "Moderada / Alta";
+                color = "var(--warning)";
+            } else if (cargaTotal > 800) {
+                nivelCarga = "Muy Alta (Riesgo)";
+                color = "var(--danger)";
+            }
+
+            resultBox.innerHTML = `Carga Total: <strong>${cargaTotal} AU</strong> <br><span style="font-size: 0.85rem; color: ${color};">Clasificación: ${nivelCarga}</span>`;
+        }
+    </script>
 </body>
 </html>
-```
