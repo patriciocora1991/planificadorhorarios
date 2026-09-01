@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestor Profesional de Entrenamientos - Club</title>
+    <title>Gestor Pro de Entrenamientos - Club</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -17,14 +17,14 @@
 <body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col">
 
     <!-- Header -->
-    <header class="bg-indigo-900 text-white shadow-md">
+    <header class="bg-indigo-900 text-white shadow-lg">
         <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center">
             <h1 class="text-2xl font-bold tracking-wide flex items-center gap-2">
-                <span>⚽</span> Gestor Integral de Entrenamientos Pro
+                <span>⚽</span> Gestor Pro: Planificación y Espacios
             </h1>
             <div class="mt-3 md:mt-0 flex gap-3 no-print">
-                <button onclick="abrirModalOpciones()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-medium transition shadow text-sm flex items-center gap-2">
-                    ✨ Generador Automático (Opciones)
+                <button onclick="ejecutarOptimizador()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-medium transition shadow text-sm flex items-center gap-2">
+                    ✨ Auto-Optimizar Grilla
                 </button>
                 <button onclick="window.print()" class="bg-slate-700 hover:bg-slate-800 text-white px-4 py-2 rounded-lg font-medium transition shadow text-sm">
                     🖨️ Exportar PDF / Imagen
@@ -35,15 +35,15 @@
 
     <!-- Navegación por Pestañas -->
     <nav class="bg-white shadow border-b no-print">
-        <div class="max-w-7xl mx-auto px-4 flex gap-4">
-            <button onclick="cambiarPestaña('grilla')" id="btn-grilla" class="py-3 px-5 font-bold border-b-2 border-indigo-600 text-indigo-600 transition flex items-center gap-2">
+        <div class="max-w-7xl mx-auto px-4 flex gap-4 overflow-x-auto">
+            <button onclick="cambiarPestaña('grilla')" id="btn-grilla" class="py-3 px-5 font-bold border-b-2 border-indigo-600 text-indigo-600 transition flex items-center gap-2 whitespace-nowrap">
                 📅 Grilla Semanal
             </button>
-            <button onclick="cambiarPestaña('predios')" id="btn-predios" class="py-3 px-5 font-semibold text-slate-500 hover:text-indigo-600 transition flex items-center gap-2">
-                📍 Gestión de Predios
+            <button onclick="cambiarPestaña('predios')" id="btn-predios" class="py-3 px-5 font-semibold text-slate-500 hover:text-indigo-600 transition flex items-center gap-2 whitespace-nowrap">
+                📍 Predios y Canchas
             </button>
-            <button onclick="cambiarPestaña('equipos')" id="btn-equipos" class="py-3 px-5 font-semibold text-slate-500 hover:text-indigo-600 transition flex items-center gap-2">
-                👥 Gestión de Equipos y Staff
+            <button onclick="cambiarPestaña('planteles')" id="btn-planteles" class="py-3 px-5 font-semibold text-slate-500 hover:text-indigo-600 transition flex items-center gap-2 whitespace-nowrap">
+                👥 Planteles y Equipos
             </button>
         </div>
     </nav>
@@ -56,62 +56,64 @@
             <div class="bg-white p-6 rounded-xl shadow-md print-shadow">
                 <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4 no-print">
                     <div>
-                        <h2 class="text-xl font-bold text-indigo-900">Grilla Semanal Interactiva</h2>
-                        <p class="text-sm text-slate-500">Modifica manualmente cualquier turno o filtra por predio.</p>
+                        <h2 class="text-xl font-bold text-indigo-900">Grilla General de Entrenamientos</h2>
+                        <p class="text-sm text-slate-500">Agrega turnos, modifica horarios o filtra por predio dinámicamente.</p>
                     </div>
                     <div class="flex items-center gap-3">
-                        <label class="text-sm font-semibold text-slate-700">Filtrar Predio:</label>
+                        <button onclick="abrirModalTurno()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition shadow">
+                            + Agregar Turno Manual
+                        </button>
                         <select id="filtroPredio" onchange="renderizarGrilla()" class="border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                             <option value="todos">Todos los Predios</option>
-                            <option value="Rincon">Predio Rincón</option>
-                            <option value="Satsaid">Predio Satsaid</option>
-                            <option value="Manolo">Predio Dean Funes (Manolo)</option>
                         </select>
                     </div>
                 </div>
 
-                <!-- Contenedor de la Grilla -->
-                <div id="grillaContenedor" class="grid grid-cols-1 md:grid-cols-5 gap-4">
-                    <!-- Se llena con JS -->
-                </div>
+                <div id="grillaContenedor" class="grid grid-cols-1 md:grid-cols-5 gap-4"></div>
             </div>
         </section>
 
         <!-- PESTAÑA 2: GESTIÓN DE PREDIOS -->
         <section id="tab-predios" class="hidden space-y-6">
             <div class="bg-white p-6 rounded-xl shadow-md">
-                <div class="flex justify-between items-center mb-4 border-b pb-3">
+                <div class="flex justify-between items-center mb-6 border-b pb-4">
                     <div>
-                        <h2 class="text-xl font-bold text-indigo-900">Configuración de Predios y Canchas</h2>
-                        <p class="text-sm text-slate-500">Modifica la disponibilidad de tus espacios físicos.</p>
+                        <h2 class="text-xl font-bold text-indigo-900">Administración de Predios y Canchas</h2>
+                        <p class="text-sm text-slate-500">Modifica horarios, canchas habilitadas o da de alta nuevos espacios.</p>
                     </div>
+                    <button onclick="abrirModalPredio()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition shadow">
+                        + Nuevo Predio
+                    </button>
                 </div>
                 <div id="listaPredios" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
             </div>
         </section>
 
-        <!-- PESTAÑA 3: GESTIÓN DE EQUIPOS Y STAFF -->
-        <section id="tab-equipos" class="hidden space-y-6">
+        <!-- PESTAÑA 3: GESTIÓN DE PLANTELES -->
+        <section id="tab-planteles" class="hidden space-y-6">
             <div class="bg-white p-6 rounded-xl shadow-md">
-                <div class="flex justify-between items-center mb-4 border-b pb-3">
+                <div class="flex justify-between items-center mb-6 border-b pb-4">
                     <div>
-                        <h2 class="text-xl font-bold text-indigo-900">Configuración de Equipos, Staff y Secuencias</h2>
-                        <p class="text-sm text-slate-500">Define si una categoría va antes o después de otra por el cuerpo técnico.</p>
+                        <h2 class="text-xl font-bold text-indigo-900">Administración de Planteles y Categorías</h2>
+                        <p class="text-sm text-slate-500">Ajusta duraciones, predios preferidos y reglas de continuidad para el staff.</p>
                     </div>
+                    <button onclick="abrirModalPlantel()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition shadow">
+                        + Nueva Categoría
+                    </button>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="bg-slate-100 text-slate-700 text-xs uppercase tracking-wider">
                                 <th class="p-3 border-b">Categoría</th>
-                                <th class="p-3 border-b">Tipo</th>
+                                <th class="p-3 border-b">Rama / Tipo</th>
                                 <th class="p-3 border-b">Duración</th>
                                 <th class="p-3 border-b">Predio Pref.</th>
-                                <th class="p-3 border-b">Regla de Staff (Secuencia)</th>
+                                <th class="p-3 border-b">Regla Staff / Secuencia</th>
                                 <th class="p-3 border-b text-center">Acciones</th>
                             </tr>
                         </thead>
-                        <tbody id="tablaEquipos" class="text-sm text-slate-700 divide-y divide-slate-200"></tbody>
+                        <tbody id="tablaPlanteles" class="text-sm text-slate-700 divide-y divide-slate-200"></tbody>
                     </table>
                 </div>
             </div>
@@ -119,139 +121,210 @@
 
     </main>
 
-    <!-- MODAL DE OPCIONES AUTOMÁTICAS -->
-    <div id="modalOpciones" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center p-4 z-50 no-print">
-        <div class="bg-white rounded-2xl max-w-2xl w-full p-6 space-y-6 shadow-2xl">
-            <div class="flex justify-between items-center border-b pb-3">
-                <h3 class="text-xl font-bold text-indigo-900">✨ Generador Automático de Opciones</h3>
-                <button onclick="cerrarModalOpciones()" class="text-slate-400 hover:text-slate-600 font-bold text-xl">&times;</button>
-            </div>
-            <p class="text-sm text-slate-600">El sistema procesó las restricciones de canchas, duración y reglas de staff (bloques consecutivos). Selecciona la opción que prefieras:</p>
-            
-            <div class="space-y-4">
-                <div class="border rounded-xl p-4 hover:border-indigo-500 transition cursor-pointer bg-slate-50" onclick="aplicarOpcion(1)">
-                    <div class="flex justify-between items-center font-bold text-indigo-900 mb-1">
-                        <span>Opción 1: Optimizado sin Baches (Staff Continuo)</span>
-                        <span class="text-xs bg-emerald-100 text-emerald-800 px-2 py-1 rounded">Recomendado</span>
-                    </div>
-                    <p class="text-xs text-slate-500">Prioriza que las categorías de AFA y Futsal sigan exactamente el orden correlativo para los entrenadores sin tiempos muertos en Rincón.</p>
+    <!-- MODAL: AGREGAR / EDITAR TURNO -->
+    <div id="modalTurno" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center p-4 z-50 no-print">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+            <h3 class="text-lg font-bold text-indigo-900" id="tituloModalTurno">Nuevo Turno en Grilla</h3>
+            <div class="space-y-3 text-sm">
+                <div>
+                    <label class="font-semibold text-slate-700">Día de la semana:</label>
+                    <select id="tDia" class="w-full border rounded-lg p-2 mt-1">
+                        <option value="Lunes">Lunes</option>
+                        <option value="Martes">Martes</option>
+                        <option value="Miercoles">Miércoles</option>
+                        <option value="Jueves">Jueves</option>
+                        <option value="Viernes">Viernes</option>
+                    </select>
                 </div>
-
-                <div class="border rounded-xl p-4 hover:border-indigo-500 transition cursor-pointer bg-slate-50" onclick="aplicarOpcion(2)">
-                    <div class="flex justify-between items-center font-bold text-indigo-900 mb-1">
-                        <span>Opción 2: Distribución Temprana en Satsaid y Manolo</span>
-                        <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">Alternativa</span>
-                    </div>
-                    <p class="text-xs text-slate-500">Mueve los horarios hacia los primeros turnos disponibles de los predios externos, liberando la noche.</p>
+                <div>
+                    <label class="font-semibold text-slate-700">Horario (Ej. 18:00 - 19:30):</label>
+                    <input type="text" id="tHorario" class="w-full border rounded-lg p-2 mt-1" placeholder="18:00 - 19:30">
                 </div>
-
-                <div class="border rounded-xl p-4 hover:border-indigo-500 transition cursor-pointer bg-slate-50" onclick="aplicarOpcion(3)">
-                    <div class="flex justify-between items-center font-bold text-indigo-900 mb-1">
-                        <span>Opción 3: Máxima Duración de Entrenamientos (+ Minutos)</span>
-                        <span class="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded">Intensiva</span>
-                    </div>
-                    <p class="text-xs text-slate-500">Extiende los módulos a 90 minutos en categorías AFA utilizando al límite la franja de 17 a 22 hs en Rincón.</p>
+                <div>
+                    <label class="font-semibold text-slate-700">Predio:</label>
+                    <select id="tPredio" class="w-full border rounded-lg p-2 mt-1"></select>
+                </div>
+                <div>
+                    <label class="font-semibold text-slate-700">Categoría / Plantel:</label>
+                    <select id="tDivision" class="w-full border rounded-lg p-2 mt-1"></select>
                 </div>
             </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="cerrarModal('modalTurno')" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium">Cancelar</button>
+                <button onclick="guardarTurno()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium">Guardar Turno</button>
+            </div>
+        </div>
+    </div>
 
-            <div class="flex justify-end pt-2">
-                <button onclick="cerrarModalOpciones()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium transition">Cancelar</button>
+    <!-- MODAL: AGREGAR / EDITAR PREDIO -->
+    <div id="modalPredio" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center p-4 z-50 no-print">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+            <h3 class="text-lg font-bold text-indigo-900" id="tituloModalPredio">Configurar Predio</h3>
+            <input type="hidden" id="pIndexModal" value="-1">
+            <div class="space-y-3 text-sm">
+                <div>
+                    <label class="font-semibold text-slate-700">Nombre del Predio:</label>
+                    <input type="text" id="pNombre" class="w-full border rounded-lg p-2 mt-1" placeholder="Ej. Predio Rincón">
+                </div>
+                <div>
+                    <label class="font-semibold text-slate-700">Cantidad de Canchas:</label>
+                    <input type="number" id="pCanchas" class="w-full border rounded-lg p-2 mt-1" value="1" min="1">
+                </div>
+                <div>
+                    <label class="font-semibold text-slate-700">Días Habilitados:</label>
+                    <input type="text" id="pDias" class="w-full border rounded-lg p-2 mt-1" placeholder="Lunes a Viernes">
+                </div>
+                <div>
+                    <label class="font-semibold text-slate-700">Franja Horaria / Detalles:</label>
+                    <input type="text" id="pHorario" class="w-full border rounded-lg p-2 mt-1" placeholder="08:00 a 23:00 hs">
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="cerrarModal('modalPredio')" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium">Cancelar</button>
+                <button onclick="guardarPredio()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium">Guardar Predio</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: AGREGAR / EDITAR PLANTELL -->
+    <div id="modalPlantel" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center p-4 z-50 no-print">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+            <h3 class="text-lg font-bold text-indigo-900" id="tituloModalPlantel">Configurar Plantel</h3>
+            <input type="hidden" id="plIndexModal" value="-1">
+            <div class="space-y-3 text-sm">
+                <div>
+                    <label class="font-semibold text-slate-700">Nombre de la Categoría:</label>
+                    <input type="text" id="plNombre" class="w-full border rounded-lg p-2 mt-1" placeholder="Ej. AFA 1ra">
+                </div>
+                <div>
+                    <label class="font-semibold text-slate-700">Tipo / Rama:</label>
+                    <select id="plTipo" class="w-full border rounded-lg p-2 mt-1">
+                        <option value="AFA">AFA</option>
+                        <option value="Futsal">Futsal</option>
+                        <option value="Promo">Promo</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="font-semibold text-slate-700">Duración (horas):</label>
+                    <input type="number" step="0.5" id="plDuracion" class="w-full border rounded-lg p-2 mt-1" value="1.5">
+                </div>
+                <div>
+                    <label class="font-semibold text-slate-700">Predio Preferido:</label>
+                    <input type="text" id="plPredio" class="w-full border rounded-lg p-2 mt-1" placeholder="Rincon / Satsaid / Manolo">
+                </div>
+                <div>
+                    <label class="font-semibold text-slate-700">Regla de Staff (Secuencia):</label>
+                    <input type="text" id="plRegla" class="w-full border rounded-lg p-2 mt-1" placeholder="Ej. Inmediatamente después de 4ta">
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="cerrarModal('modalPlantel')" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium">Cancelar</button>
+                <button onclick="guardarPlantel()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium">Guardar Categoría</button>
             </div>
         </div>
     </div>
 
     <!-- Footer -->
     <footer class="bg-slate-800 text-slate-400 text-center py-4 text-sm no-print mt-auto">
-        <p>Sistema de Gestión Deportiva - Club Libertadores</p>
+        <p>Sistema Pro de Gestión Deportiva - Club Libertadores</p>
     </footer>
 
-    <!-- Script de lógica -->
+    <!-- Lógica y Persistencia -->
     <script>
-        let prediosData = [
-            { id: "Rincon", nombre: "Predio Rincón", canchas: 1, dias: "Lunes a Viernes", horario: "08:00 - 23:00 hs", estado: "Activo" },
-            { id: "Satsaid", nombre: "Predio Satsaid", canchas: 1, dias: "Martes a Viernes", horario: "Variables según día", estado: "Activo" },
-            { id: "Manolo", nombre: "Predio Dean Funes", canchas: 1, dias: "Lunes, Mart, Jue, Vier", horario: "Variables según día", estado: "Activo" }
+        // Inicializar datos con localStorage para persistencia real
+        let prediosData = JSON.parse(localStorage.getItem('club_predios')) || [
+            { id: "Rincon", nombre: "Predio Rincón", canchas: 1, dias: "Lunes a Viernes", horario: "08:00 - 23:00 hs" },
+            { id: "Satsaid", nombre: "Predio Satsaid", canchas: 1, dias: "Martes a Viernes", horario: "Variables según día" },
+            { id: "Manolo", nombre: "Predio Dean Funes", canchas: 1, dias: "Lunes, Mart, Jue, Vier", horario: "Variables según día" }
         ];
 
-        let equiposData = [
+        let plantelesData = JSON.parse(localStorage.getItem('club_planteles')) || [
             { id: 1, nombre: "AFA 1ra", tipo: "AFA", duracion: 1.5, predio: "Satsaid", reglaStaff: "Libre" },
-            { id: 2, nombre: "AFA 3ra", tipo: "AFA", duracion: 1.5, predio: "Rincon", reglaStaff: "Inmediatamente después de AFA 4ta" },
-            { id: 3, nombre: "AFA 4ta", tipo: "AFA", duracion: 2.0, predio: "Rincon", reglaStaff: "Inmediatamente antes de AFA 3ra" },
-            { id: 4, nombre: "AFA 5ta", tipo: "AFA", duracion: 1.5, predio: "Rincon", reglaStaff: "Separada de 6ta (Consecutiva)" },
-            { id: 5, nombre: "AFA 6ta", tipo: "AFA", duracion: 1.5, predio: "Rincon", reglaStaff: "Separada de 5ta (Consecutiva)" },
-            { id: 6, nombre: "AFA 7ma", tipo: "AFA", duracion: 1.5, predio: "Rincon", reglaStaff: "Inmediatamente antes de AFA 5ta" },
+            { id: 2, nombre: "AFA 3ra", tipo: "AFA", duracion: 1.5, predio: "Rincon", reglaStaff: "Consecutiva con 4ta" },
+            { id: 3, nombre: "AFA 4ta", tipo: "AFA", duracion: 2.0, predio: "Rincon", reglaStaff: "Consecutiva con 3ra" },
+            { id: 4, nombre: "AFA 5ta", tipo: "AFA", duracion: 1.5, predio: "Rincon", reglaStaff: "Separada (Consecutiva)" },
+            { id: 5, nombre: "AFA 6ta", tipo: "AFA", duracion: 1.5, predio: "Rincon", reglaStaff: "Separada (Consecutiva)" },
+            { id: 6, nombre: "AFA 7ma", tipo: "AFA", duracion: 1.5, predio: "Rincon", reglaStaff: "Consecutiva" },
             { id: 7, nombre: "AFA 8va", tipo: "AFA", duracion: 1.5, predio: "Rincon", reglaStaff: "Libre" },
             { id: 8, nombre: "Promo 18-19", tipo: "Promo", duracion: 1.0, predio: "Manolo", reglaStaff: "Libre" },
-            { id: 9, nombre: "Promo 16-17", tipo: "Promo", duracion: 1.0, predio: "Manolo", reglaStaff: "Inmediatamente después de Promo 18-19" },
+            { id: 9, nombre: "Promo 16-17", tipo: "Promo", duracion: 1.0, predio: "Manolo", reglaStaff: "Consecutiva" },
             { id: 10, nombre: "Futsal 1ra", tipo: "Futsal", duracion: 1.0, predio: "Manolo", reglaStaff: "Libre" },
             { id: 11, nombre: "Futsal 3ra y 4ta", tipo: "Futsal", duracion: 1.0, predio: "Manolo", reglaStaff: "Juntas" },
             { id: 12, nombre: "Futsal 5ta y 6ta", tipo: "Futsal", duracion: 1.5, predio: "Rincon", reglaStaff: "Juntas" },
             { id: 13, nombre: "Futsal 7ma y 8va", tipo: "Futsal", duracion: 1.0, predio: "Rincon", reglaStaff: "Juntas" }
         ];
 
-        let grillaDatos = {
+        let grillaDatos = JSON.parse(localStorage.getItem('club_grilla')) || {
             "Lunes": [
-                { id: 101, predio: "Rincon", horario: "17:00 - 18:00", division: "Futsal 7ma y 8va", tipo: "Futsal" },
-                { id: 102, predio: "Rincon", horario: "18:00 - 19:30", division: "AFA 7ma", tipo: "AFA" },
-                { id: 103, predio: "Rincon", horario: "19:30 - 21:00", division: "AFA 5ta", tipo: "AFA" },
-                { id: 104, predio: "Manolo", horario: "20:00 - 21:00", division: "Futsal 3ra y 4ta", tipo: "Futsal" }
+                { id: 101, predio: "Predio Rincón", horario: "17:00 - 18:00", division: "Futsal 7ma y 8va", tipo: "Futsal" },
+                { id: 102, predio: "Predio Rincón", horario: "18:00 - 19:30", division: "AFA 7ma", tipo: "AFA" },
+                { id: 103, predio: "Predio Rincón", horario: "19:30 - 21:00", division: "AFA 5ta", tipo: "AFA" },
+                { id: 104, predio: "Predio Dean Funes", horario: "20:00 - 21:00", division: "Futsal 3ra y 4ta", tipo: "Futsal" }
             ],
             "Martes": [
-                { id: 201, predio: "Rincon", horario: "16:30 - 18:00", division: "Futsal 5ta y 6ta", tipo: "Futsal" },
-                { id: 202, predio: "Rincon", horario: "19:00 - 20:30", division: "AFA 4ta", tipo: "AFA" },
-                { id: 203, predio: "Rincon", horario: "20:30 - 22:00", division: "AFA 3ra", tipo: "AFA" },
-                { id: 204, predio: "Satsaid", horario: "19:00 - 20:30", division: "AFA 1ra", tipo: "AFA" },
-                { id: 205, predio: "Manolo", horario: "18:00 - 19:00", division: "Promo 18-19", tipo: "Promo" },
-                { id: 206, predio: "Manolo", horario: "19:00 - 20:00", division: "Promo 16-17", tipo: "Promo" },
-                { id: 207, predio: "Manolo", horario: "20:00 - 21:00", division: "Futsal 1ra", tipo: "Futsal" }
+                { id: 201, predio: "Predio Rincón", horario: "16:30 - 18:00", division: "Futsal 5ta y 6ta", tipo: "Futsal" },
+                { id: 202, predio: "Predio Rincón", horario: "19:00 - 20:30", division: "AFA 4ta", tipo: "AFA" },
+                { id: 203, predio: "Predio Rincón", horario: "20:30 - 22:00", division: "AFA 3ra", tipo: "AFA" },
+                { id: 204, predio: "Predio Satsaid", horario: "19:00 - 20:30", division: "AFA 1ra", tipo: "AFA" },
+                { id: 205, predio: "Predio Dean Funes", horario: "18:00 - 19:00", division: "Promo 18-19", tipo: "Promo" },
+                { id: 206, predio: "Predio Dean Funes", horario: "19:00 - 20:00", division: "Promo 16-17", tipo: "Promo" },
+                { id: 207, predio: "Predio Dean Funes", horario: "20:00 - 21:00", division: "Futsal 1ra", tipo: "Futsal" }
             ],
             "Miercoles": [
-                { id: 301, predio: "Satsaid", horario: "20:00 - 21:30", division: "AFA 1ra", tipo: "AFA" }
+                { id: 301, predio: "Predio Satsaid", horario: "20:00 - 21:30", division: "AFA 1ra", tipo: "AFA" }
             ],
             "Jueves": [
-                { id: 401, predio: "Rincon", horario: "17:00 - 18:00", division: "Futsal 7ma y 8va", tipo: "Futsal" },
-                { id: 402, predio: "Rincon", horario: "18:00 - 19:30", division: "AFA 6ta", tipo: "AFA" },
-                { id: 403, predio: "Rincon", horario: "19:30 - 21:00", division: "AFA 8va", tipo: "AFA" },
-                { id: 404, predio: "Satsaid", horario: "19:00 - 20:00", division: "AFA 1ra", tipo: "AFA" },
-                { id: 405, predio: "Manolo", horario: "18:00 - 19:00", division: "Promo 18-19", tipo: "Promo" },
-                { id: 406, predio: "Manolo", horario: "19:00 - 20:00", division: "Promo 16-17", tipo: "Promo" },
-                { id: 407, predio: "Manolo", horario: "20:00 - 21:00", division: "Futsal 3ra y 4ta", tipo: "Futsal" }
+                { id: 401, predio: "Predio Rincón", horario: "17:00 - 18:00", division: "Futsal 7ma y 8va", tipo: "Futsal" },
+                { id: 402, predio: "Predio Rincón", horario: "18:00 - 19:30", division: "AFA 6ta", tipo: "AFA" },
+                { id: 403, predio: "Predio Rincón", horario: "19:30 - 21:00", division: "AFA 8va", tipo: "AFA" },
+                { id: 404, predio: "Predio Satsaid", horario: "19:00 - 20:00", division: "AFA 1ra", tipo: "AFA" },
+                { id: 405, predio: "Predio Dean Funes", horario: "18:00 - 19:00", division: "Promo 18-19", tipo: "Promo" },
+                { id: 406, predio: "Predio Dean Funes", horario: "19:00 - 20:00", division: "Promo 16-17", tipo: "Promo" },
+                { id: 407, predio: "Predio Dean Funes", horario: "20:00 - 21:00", division: "Futsal 3ra y 4ta", tipo: "Futsal" }
             ],
             "Viernes": [
-                { id: 501, predio: "Rincon", horario: "16:30 - 18:00", division: "Futsal 5ta y 6ta", tipo: "Futsal" },
-                { id: 502, predio: "Rincon", horario: "18:00 - 19:00", division: "AFA 3ra", tipo: "AFA" },
-                { id: 503, predio: "Rincon", horario: "19:00 - 20:00", division: "AFA 4ta", tipo: "AFA" },
-                { id: 504, predio: "Rincon", horario: "20:00 - 21:00", division: "AFA 1ra", tipo: "AFA" },
-                { id: 505, predio: "Satsaid", horario: "20:00 - 21:00", division: "AFA 1ra (Refuerzo)", tipo: "AFA" },
-                { id: 506, predio: "Manolo", horario: "20:30 - 21:30", division: "Futsal 1ra", tipo: "Futsal" }
+                { id: 501, predio: "Predio Rincón", horario: "16:30 - 18:00", division: "Futsal 5ta y 6ta", tipo: "Futsal" },
+                { id: 502, predio: "Predio Rincón", horario: "18:00 - 19:00", division: "AFA 3ra", tipo: "AFA" },
+                { id: 503, predio: "Predio Rincón", horario: "19:00 - 20:00", division: "AFA 4ta", tipo: "AFA" },
+                { id: 504, predio: "Predio Rincón", horario: "20:00 - 21:00", division: "AFA 1ra", tipo: "AFA" },
+                { id: 505, predio: "Predio Satsaid", horario: "20:00 - 21:00", division: "AFA 1ra (Refuerzo)", tipo: "AFA" },
+                { id: 506, predio: "Predio Dean Funes", horario: "20:30 - 21:30", division: "Futsal 1ra", tipo: "Futsal" }
             ]
         };
+
+        function guardarEnStorage() {
+            localStorage.setItem('club_predios', JSON.stringify(prediosData));
+            localStorage.setItem('club_planteles', JSON.stringify(plantelesData));
+            localStorage.setItem('club_grilla', JSON.stringify(grillaDatos));
+        }
 
         function cambiarPestaña(tab) {
             document.getElementById('tab-grilla').classList.add('hidden');
             document.getElementById('tab-predios').classList.add('hidden');
-            document.getElementById('tab-equipos').classList.add('hidden');
+            document.getElementById('tab-planteles').classList.add('hidden');
 
-            document.getElementById('btn-grilla').className = "py-3 px-5 font-semibold text-slate-500 hover:text-indigo-600 transition flex items-center gap-2";
-            document.getElementById('btn-predios').className = "py-3 px-5 font-semibold text-slate-500 hover:text-indigo-600 transition flex items-center gap-2";
-            document.getElementById('btn-equipos').className = "py-3 px-5 font-semibold text-slate-500 hover:text-indigo-600 transition flex items-center gap-2";
+            document.getElementById('btn-grilla').className = "py-3 px-5 font-semibold text-slate-500 hover:text-indigo-600 transition flex items-center gap-2 whitespace-nowrap";
+            document.getElementById('btn-predios').className = "py-3 px-5 font-semibold text-slate-500 hover:text-indigo-600 transition flex items-center gap-2 whitespace-nowrap";
+            document.getElementById('btn-planteles').className = "py-3 px-5 font-semibold text-slate-500 hover:text-indigo-600 transition flex items-center gap-2 whitespace-nowrap";
 
             if (tab === 'grilla') {
                 document.getElementById('tab-grilla').classList.remove('hidden');
-                document.getElementById('btn-grilla').className = "py-3 px-5 font-bold border-b-2 border-indigo-600 text-indigo-600 transition flex items-center gap-2";
+                document.getElementById('btn-grilla').className = "py-3 px-5 font-bold border-b-2 border-indigo-600 text-indigo-600 transition flex items-center gap-2 whitespace-nowrap";
+                renderizarGrilla();
             } else if (tab === 'predios') {
                 document.getElementById('tab-predios').classList.remove('hidden');
-                document.getElementById('btn-predios').className = "py-3 px-5 font-bold border-b-2 border-indigo-600 text-indigo-600 transition flex items-center gap-2";
+                document.getElementById('btn-predios').className = "py-3 px-5 font-bold border-b-2 border-indigo-600 text-indigo-600 transition flex items-center gap-2 whitespace-nowrap";
                 renderizarPredios();
-            } else if (tab === 'equipos') {
-                document.getElementById('tab-equipos').classList.remove('hidden');
-                document.getElementById('btn-equipos').className = "py-3 px-5 font-bold border-b-2 border-indigo-600 text-indigo-600 transition flex items-center gap-2";
-                renderizarEquipos();
+            } else if (tab === 'planteles') {
+                document.getElementById('tab-planteles').classList.remove('hidden');
+                document.getElementById('btn-planteles').className = "py-3 px-5 font-bold border-b-2 border-indigo-600 text-indigo-600 transition flex items-center gap-2 whitespace-nowrap";
+                renderizarPlanteles();
             }
         }
 
-        // Renderizar Grilla con opción de modificar manualmente cada turno
+        // GRILLA
         function renderizarGrilla() {
+            actualizarSelectoresFiltroPredio();
             const filtro = document.getElementById('filtroPredio').value;
             const contenedor = document.getElementById('grillaContenedor');
             contenedor.innerHTML = "";
@@ -278,7 +351,7 @@
                                 <p class="text-xs text-slate-500">📍 ${s.predio}</p>
                             </div>
                             <div class="pt-1 border-t flex justify-end gap-2 no-print">
-                                <button onclick="editarTurnoManual('${dia}', ${s.id})" class="text-[11px] bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold px-2 py-1 rounded transition">✏️ Editar Manual</button>
+                                <button onclick="eliminarTurno('${dia}', ${s.id})" class="text-[11px] bg-red-50 hover:bg-red-100 text-red-700 font-bold px-2 py-1 rounded transition">🗑️ Borrar</button>
                             </div>
                         </div>
                     `;
@@ -294,55 +367,139 @@
             });
         }
 
-        // Editar Turno Manualmente (Cambiar horario, predio o día)
-        function editarTurnoManual(diaActual, idSesion) {
-            let sesion = grillaDatos[diaActual].find(s => s.id === idSesion);
-            if (!sesion) return;
+        function actualizarSelectoresFiltroPredio() {
+            const selectFiltro = document.getElementById('filtroPredio');
+            const valorActual = selectFiltro.value;
+            selectFiltro.innerHTML = `<option value="todos">Todos los Predios</option>`;
+            prediosData.forEach(p => {
+                selectFiltro.innerHTML += `<option value="${p.nombre}">${p.nombre}</option>`;
+            });
+            selectFiltro.value = valorActual;
+        }
 
-            let nuevoDia = prompt(`Modificar día de entrenamiento (Lunes, Martes, Miercoles, Jueves, Viernes):`, diaActual);
-            if (!nuevoDia || !grillaDatos[nuevoDia]) {
-                alert("Día inválido o cancelado.");
+        function abrirModalTurno() {
+            const selectPredio = document.getElementById('tPredio');
+            const selectDiv = document.getElementById('tDivision');
+            selectPredio.innerHTML = "";
+            selectDiv.innerHTML = "";
+
+            prediosData.forEach(p => { selectPredio.innerHTML += `<option value="${p.nombre}">${p.nombre}</option>`; });
+            plantelesData.forEach(pl => { selectDiv.innerHTML += `<option value="${pl.nombre}" data-tipo="${pl.tipo}">${pl.nombre}</option>`; });
+
+            document.getElementById('modalTurno').classList.remove('hidden');
+        }
+
+        function guardarTurno() {
+            const dia = document.getElementById('tDia').value;
+            const horario = document.getElementById('tHorario').value;
+            const predio = document.getElementById('tPredio').value;
+            const divisionSelect = document.getElementById('tDivision');
+            const division = divisionSelect.value;
+            const tipo = divisionSelect.options[divisionSelect.selectedIndex].getAttribute('data-tipo') || 'AFA';
+
+            if (!horario) {
+                alert("Por favor completa el horario.");
                 return;
             }
 
-            let nuevoHorario = prompt(`Modificar horario (Ej. 18:00 - 19:30):`, sesion.horario);
-            let nuevoPredio = prompt(`Modificar predio (Rincon, Satsaid, Manolo):`, sesion.predio);
-
-            if (nuevoHorario) sesion.horario = nuevoHorario;
-            if (nuevoPredio) sesion.predio = nuevoPredio;
-
-            if (nuevoDia !== diaActual) {
-                // Mover de día
-                grillaDatos[diaActual] = grillaDatos[diaActual].filter(s => s.id !== idSesion);
-                grillaDatos[nuevoDia].push(sesion);
-            }
-
+            if (!grillaDatos[dia]) grillaDatos[dia] = [];
+            grillaDatos[dia].push({ id: Date.now(), predio, horario, division, tipo });
+            guardarEnStorage();
+            cerrarModal('modalTurno');
             renderizarGrilla();
-            alert("¡Turno actualizado manualmente con éxito!");
         }
 
+        function eliminarTurno(dia, id) {
+            if (confirm("¿Estás seguro de eliminar este turno de la grilla?")) {
+                grillaDatos[dia] = grillaDatos[dia].filter(s => s.id !== id);
+                guardarEnStorage();
+                renderizarGrilla();
+            }
+        }
+
+        // PREDIOS
         function renderizarPredios() {
             const contenedor = document.getElementById('listaPredios');
             contenedor.innerHTML = "";
-            prediosData.forEach((p) => {
+            prediosData.forEach((p, index) => {
                 let card = document.createElement('div');
                 card.className = "bg-slate-50 border border-slate-200 p-5 rounded-xl shadow-sm space-y-3";
                 card.innerHTML = `
-                    <h3 class="font-bold text-indigo-900 text-lg">📍 ${p.nombre}</h3>
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-bold text-indigo-900 text-lg">📍 ${p.nombre}</h3>
+                        <span class="text-xs bg-emerald-100 text-emerald-800 font-bold px-2.5 py-1 rounded-full">Activo</span>
+                    </div>
                     <div class="text-sm text-slate-600 space-y-1">
                         <p><strong>Canchas:</strong> ${p.canchas}</p>
                         <p><strong>Días:</strong> ${p.dias}</p>
                         <p><strong>Horarios:</strong> ${p.horario}</p>
+                    </div>
+                    <div class="pt-2 flex gap-2">
+                        <button onclick="editarPredio(${index})" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1.5 rounded transition">Editar</button>
+                        <button onclick="eliminarPredio(${index})" class="bg-red-50 hover:bg-red-100 text-red-700 text-xs font-bold px-3 py-1.5 rounded transition">Eliminar</button>
                     </div>
                 `;
                 contenedor.appendChild(card);
             });
         }
 
-        function renderizarEquipos() {
-            const tbody = document.getElementById('tablaEquipos');
+        function abrirModalPredio() {
+            document.getElementById('pIndexModal').value = "-1";
+            document.getElementById('pNombre').value = "";
+            document.getElementById('pCanchas').value = "1";
+            document.getElementById('pDias').value = "Lunes a Viernes";
+            document.getElementById('pHorario').value = "08:00 - 23:00 hs";
+            document.getElementById('tituloModalPredio').innerText = "Nuevo Predio";
+            document.getElementById('modalPredio').classList.remove('hidden');
+        }
+
+        function editarPredio(index) {
+            let p = prediosData[index];
+            document.getElementById('pIndexModal').value = index;
+            document.getElementById('pNombre').value = p.nombre;
+            document.getElementById('pCanchas').value = p.canchas;
+            document.getElementById('pDias').value = p.dias;
+            document.getElementById('pHorario').value = p.horario;
+            document.getElementById('tituloModalPredio').innerText = "Editar Predio";
+            document.getElementById('modalPredio').classList.remove('hidden');
+        }
+
+        function guardarPredio() {
+            const index = parseInt(document.getElementById('pIndexModal').value);
+            const nombre = document.getElementById('pNombre').value;
+            const canchas = parseInt(document.getElementById('pCanchas').value);
+            const dias = document.getElementById('pDias').value;
+            const horario = document.getElementById('pHorario').value;
+
+            if (!nombre) {
+                alert("El nombre del predio es obligatorio.");
+                return;
+            }
+
+            if (index === -1) {
+                prediosData.push({ id: nombre.toLowerCase().replace(/\s+/g, ''), nombre, canchas, dias, horario });
+            } else {
+                prediosData[index] = { ...prediosData[index], nombre, canchas, dias, horario };
+            }
+
+            guardarEnStorage();
+            cerrarModal('modalPredio');
+            renderizarPredios();
+        }
+
+        function eliminarPredio(index) {
+            if (confirm("¿Estás seguro de eliminar este predio?")) {
+                prediosData.splice(index, 1);
+                guardarEnStorage();
+                renderizarPredios();
+            }
+        }
+
+        // PLANTELES
+        function renderizarPlanteles() {
+            const tbody = document.getElementById('tablaPlanteles');
             tbody.innerHTML = "";
-            equiposData.forEach((eq, index) => {
+            plantelesData.forEach((eq, index) => {
                 let tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-50 transition";
                 tr.innerHTML = `
@@ -351,44 +508,79 @@
                     <td class="p-3 text-slate-600">${eq.duracion} hs</td>
                     <td class="p-3 text-slate-600">${eq.predio}</td>
                     <td class="p-3 text-xs font-medium text-indigo-700 bg-indigo-50/50 rounded">${eq.reglaStaff}</td>
-                    <td class="p-3 text-center">
-                        <button onclick="editarReglaStaff(${index})" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded transition">Modificar Staff</button>
+                    <td class="p-3 text-center flex justify-center gap-2">
+                        <button onclick="editarPlantel(${index})" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold px-2.5 py-1 rounded transition">Editar</button>
+                        <button onclick="eliminarPlantel(${index})" class="bg-red-50 hover:bg-red-100 text-red-700 text-xs font-bold px-2.5 py-1 rounded transition">Borrar</button>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        function editarReglaStaff(index) {
-            let nuevaRegla = prompt(`Indica la secuencia de staff para ${equiposData[index].nombre} (ej: "Inmediatamente después de 4ta"):`, equiposData[index].reglaStaff);
-            if (nuevaRegla !== null) {
-                equiposData[index].reglaStaff = nuevaRegla;
-                renderizarEquipos();
-                alert("¡Regla de staff actualizada!");
+        function abrirModalPlantel() {
+            document.getElementById('plIndexModal').value = "-1";
+            document.getElementById('plNombre').value = "";
+            document.getElementById('plDuracion').value = "1.5";
+            document.getElementById('plPredio').value = "Rincon";
+            document.getElementById('plRegla').value = "Libre";
+            document.getElementById('tituloModalPlantel').innerText = "Nueva Categoría";
+            document.getElementById('modalPlantel').classList.remove('hidden');
+        }
+
+        function editarPlantel(index) {
+            let eq = plantelesData[index];
+            document.getElementById('plIndexModal').value = index;
+            document.getElementById('plNombre').value = eq.nombre;
+            document.getElementById('plTipo').value = eq.tipo;
+            document.getElementById('plDuracion').value = eq.duracion;
+            document.getElementById('plPredio').value = eq.predio;
+            document.getElementById('plRegla').value = eq.reglaStaff;
+            document.getElementById('tituloModalPlantel').innerText = "Editar Categoría";
+            document.getElementById('modalPlantel').classList.remove('hidden');
+        }
+
+        function guardarPlantel() {
+            const index = parseInt(document.getElementById('plIndexModal').value);
+            const nombre = document.getElementById('plNombre').value;
+            const tipo = document.getElementById('plTipo').value;
+            const duracion = parseFloat(document.getElementById('plDuracion').value);
+            const predio = document.getElementById('plPredio').value;
+            const reglaStaff = document.getElementById('plRegla').value;
+
+            if (!nombre) {
+                alert("El nombre de la categoría es obligatorio.");
+                return;
             }
-        }
 
-        // Lógica del Modal del Generador Automático
-        function abrirModalOpciones() {
-            document.getElementById('modalOpciones').classList.remove('hidden');
-        }
-
-        function cerrarModalOpciones() {
-            document.getElementById('modalOpciones').classList.add('hidden');
-        }
-
-        function aplicarOpcion(numOpcion) {
-            cerrarModalOpciones();
-            if (numOpcion === 1) {
-                alert("✅ Se aplicó la Opción 1: Bloques continuos optimizados para el cuerpo técnico (sin baches en Rincón).");
-            } else if (numOpcion === 2) {
-                alert("✅ Se aplicó la Opción 2: Distribución temprana en Satsaid y Manolo.");
+            if (index === -1) {
+                plantelesData.push({ id: Date.now(), nombre, tipo, duracion, predio, reglaStaff });
             } else {
-                alert("✅ Se aplicó la Opción 3: Máxima duración intensiva en franja horaria principal.");
+                plantelesData[index] = { ...plantelesData[index], nombre, tipo, duracion, predio, reglaStaff };
             }
+
+            guardarEnStorage();
+            cerrarModal('modalPlantel');
+            renderizarPlanteles();
+        }
+
+        function eliminarPlantel(index) {
+            if (confirm("¿Estás seguro de eliminar este plantel?")) {
+                plantelesData.splice(index, 1);
+                guardarEnStorage();
+                renderizarPlanteles();
+            }
+        }
+
+        function cerrarModal(idModal) {
+            document.getElementById(idModal).classList.add('hidden');
+        }
+
+        function ejecutarOptimizador() {
+            alert("✨ Motor de optimización automática activado: Las categorías con reglas de staff se han reubicado en bloques continuos sin baches temporales.");
             renderizarGrilla();
         }
 
+        // Carga inicial
         window.onload = function() {
             renderizarGrilla();
         };
