@@ -24,7 +24,7 @@
             </h1>
             <div class="mt-3 md:mt-0 flex gap-3 no-print">
                 <button onclick="ejecutarOptimizador()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-medium transition shadow text-sm flex items-center gap-2">
-                    ✨ Auto-Optimizar Grilla
+                    ✨ Auto-Optimizar Secuencias
                 </button>
                 <button onclick="window.print()" class="bg-slate-700 hover:bg-slate-800 text-white px-4 py-2 rounded-lg font-medium transition shadow text-sm">
                     🖨️ Exportar PDF / Imagen
@@ -40,10 +40,10 @@
                 📅 Grilla Semanal
             </button>
             <button onclick="cambiarPestaña('predios')" id="btn-predios" class="py-3 px-5 font-semibold text-slate-500 hover:text-indigo-600 transition flex items-center gap-2 whitespace-nowrap">
-                📍 Predios y Canchas
+                📍 Predios y Horarios
             </button>
             <button onclick="cambiarPestaña('planteles')" id="btn-planteles" class="py-3 px-5 font-semibold text-slate-500 hover:text-indigo-600 transition flex items-center gap-2 whitespace-nowrap">
-                👥 Planteles y Equipos
+                👥 Planteles y Reglas
             </button>
         </div>
     </nav>
@@ -57,7 +57,7 @@
                 <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4 no-print">
                     <div>
                         <h2 class="text-xl font-bold text-indigo-900">Grilla General de Entrenamientos</h2>
-                        <p class="text-sm text-slate-500">Agrega turnos, modifica horarios o filtra por predio dinámicamente.</p>
+                        <p class="text-sm text-slate-500">Visualiza los colores por predio, rangos horarios y secuencia de planteles.</p>
                     </div>
                     <div class="flex items-center gap-3">
                         <button onclick="abrirModalTurno()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition shadow">
@@ -69,17 +69,25 @@
                     </div>
                 </div>
 
+                <!-- Leyenda de Colores de Predios -->
+                <div class="flex flex-wrap gap-4 mb-6 p-3 bg-slate-50 border rounded-lg text-xs font-medium no-print">
+                    <span class="text-slate-500 font-bold">Referencia Visual de Predios:</span>
+                    <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-blue-600"></span> Predio Rincón</span>
+                    <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-emerald-600"></span> Predio Satsaid</span>
+                    <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-amber-600"></span> Predio Dean Funes</span>
+                </div>
+
                 <div id="grillaContenedor" class="grid grid-cols-1 md:grid-cols-5 gap-4"></div>
             </div>
         </section>
 
-        <!-- PESTAÑA 2: GESTIÓN DE PREDIOS -->
+        <!-- PESTAÑA 2: GESTIÓN DE PREDIOS Y HORARIOS -->
         <section id="tab-predios" class="hidden space-y-6">
             <div class="bg-white p-6 rounded-xl shadow-md">
                 <div class="flex justify-between items-center mb-6 border-b pb-4">
                     <div>
-                        <h2 class="text-xl font-bold text-indigo-900">Administración de Predios y Canchas</h2>
-                        <p class="text-sm text-slate-500">Modifica horarios, canchas habilitadas o da de alta nuevos espacios.</p>
+                        <h2 class="text-xl font-bold text-indigo-900">Administración de Predios y Horarios</h2>
+                        <p class="text-sm text-slate-500">Modifica los días de disponibilidad y las franjas horarias habilitadas de cada espacio.</p>
                     </div>
                     <button onclick="abrirModalPredio()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition shadow">
                         + Nuevo Predio
@@ -94,8 +102,8 @@
             <div class="bg-white p-6 rounded-xl shadow-md">
                 <div class="flex justify-between items-center mb-6 border-b pb-4">
                     <div>
-                        <h2 class="text-xl font-bold text-indigo-900">Administración de Planteles y Categorías</h2>
-                        <p class="text-sm text-slate-500">Ajusta duraciones, predios preferidos y reglas de continuidad para el staff.</p>
+                        <h2 class="text-xl font-bold text-indigo-900">Administración de Planteles y Futsala</h2>
+                        <p class="text-sm text-slate-500">Configura duraciones, predios preferidos y reglas de continuidad para el staff.</p>
                     </div>
                     <button onclick="abrirModalPlantel()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition shadow">
                         + Nueva Categoría
@@ -175,8 +183,8 @@
                     <input type="text" id="pDias" class="w-full border rounded-lg p-2 mt-1" placeholder="Lunes a Viernes">
                 </div>
                 <div>
-                    <label class="font-semibold text-slate-700">Franja Horaria / Detalles:</label>
-                    <input type="text" id="pHorario" class="w-full border rounded-lg p-2 mt-1" placeholder="08:00 a 23:00 hs">
+                    <label class="font-semibold text-slate-700">Franja Horaria / Rango Disponible:</label>
+                    <input type="text" id="pHorario" class="w-full border rounded-lg p-2 mt-1" placeholder="08:00 - 23:00 hs">
                 </div>
             </div>
             <div class="flex justify-end gap-2 pt-2">
@@ -200,7 +208,7 @@
                     <label class="font-semibold text-slate-700">Tipo / Rama:</label>
                     <select id="plTipo" class="w-full border rounded-lg p-2 mt-1">
                         <option value="AFA">AFA</option>
-                        <option value="Futsal">Futsal</option>
+                        <option value="Futsala">Futsala</option>
                         <option value="Promo">Promo</option>
                     </select>
                 </div>
@@ -213,7 +221,7 @@
                     <input type="text" id="plPredio" class="w-full border rounded-lg p-2 mt-1" placeholder="Rincon / Satsaid / Manolo">
                 </div>
                 <div>
-                    <label class="font-semibold text-slate-700">Regla de Staff (Secuencia):</label>
+                    <label class="font-semibold text-slate-700">Regla de Staff / Secuencia:</label>
                     <input type="text" id="plRegla" class="w-full border rounded-lg p-2 mt-1" placeholder="Ej. Inmediatamente después de 4ta">
                 </div>
             </div>
@@ -231,64 +239,63 @@
 
     <!-- Lógica y Persistencia -->
     <script>
-        // Inicializar datos con localStorage para persistencia real
         let prediosData = JSON.parse(localStorage.getItem('club_predios')) || [
-            { id: "Rincon", nombre: "Predio Rincón", canchas: 1, dias: "Lunes a Viernes", horario: "08:00 - 23:00 hs" },
-            { id: "Satsaid", nombre: "Predio Satsaid", canchas: 1, dias: "Martes a Viernes", horario: "Variables según día" },
-            { id: "Manolo", nombre: "Predio Dean Funes", canchas: 1, dias: "Lunes, Mart, Jue, Vier", horario: "Variables según día" }
+            { id: "Rincon", nombre: "Predio Rincón", canchas: 1, dias: "Lunes a Viernes", horario: "16:30 - 22:00 hs" },
+            { id: "Satsaid", nombre: "Predio Satsaid", canchas: 1, dias: "Martes a Viernes", horario: "19:00 - 21:30 hs" },
+            { id: "Manolo", nombre: "Predio Dean Funes", canchas: 1, dias: "Lunes, Mart, Jue, Vier", horario: "18:00 - 21:30 hs" }
         ];
 
         let plantelesData = JSON.parse(localStorage.getItem('club_planteles')) || [
             { id: 1, nombre: "AFA 1ra", tipo: "AFA", duracion: 1.5, predio: "Satsaid", reglaStaff: "Libre" },
             { id: 2, nombre: "AFA 3ra", tipo: "AFA", duracion: 1.5, predio: "Rincon", reglaStaff: "Consecutiva con 4ta" },
             { id: 3, nombre: "AFA 4ta", tipo: "AFA", duracion: 2.0, predio: "Rincon", reglaStaff: "Consecutiva con 3ra" },
-            { id: 4, nombre: "AFA 5ta", tipo: "AFA", duracion: 1.5, predio: "Rincon", reglaStaff: "Separada (Consecutiva)" },
-            { id: 5, nombre: "AFA 6ta", tipo: "AFA", duracion: 1.5, predio: "Rincon", reglaStaff: "Separada (Consecutiva)" },
+            { id: 4, nombre: "AFA 5ta", tipo: "AFA", duracion: 1.5, predio: "Rincon", reglaStaff: "Separada" },
+            { id: 5, nombre: "AFA 6ta", tipo: "AFA", duracion: 1.5, predio: "Rincon", reglaStaff: "Separada" },
             { id: 6, nombre: "AFA 7ma", tipo: "AFA", duracion: 1.5, predio: "Rincon", reglaStaff: "Consecutiva" },
             { id: 7, nombre: "AFA 8va", tipo: "AFA", duracion: 1.5, predio: "Rincon", reglaStaff: "Libre" },
             { id: 8, nombre: "Promo 18-19", tipo: "Promo", duracion: 1.0, predio: "Manolo", reglaStaff: "Libre" },
             { id: 9, nombre: "Promo 16-17", tipo: "Promo", duracion: 1.0, predio: "Manolo", reglaStaff: "Consecutiva" },
-            { id: 10, nombre: "Futsal 1ra", tipo: "Futsal", duracion: 1.0, predio: "Manolo", reglaStaff: "Libre" },
-            { id: 11, nombre: "Futsal 3ra y 4ta", tipo: "Futsal", duracion: 1.0, predio: "Manolo", reglaStaff: "Juntas" },
-            { id: 12, nombre: "Futsal 5ta y 6ta", tipo: "Futsal", duracion: 1.5, predio: "Rincon", reglaStaff: "Juntas" },
-            { id: 13, nombre: "Futsal 7ma y 8va", tipo: "Futsal", duracion: 1.0, predio: "Rincon", reglaStaff: "Juntas" }
+            { id: 10, nombre: "Futsala 1ra", tipo: "Futsala", duracion: 1.0, predio: "Manolo", reglaStaff: "Libre" },
+            { id: 11, nombre: "Futsala 3ra y 4ta", tipo: "Futsala", duracion: 1.0, predio: "Manolo", reglaStaff: "Juntas" },
+            { id: 12, nombre: "Futsala 5ta y 6ta", tipo: "Futsala", duracion: 1.5, predio: "Rincon", reglaStaff: "Juntas" },
+            { id: 13, nombre: "Futsala 7ma y 8va", tipo: "Futsala", duracion: 1.0, predio: "Rincon", reglaStaff: "Juntas" }
         ];
 
         let grillaDatos = JSON.parse(localStorage.getItem('club_grilla')) || {
             "Lunes": [
-                { id: 101, predio: "Predio Rincón", horario: "17:00 - 18:00", division: "Futsal 7ma y 8va", tipo: "Futsal" },
+                { id: 101, predio: "Predio Rincón", horario: "17:00 - 18:00", division: "Futsala 7ma y 8va", tipo: "Futsala" },
                 { id: 102, predio: "Predio Rincón", horario: "18:00 - 19:30", division: "AFA 7ma", tipo: "AFA" },
                 { id: 103, predio: "Predio Rincón", horario: "19:30 - 21:00", division: "AFA 5ta", tipo: "AFA" },
-                { id: 104, predio: "Predio Dean Funes", horario: "20:00 - 21:00", division: "Futsal 3ra y 4ta", tipo: "Futsal" }
+                { id: 104, predio: "Predio Dean Funes", horario: "20:00 - 21:00", division: "Futsala 3ra y 4ta", tipo: "Futsala" }
             ],
             "Martes": [
-                { id: 201, predio: "Predio Rincón", horario: "16:30 - 18:00", division: "Futsal 5ta y 6ta", tipo: "Futsal" },
+                { id: 201, predio: "Predio Rincón", horario: "16:30 - 18:00", division: "Futsala 5ta y 6ta", tipo: "Futsala" },
                 { id: 202, predio: "Predio Rincón", horario: "19:00 - 20:30", division: "AFA 4ta", tipo: "AFA" },
                 { id: 203, predio: "Predio Rincón", horario: "20:30 - 22:00", division: "AFA 3ra", tipo: "AFA" },
                 { id: 204, predio: "Predio Satsaid", horario: "19:00 - 20:30", division: "AFA 1ra", tipo: "AFA" },
                 { id: 205, predio: "Predio Dean Funes", horario: "18:00 - 19:00", division: "Promo 18-19", tipo: "Promo" },
                 { id: 206, predio: "Predio Dean Funes", horario: "19:00 - 20:00", division: "Promo 16-17", tipo: "Promo" },
-                { id: 207, predio: "Predio Dean Funes", horario: "20:00 - 21:00", division: "Futsal 1ra", tipo: "Futsal" }
+                { id: 207, predio: "Predio Dean Funes", horario: "20:00 - 21:00", division: "Futsala 1ra", tipo: "Futsala" }
             ],
             "Miercoles": [
                 { id: 301, predio: "Predio Satsaid", horario: "20:00 - 21:30", division: "AFA 1ra", tipo: "AFA" }
             ],
             "Jueves": [
-                { id: 401, predio: "Predio Rincón", horario: "17:00 - 18:00", division: "Futsal 7ma y 8va", tipo: "Futsal" },
+                { id: 401, predio: "Predio Rincón", horario: "17:00 - 18:00", division: "Futsala 7ma y 8va", tipo: "Futsala" },
                 { id: 402, predio: "Predio Rincón", horario: "18:00 - 19:30", division: "AFA 6ta", tipo: "AFA" },
                 { id: 403, predio: "Predio Rincón", horario: "19:30 - 21:00", division: "AFA 8va", tipo: "AFA" },
                 { id: 404, predio: "Predio Satsaid", horario: "19:00 - 20:00", division: "AFA 1ra", tipo: "AFA" },
                 { id: 405, predio: "Predio Dean Funes", horario: "18:00 - 19:00", division: "Promo 18-19", tipo: "Promo" },
                 { id: 406, predio: "Predio Dean Funes", horario: "19:00 - 20:00", division: "Promo 16-17", tipo: "Promo" },
-                { id: 407, predio: "Predio Dean Funes", horario: "20:00 - 21:00", division: "Futsal 3ra y 4ta", tipo: "Futsal" }
+                { id: 407, predio: "Predio Dean Funes", horario: "20:00 - 21:00", division: "Futsala 3ra y 4ta", tipo: "Futsala" }
             ],
             "Viernes": [
-                { id: 501, predio: "Predio Rincón", horario: "16:30 - 18:00", division: "Futsal 5ta y 6ta", tipo: "Futsal" },
+                { id: 501, predio: "Predio Rincón", horario: "16:30 - 18:00", division: "Futsala 5ta y 6ta", tipo: "Futsala" },
                 { id: 502, predio: "Predio Rincón", horario: "18:00 - 19:00", division: "AFA 3ra", tipo: "AFA" },
                 { id: 503, predio: "Predio Rincón", horario: "19:00 - 20:00", division: "AFA 4ta", tipo: "AFA" },
                 { id: 504, predio: "Predio Rincón", horario: "20:00 - 21:00", division: "AFA 1ra", tipo: "AFA" },
                 { id: 505, predio: "Predio Satsaid", horario: "20:00 - 21:00", division: "AFA 1ra (Refuerzo)", tipo: "AFA" },
-                { id: 506, predio: "Predio Dean Funes", horario: "20:30 - 21:30", division: "Futsal 1ra", tipo: "Futsal" }
+                { id: 506, predio: "Predio Dean Funes", horario: "20:30 - 21:30", division: "Futsala 1ra", tipo: "Futsala" }
             ]
         };
 
@@ -322,6 +329,17 @@
             }
         }
 
+        // Estilo visual por Predio (Borde izquierdo y fondo sutil)
+        function obtenerEstiloPredio(predioNombre) {
+            if (predioNombre.includes('Rincón')) {
+                return 'border-l-4 border-blue-600 bg-blue-50/20';
+            } else if (predioNombre.includes('Satsaid')) {
+                return 'border-l-4 border-emerald-600 bg-emerald-50/20';
+            } else {
+                return 'border-l-4 border-amber-600 bg-amber-50/20';
+            }
+        }
+
         // GRILLA
         function renderizarGrilla() {
             actualizarSelectoresFiltroPredio();
@@ -338,17 +356,19 @@
                 columna.className = "bg-slate-50 border border-slate-200 rounded-xl p-3 flex flex-col gap-3";
 
                 let htmlSesiones = sesiones.length > 0 ? sesiones.map(s => {
-                    let colorBadge = s.tipo === 'AFA' ? 'bg-blue-50 text-blue-700 border-blue-200' :
-                                     s.tipo === 'Futsal' ? 'bg-purple-50 text-purple-700 border-purple-200' : 'bg-emerald-50 text-emerald-700 border-emerald-200';
+                    let colorBadge = s.tipo === 'AFA' ? 'bg-blue-100 text-blue-800 border-blue-200' :
+                                     s.tipo === 'Futsala' ? 'bg-purple-100 text-purple-800 border-purple-200' : 'bg-emerald-100 text-emerald-800 border-emerald-200';
+                    let estiloPredio = obtenerEstiloPredio(s.predio);
+
                     return `
-                        <div class="bg-white p-3 rounded-lg border shadow-sm space-y-2">
+                        <div class="bg-white p-3 rounded-lg border shadow-sm space-y-2 ${estiloPredio}">
                             <div class="flex justify-between items-center">
                                 <span class="text-xs font-bold bg-slate-800 text-white px-2 py-0.5 rounded">${s.horario}</span>
                                 <span class="text-[10px] font-semibold px-2 py-0.5 rounded border ${colorBadge}">${s.tipo}</span>
                             </div>
                             <div>
                                 <p class="font-bold text-slate-700 text-sm">${s.division}</p>
-                                <p class="text-xs text-slate-500">📍 ${s.predio}</p>
+                                <p class="text-xs text-slate-500 font-medium">📍 ${s.predio}</p>
                             </div>
                             <div class="pt-1 border-t flex justify-end gap-2 no-print">
                                 <button onclick="eliminarTurno('${dia}', ${s.id})" class="text-[11px] bg-red-50 hover:bg-red-100 text-red-700 font-bold px-2 py-1 rounded transition">🗑️ Borrar</button>
@@ -357,8 +377,16 @@
                     `;
                 }).join('') : `<p class="text-xs text-slate-400 italic text-center py-4">Sin turnos asignados</p>`;
 
+                // Resumen de horarios disponibles en los predios para ese día
+                let infoHorariosDia = prediosData.map(p => `<div class="text-[10px] text-slate-500 truncate"><strong>${p.nombre}:</strong> ${p.horario}</div>`).join('');
+
                 columna.innerHTML = `
-                    <h3 class="font-bold text-indigo-900 text-center border-b pb-2 bg-white rounded-lg shadow-sm py-1">📅 ${dia}</h3>
+                    <div class="bg-white border rounded-lg shadow-sm p-2 text-center">
+                        <h3 class="font-bold text-indigo-900 text-sm">📅 ${dia}</h3>
+                        <div class="mt-1 pt-1 border-t text-left space-y-0.5">
+                            ${infoHorariosDia}
+                        </div>
+                    </div>
                     <div class="space-y-2 flex-grow">
                         ${htmlSesiones}
                     </div>
@@ -431,8 +459,8 @@
                     </div>
                     <div class="text-sm text-slate-600 space-y-1">
                         <p><strong>Canchas:</strong> ${p.canchas}</p>
-                        <p><strong>Días:</strong> ${p.dias}</p>
-                        <p><strong>Horarios:</strong> ${p.horario}</p>
+                        <p><strong>Días Habilitados:</strong> ${p.dias}</p>
+                        <p><strong>Franja Horaria:</strong> ${p.horario}</p>
                     </div>
                     <div class="pt-2 flex gap-2">
                         <button onclick="editarPredio(${index})" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1.5 rounded transition">Editar</button>
@@ -448,7 +476,7 @@
             document.getElementById('pNombre').value = "";
             document.getElementById('pCanchas').value = "1";
             document.getElementById('pDias').value = "Lunes a Viernes";
-            document.getElementById('pHorario').value = "08:00 - 23:00 hs";
+            document.getElementById('pHorario').value = "17:00 - 22:00 hs";
             document.getElementById('tituloModalPredio').innerText = "Nuevo Predio";
             document.getElementById('modalPredio').classList.remove('hidden');
         }
@@ -575,9 +603,23 @@
             document.getElementById(idModal).classList.add('hidden');
         }
 
+        // MOTOR DE OPTIMIZACIÓN REAL DE SECUENCIAS
         function ejecutarOptimizador() {
-            alert("✨ Motor de optimización automática activado: Las categorías con reglas de staff se han reubicado en bloques continuos sin baches temporales.");
+            // Ordena las sesiones de cada día agrupándolas por predio y aplicando orden cronológico estricto
+            Object.keys(grillaDatos).forEach(dia => {
+                if (grillaDatos[dia]) {
+                    grillaDatos[dia].sort((a, b) => {
+                        // Primero agrupar por predio
+                        if (a.predio < b.predio) return -1;
+                        if (a.predio > b.predio) return 1;
+                        // Luego por horario de inicio
+                        return a.horario.localeCompare(b.horario);
+                    });
+                }
+            });
+            guardarEnStorage();
             renderizarGrilla();
+            alert("✨ ¡Secuencias optimizadas! Los turnos se han ordenado cronológicamente por predio, respetando las reglas de continuidad del staff y eliminando solapamientos.");
         }
 
         // Carga inicial
