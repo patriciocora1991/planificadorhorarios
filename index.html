@@ -4,190 +4,124 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Optimizador Futsal - Grilla Semanal</title>
+<title>Optimizador de Grilla Futsal</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
-*{box-sizing:border-box}
+*{
+    box-sizing:border-box;
+}
 
 body{
     margin:0;
     font-family:Arial,Helvetica,sans-serif;
-    background:#eef2f7;
-    color:#172033;
+    background:#f2f4f7;
+    color:#1f2937;
 }
 
 header{
     background:#111827;
     color:white;
-    padding:18px 24px;
+    padding:18px 25px;
 }
 
 header h1{
     margin:0 0 5px;
-    font-size:25px;
+    font-size:24px;
+}
+
+header p{
+    margin:0;
+    opacity:.8;
 }
 
 .container{
-    max-width:1900px;
+    padding:20px;
+    max-width:1800px;
     margin:auto;
-    padding:18px;
 }
 
 .toolbar{
+    background:white;
+    padding:15px;
+    border-radius:12px;
+    margin-bottom:20px;
     display:flex;
+    gap:10px;
     flex-wrap:wrap;
-    gap:8px;
-    margin-bottom:15px;
+    align-items:center;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+button,select,input{
+    font:inherit;
 }
 
 button{
     border:0;
     border-radius:7px;
-    padding:10px 14px;
-    font-weight:bold;
+    padding:9px 13px;
     cursor:pointer;
+    background:#2563eb;
+    color:white;
+    font-weight:bold;
 }
 
-button:hover{opacity:.88}
-
-.primary{background:#2563eb;color:white}
-.green{background:#16a34a;color:white}
-.orange{background:#f59e0b;color:#111}
-.red{background:#dc2626;color:white}
-.gray{background:#64748b;color:white}
-.dark{background:#1e293b;color:white}
-.white{background:white;border:1px solid #cbd5e1}
-
-.stats{
-    display:grid;
-    grid-template-columns:repeat(6,1fr);
-    gap:10px;
-    margin-bottom:15px;
+button:hover{
+    opacity:.9;
 }
 
-.stat{
-    background:white;
-    padding:15px;
-    border-radius:9px;
-    box-shadow:0 2px 7px #00000010;
+.btn-green{
+    background:#16a34a;
 }
 
-.stat b{
-    display:block;
-    font-size:25px;
-    margin-bottom:4px;
+.btn-red{
+    background:#dc2626;
+}
+
+.btn-gray{
+    background:#6b7280;
+}
+
+.btn-orange{
+    background:#ea580c;
+}
+
+select,input[type="text"],input[type="number"],input[type="time"]{
+    padding:8px;
+    border:1px solid #d1d5db;
+    border-radius:6px;
 }
 
 .panel{
     background:white;
-    border-radius:10px;
-    padding:16px;
-    margin-bottom:15px;
-    box-shadow:0 2px 8px #00000012;
+    padding:18px;
+    border-radius:12px;
+    margin-bottom:20px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
 }
 
-.filters{
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px;
-    align-items:end;
-}
-
-.filters label{
-    font-size:12px;
-    font-weight:bold;
-    display:block;
-    margin-bottom:4px;
-}
-
-.filters select{
-    padding:9px;
-    border:1px solid #cbd5e1;
-    border-radius:6px;
-    min-width:180px;
+.panel h2{
+    margin-top:0;
 }
 
 .grid{
     display:grid;
-    grid-template-columns:repeat(7,minmax(190px,1fr));
-    gap:7px;
-    overflow-x:auto;
-}
-
-.dayhead{
-    background:#1e293b;
-    color:white;
-    text-align:center;
-    padding:10px;
-    border-radius:6px;
-    font-weight:bold;
-}
-
-.daybody{
-    background:#e2e8f0;
-    min-height:730px;
-    padding:6px;
-    border-radius:6px;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:15px;
 }
 
 .card{
-    background:#dbeafe;
-    border-left:5px solid #2563eb;
-    padding:9px;
-    margin-bottom:6px;
-    border-radius:6px;
-    cursor:grab;
-    box-shadow:0 1px 3px #0001;
+    border:1px solid #e5e7eb;
+    border-radius:10px;
+    padding:14px;
+    background:#fafafa;
 }
 
-.card.conflict{
-    background:#fee2e2;
-    border-left-color:#dc2626;
-}
-
-.card.together{
-    background:#ede9fe;
-    border-left-color:#7c3aed;
-}
-
-.card.consecutive{
-    border-left-color:#0891b2;
-}
-
-.card strong{
-    font-size:14px;
-}
-
-.card small{
-    display:block;
-    color:#475569;
-    margin-top:4px;
-}
-
-.tag{
-    display:inline-block;
-    font-size:10px;
-    padding:3px 5px;
-    border-radius:4px;
-    background:#e5e7eb;
-    margin-top:5px;
-    margin-right:3px;
-}
-
-.good{color:#15803d}
-.bad{color:#b91c1c}
-.warn{color:#b45309}
-.muted{color:#64748b;font-size:12px}
-
-.metric{
-    display:inline-block;
-    background:#f1f5f9;
-    padding:6px 9px;
-    border-radius:6px;
-    margin:3px;
-    font-size:12px;
+.card h3{
+    margin-top:0;
 }
 
 table{
@@ -196,137 +130,159 @@ table{
 }
 
 th,td{
-    padding:8px;
-    border-bottom:1px solid #e5e7eb;
-    text-align:left;
-    vertical-align:top;
+    border:1px solid #ddd;
+    padding:7px;
+    text-align:center;
+    font-size:13px;
 }
 
 th{
-    background:#f1f5f9;
+    background:#111827;
+    color:white;
+}
+
+.day-title{
+    background:#e5e7eb;
+    font-weight:bold;
+}
+
+.conflict{
+    background:#fee2e2 !important;
+    border:2px solid #dc2626 !important;
+}
+
+.warning{
+    background:#fef3c7 !important;
+    border:2px solid #f59e0b !important;
+}
+
+.ok{
+    background:#dcfce7 !important;
+}
+
+.training{
+    border-radius:6px;
+    padding:7px;
+    margin:3px;
+    background:#dbeafe;
+    border-left:5px solid #2563eb;
+    text-align:left;
+    cursor:pointer;
+}
+
+.training:hover{
+    transform:scale(1.01);
+}
+
+.training strong{
+    display:block;
+}
+
+.small{
+    font-size:11px;
+    opacity:.8;
+}
+
+.badge{
+    display:inline-block;
+    padding:3px 6px;
+    border-radius:5px;
+    background:#e5e7eb;
+    font-size:11px;
+    margin:2px;
+}
+
+.conflict-list{
+    margin:0;
+    padding-left:20px;
+}
+
+.flex{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
 }
 
 .modal{
     display:none;
     position:fixed;
     inset:0;
-    background:#0009;
-    z-index:50;
+    background:rgba(0,0,0,.6);
+    z-index:1000;
     align-items:center;
     justify-content:center;
+    padding:20px;
 }
 
-.modal.on{display:flex}
-
-.box{
+.modal-content{
     background:white;
-    width:min(1250px,96%);
-    max-height:94vh;
+    width:min(700px,100%);
+    max-height:90vh;
     overflow:auto;
     border-radius:12px;
     padding:20px;
 }
 
-.form{
+.form-grid{
     display:grid;
-    grid-template-columns:repeat(3,1fr);
+    grid-template-columns:repeat(2,1fr);
     gap:12px;
 }
 
-.field label{
-    display:block;
-    font-size:12px;
-    font-weight:bold;
-    margin-bottom:4px;
-}
-
-.field input,
-.field select{
-    width:100%;
-    padding:9px;
-    border:1px solid #cbd5e1;
-    border-radius:6px;
-}
-
-.full{grid-column:1/-1}
-
-.actions{
+.form-group{
     display:flex;
-    gap:7px;
-    justify-content:flex-end;
-    margin-top:15px;
+    flex-direction:column;
+    gap:5px;
 }
 
-.venueCard{
-    border:1px solid #cbd5e1;
-    border-radius:8px;
-    padding:12px;
-    margin-bottom:10px;
+.form-group.full{
+    grid-column:1/-1;
 }
 
-.availabilityRow{
-    display:grid;
-    grid-template-columns:130px 120px 120px 100px;
-    gap:7px;
-    align-items:center;
-    margin-top:5px;
-}
-
-.availabilityRow input{
-    padding:7px;
-    border:1px solid #cbd5e1;
-    border-radius:5px;
-}
-
-.scenario{
-    border:1px solid #cbd5e1;
-    border-radius:9px;
-    padding:14px;
-    margin:10px 0;
-}
-
-.scenario.best{
-    border:2px solid #16a34a;
-}
-
-.score{
-    font-size:22px;
+label{
     font-weight:bold;
+    font-size:13px;
 }
 
-.change{
-    background:#eff6ff;
+.checkbox{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    font-weight:normal;
 }
 
-.print-title{
-    display:none;
+hr{
+    border:0;
+    border-top:1px solid #ddd;
+    margin:20px 0;
 }
 
-@media(max-width:1200px){
-    .stats{grid-template-columns:repeat(3,1fr)}
-    .form{grid-template-columns:repeat(2,1fr)}
+.stat{
+    padding:15px;
+    border-radius:10px;
+    background:#f3f4f6;
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:10px;
+}
+
+.stat strong{
+    display:block;
+    font-size:25px;
+}
+
+.empty{
+    padding:25px;
+    text-align:center;
+    color:#6b7280;
 }
 
 @media(max-width:700px){
-    .stats{grid-template-columns:repeat(2,1fr)}
-    .form{grid-template-columns:1fr}
-    .grid{grid-template-columns:1fr}
-}
-
-@media print{
-    body{background:white}
-    header{
-        background:white;
-        color:black;
-        border-bottom:2px solid #111;
-    }
-    .noPrint{display:none!important}
-    .panel{box-shadow:none}
-    .print-title{
-        display:block;
-        font-size:22px;
-        font-weight:bold;
-        margin-bottom:12px;
+    .form-grid{
+        grid-template-columns:1fr;
     }
 }
 </style>
@@ -335,3552 +291,1647 @@ th{
 <body>
 
 <header>
-    <h1>⚽ Optimizador Inteligente de Grilla Futsal</h1>
-    <div>Predios · Canchas · Entrenamientos · Staff · Optimización</div>
+<h1>⚽ Optimizador de Grilla Futsal</h1>
+<p>Gestión de predios, entrenamientos, conflictos y optimización semanal</p>
 </header>
 
 <div class="container">
 
-<div class="toolbar noPrint">
+<div class="toolbar">
 
-<button class="primary" onclick="openTrainingModal()">
-➕ Nuevo entrenamiento
-</button>
-
-<button class="dark" onclick="openConfig()">
-⚙️ Predios y disponibilidad
-</button>
-
-<button class="green" onclick="runOptimizer()">
-🤖 Optimizar grilla
-</button>
-
-<button class="orange" onclick="renderConflicts()">
-⚠️ Ver conflictos
-</button>
-
-<button class="primary" onclick="exportPNG()">
-📸 Exportar imagen
-</button>
-
-<button class="primary" onclick="exportPDF()">
-📄 Exportar PDF
-</button>
-
-<button class="gray" onclick="exportData()">
-💾 Backup
-</button>
-
-<button class="gray" onclick="importData()">
-📂 Importar
-</button>
-
-<button class="red" onclick="restoreInitial()">
-🔄 Restaurar grilla inicial
-</button>
-
-<input
-type="file"
-id="importFile"
-accept=".json"
-style="display:none"
-onchange="processImport(event)"
->
-
-</div>
-
-
-<div class="stats">
-
-<div class="stat">
-<b id="statTrainings">0</b>
-Entrenamientos
-</div>
-
-<div class="stat">
-<b id="statConflicts">0</b>
-Conflictos
-</div>
-
-<div class="stat">
-<b id="statHours">0</b>
-Horas semanales
-</div>
-
-<div class="stat">
-<b id="statVenues">0</b>
-Predios
-</div>
-
-<div class="stat">
-<b id="statObjectives">0</b>
-Objetivos cumplidos
-</div>
-
-<div class="stat">
-<b id="statTogether">0</b>
-Conjuntos
-</div>
-
-</div>
-
-
-<div class="panel">
-
-<div class="print-title">
-Grilla semanal de entrenamientos
-</div>
-
-<h2 class="noPrint">📅 Grilla semanal</h2>
-
-<div class="filters noPrint">
-
-<div>
-<label>Predio</label>
-
-<select id="venueFilter" onchange="renderCalendar()">
-<option value="all">Todos los predios</option>
+<label>Predio:
+<select id="filterPredio" onchange="renderAll()">
+<option value="TODOS">Todos</option>
 </select>
-</div>
+</label>
 
-
-<div>
-<label>Área</label>
-
-<select id="categoryFilter" onchange="renderCalendar()">
-<option value="all">Todas</option>
+<label>Vista:
+<select id="filterTipo" onchange="renderAll()">
+<option value="TODOS">Todos los entrenamientos</option>
 <option value="AFA">AFA</option>
-<option value="Promos">Promos</option>
-<option value="Futsala">Futsala</option>
+<option value="PROMOS">Promos</option>
+<option value="FUTSALA">Futsala</option>
 </select>
-</div>
+</label>
 
-
-<div>
-<label>Mostrar</label>
-
-<select id="viewFilter" onchange="renderCalendar()">
-<option value="all">Todos</option>
-<option value="conflicts">Solo conflictos</option>
-<option value="together">Conjuntos</option>
-<option value="consecutive">Consecutivos</option>
-</select>
-</div>
+<button onclick="optimizar()">🧠 Optimizar automáticamente</button>
+<button class="btn-green" onclick="nuevoEntrenamiento()">＋ Entrenamiento</button>
+<button class="btn-orange" onclick="nuevoPredio()">＋ Predio</button>
+<button class="btn-gray" onclick="exportarImagen()">🖼 Imagen</button>
+<button class="btn-gray" onclick="exportarPDF()">📄 PDF</button>
+<button class="btn-red" onclick="resetDatos()">↺ Restaurar datos iniciales</button>
 
 </div>
-
-<div class="muted noPrint" style="margin:12px 0">
-🖱️ Arrastrá un entrenamiento para moverlo.<br>
-🖱️ Doble click para modificarlo.<br>
-🔴 Rojo = conflicto · 🟣 = conjunto · 🔵 = consecutivo.
-</div>
-
-<div id="calendar" class="grid"></div>
-
-</div>
-
 
 <div class="panel">
-
-<h2>⚠️ Conflictos y alertas</h2>
-
-<div id="conflicts"></div>
-
+<h2>📊 Estado de la grilla</h2>
+<div class="stats" id="stats"></div>
 </div>
-
 
 <div class="panel">
-
-<h2>🤖 Propuestas de optimización</h2>
-
-<div class="muted">
-El optimizador genera alternativas sin modificar la grilla actual.
-Vos decidís cuál aplicar.
+<h2>⚠️ Conflictos y advertencias</h2>
+<div id="conflictos"></div>
 </div>
 
-<div id="scenarios"></div>
+<div class="panel">
+<h2>📅 Grilla semanal</h2>
+<div id="grilla"></div>
+</div>
 
+<div class="panel">
+<h2>🏟️ Predios y disponibilidades</h2>
+<div id="predios"></div>
+</div>
+
+<div class="panel">
+<h2>👥 Entrenamientos cargados</h2>
+<p>
+Desde acá podés modificar directamente los entrenamientos, duración,
+predio, días, horarios y relaciones entre divisiones.
+</p>
+<div id="entrenamientos"></div>
 </div>
 
 </div>
 
+<!-- MODAL ENTRENAMIENTO -->
 
-<!-- =========================
-MODAL ENTRENAMIENTO
-========================= -->
+<div class="modal" id="modalTraining">
 
-<div class="modal" id="trainingModal">
+<div class="modal-content">
 
-<div class="box">
-
-<h2 id="trainingTitle">Agregar entrenamiento</h2>
+<h2 id="modalTitle">Editar entrenamiento</h2>
 
 <input type="hidden" id="trainingId">
 
-<div class="form">
+<div class="form-grid">
 
-<div class="field">
+<div class="form-group">
 <label>Área</label>
-<input id="fCategory" placeholder="AFA / Futsala / Promos">
+<select id="trainingArea">
+<option value="AFA">AFA</option>
+<option value="PROMOS">Promos</option>
+<option value="FUTSALA">Futsala</option>
+</select>
 </div>
 
-<div class="field">
+<div class="form-group">
 <label>División</label>
-<input id="fGroup" placeholder="Ej: 5ta">
+<input id="trainingDivision" type="text">
 </div>
 
-<div class="field">
+<div class="form-group">
 <label>Día</label>
-<select id="fDay"></select>
+<select id="trainingDay">
+<option value="lunes">Lunes</option>
+<option value="martes">Martes</option>
+<option value="miércoles">Miércoles</option>
+<option value="jueves">Jueves</option>
+<option value="viernes">Viernes</option>
+<option value="sábado">Sábado</option>
+<option value="domingo">Domingo</option>
+</select>
 </div>
 
-<div class="field">
+<div class="form-group">
 <label>Predio</label>
-<select id="fVenue"></select>
+<select id="trainingVenue"></select>
 </div>
 
-<div class="field">
+<div class="form-group">
 <label>Hora inicio</label>
-<input type="time" id="fStart">
+<input id="trainingStart" type="time">
 </div>
 
-<div class="field">
-<label>Duración actual</label>
-<input type="number" id="fDuration" step="15" min="15">
+<div class="form-group">
+<label>Hora fin</label>
+<input id="trainingEnd" type="time">
 </div>
 
-<div class="field">
-<label>Duración objetivo</label>
-<input type="number" id="fTarget" step="15" min="15">
+<div class="form-group">
+<label>Duración mínima deseada (min)</label>
+<input id="trainingMin" type="number" min="15" step="15">
 </div>
 
-<div class="field">
-<label>Duración mínima</label>
-<input type="number" id="fMinimum" step="15" min="15">
-</div>
-
-<div class="field">
-<label>Staff</label>
-<input id="fStaff" placeholder="Ej: AFA5">
-</div>
-
-<div class="field">
+<div class="form-group">
 <label>Prioridad</label>
-<select id="fPriority">
-<option value="3">3 - Crítica</option>
-<option value="2">2 - Alta</option>
-<option value="1">1 - Normal</option>
+<select id="trainingPriority">
+<option value="3">Alta</option>
+<option value="2">Media</option>
+<option value="1">Baja</option>
 </select>
 </div>
 
-<div class="field">
-<label>¿Puede reducir duración?</label>
-<select id="fFlexible">
-<option value="no">No</option>
-<option value="si">Sí</option>
-</select>
+<div class="form-group full">
+<label class="checkbox">
+<input type="checkbox" id="trainingTogether">
+Entrena junto con otra división
+</label>
 </div>
 
-<div class="field">
-<label>¿Puede cambiar de día?</label>
-<select id="fMoveDay">
-<option value="si">Sí</option>
-<option value="no">No</option>
-</select>
+<div class="form-group">
+<label>Grupo conjunto</label>
+<input id="trainingGroup" type="text" placeholder="Ej: 5ta-6ta">
 </div>
 
-<div class="field">
-<label>¿Puede cambiar de predio?</label>
-<select id="fMoveVenue">
-<option value="si">Sí</option>
-<option value="no">No</option>
-</select>
+<div class="form-group">
+<label class="checkbox">
+<input type="checkbox" id="trainingConsecutive">
+Debe quedar consecutivo con otro entrenamiento
+</label>
 </div>
 
-<div class="field">
-<label>¿Priorizar separación?</label>
-<select id="fSeparate">
-<option value="no">No</option>
-<option value="si">Sí</option>
-</select>
+<div class="form-group">
+<label>Grupo consecutivo</label>
+<input id="trainingConsecutiveGroup" type="text" placeholder="Ej: STAFF-A">
 </div>
 
-<div class="field full">
-<label>Entrena junto con</label>
-
-<select id="fTogether" multiple size="6"></select>
-
-<div class="muted">
-CTRL + click para seleccionar varias divisiones.
-</div>
-</div>
-
-<div class="field full">
-<label>Debe entrenar consecutivo con</label>
-
-<select id="fConsecutive" multiple size="6"></select>
-
-<div class="muted">
-El sistema intentará que uno termine exactamente cuando comienza el otro.
-</div>
-</div>
-
-<div class="field full">
-<label>Notas</label>
-<input id="fNotes">
+<div class="form-group full">
+<label class="checkbox">
+<input type="checkbox" id="trainingFixed">
+Horario fijo / no mover automáticamente
+</label>
 </div>
 
 </div>
-
-<div class="actions">
-
-<button
-class="red"
-id="deleteTrainingButton"
-onclick="deleteTraining()">
-Eliminar
-</button>
-
-<button
-class="gray"
-onclick="closeTrainingModal()">
-Cancelar
-</button>
-
-<button
-class="primary"
-onclick="saveTraining()">
-Guardar
-</button>
-
-</div>
-
-</div>
-</div>
-
-
-<!-- =========================
-MODAL PREDIOS
-========================= -->
-
-<div class="modal" id="configModal">
-
-<div class="box">
-
-<h2>⚙️ Predios y disponibilidad</h2>
-
-<div class="muted">
-Podés agregar/eliminar predios, modificar cantidad de canchas
-y cambiar la disponibilidad de cada día.
-</div>
-
-<div id="venueConfiguration"></div>
 
 <hr>
 
-<h3>➕ Agregar predio</h3>
-
-<div class="form">
-
-<div class="field">
-<label>Nombre</label>
-<input id="newVenueName">
-</div>
-
-<div class="field">
-<label>Cantidad de canchas</label>
-<input type="number" id="newVenueCourts" value="1" min="1">
-</div>
-
-</div>
-
-<div class="actions">
-
-<button class="gray" onclick="closeConfig()">
-Cerrar
-</button>
-
-<button class="primary" onclick="addVenue()">
-Agregar predio
-</button>
-
+<div class="flex">
+<button onclick="guardarEntrenamiento()">Guardar</button>
+<button class="btn-gray" onclick="cerrarModal()">Cancelar</button>
+<button class="btn-red" onclick="eliminarEntrenamiento()">Eliminar</button>
 </div>
 
 </div>
 </div>
 
+<!-- MODAL PREDIO -->
+
+<div class="modal" id="modalVenue">
+
+<div class="modal-content">
+
+<h2 id="venueTitle">Editar predio</h2>
+
+<input type="hidden" id="venueId">
+
+<div class="form-grid">
+
+<div class="form-group full">
+<label>Nombre del predio</label>
+<input id="venueName" type="text">
+</div>
+
+</div>
+
+<hr>
+
+<h3>Disponibilidad semanal</h3>
+
+<div id="availabilityForm"></div>
+
+<hr>
+
+<div class="flex">
+<button onclick="guardarPredio()">Guardar</button>
+<button class="btn-gray" onclick="cerrarVenueModal()">Cancelar</button>
+<button class="btn-red" onclick="eliminarPredio()">Eliminar predio</button>
+</div>
+
+</div>
+</div>
 
 <script>
 
-/* =========================================================
-CONFIGURACIÓN
-========================================================= */
+const STORAGE_KEY="grilla_futsal_v4";
 
-const DAYS=[
-"lunes",
-"martes",
-"miercoles",
-"jueves",
-"viernes",
-"sabado",
-"domingo"
-];
+const initialData={
 
-const DAY_NAMES={
-lunes:"Lunes",
-martes:"Martes",
-miercoles:"Miércoles",
-jueves:"Jueves",
-viernes:"Viernes",
-sabado:"Sábado",
-domingo:"Domingo"
-};
-
-
-/* =========================================================
-PREDIOS INICIALES
-========================================================= */
-
-const INITIAL_VENUES=[
-
+venues:[
 {
 id:"rincon",
 name:"Predio Rincón",
-courts:1,
 availability:{
-lunes:["08:00","23:00"],
-martes:["08:00","23:00"],
-miercoles:["08:00","23:00"],
-jueves:["08:00","23:00"],
-viernes:["08:00","23:00"],
-sabado:["08:00","23:00"],
-domingo:["08:00","23:00"]
+lunes:[["08:00","23:00"]],
+martes:[["08:00","23:00"]],
+miércoles:[["08:00","23:00"]],
+jueves:[["08:00","23:00"]],
+viernes:[["08:00","23:00"]],
+sábado:[["08:00","23:00"]],
+domingo:[["08:00","23:00"]]
 }
 },
-
 {
 id:"satsaid",
-name:"Predio SATSAID",
-courts:1,
+name:"Predio Satsaid",
 availability:{
-martes:["19:00","20:30"],
-miercoles:["20:00","22:00"],
-jueves:["19:00","20:00"],
-viernes:["20:00","21:00"]
+lunes:[],
+martes:[["19:00","20:30"]],
+miércoles:[["20:00","22:00"]],
+jueves:[["19:00","20:00"]],
+viernes:[["20:00","21:00"]],
+sábado:[],
+domingo:[]
 }
 },
-
 {
 id:"manolo",
 name:"Predio Dean Funes (Manolo)",
-courts:1,
 availability:{
-lunes:["20:00","21:00"],
-martes:["18:00","21:00"],
-jueves:["18:00","21:00"],
-viernes:["20:30","21:30"]
+lunes:[["20:00","21:00"]],
+martes:[["18:00","21:00"]],
+miércoles:[],
+jueves:[["18:00","21:00"]],
+viernes:[["20:30","21:30"]],
+sábado:[],
+domingo:[]
 }
 }
+],
 
-];
+trainings:[
 
+/* AFA */
 
-/* =========================================================
-ENTRENAMIENTOS INICIALES
+{id:1,area:"AFA",division:"1ra",day:"martes",venue:"satsaid",start:"19:00",end:"20:00",min:90,priority:3,together:false,group:"",consecutive:false,consecutiveGroup:"",fixed:false},
 
-IMPORTANTE:
-Estos son exactamente los horarios que pasaste.
-========================================================= */
+{id:2,area:"AFA",division:"1ra",day:"miércoles",venue:"satsaid",start:"20:00",end:"21:00",min:90,priority:3,together:false,group:"",consecutive:false,consecutiveGroup:"",fixed:false},
 
-const INITIAL_TRAININGS=[
+{id:3,area:"AFA",division:"1ra",day:"jueves",venue:"satsaid",start:"19:00",end:"20:00",min:90,priority:3,together:false,group:"",consecutive:false,consecutiveGroup:"",fixed:false},
 
-/* ================= AFA ================= */
+{id:4,area:"AFA",division:"1ra",day:"viernes",venue:"satsaid",start:"20:00",end:"21:00",min:90,priority:3,together:false,group:"",consecutive:false,consecutiveGroup:"",fixed:false},
 
-{
-id:1,
-category:"AFA",
-group:"1ra",
-day:"martes",
-venue:"satsaid",
-start:"19:00",
-duration:60,
-target:90,
-minimum:60,
-staff:"AFA1",
-priority:3,
-flexible:"si",
-separate:"no",
-moveDay:"si",
-moveVenue:"si",
-together:[],
-consecutive:[],
-notes:"Agregar al menos 30 minutos."
-},
+{id:5,area:"AFA",division:"3ra",day:"martes",venue:"rincon",start:"20:30",end:"22:00",min:90,priority:3,together:false,group:"",consecutive:false,consecutiveGroup:"",fixed:false},
 
-{
-id:2,
-category:"AFA",
-group:"1ra",
-day:"miercoles",
-venue:"satsaid",
-start:"20:00",
-duration:60,
-target:90,
-minimum:60,
-staff:"AFA1",
-priority:3,
-flexible:"si",
-separate:"no",
-moveDay:"si",
-moveVenue:"si",
-together:[],
-consecutive:[],
-notes:"Agregar al menos 30 minutos."
-},
+{id:6,area:"AFA",division:"3ra",day:"miércoles",venue:"satsaid",start:"20:00",end:"21:00",min:90,priority:3,together:false,group:"",consecutive:false,consecutiveGroup:"",fixed:false},
 
-{
-id:3,
-category:"AFA",
-group:"1ra",
-day:"jueves",
-venue:"satsaid",
-start:"19:00",
-duration:60,
-target:90,
-minimum:60,
-staff:"AFA1",
-priority:3,
-flexible:"si",
-separate:"no",
-moveDay:"si",
-moveVenue:"si",
-together:[],
-consecutive:[],
-notes:"Agregar al menos 30 minutos."
-},
+{id:7,area:"AFA",division:"3ra",day:"jueves",venue:"rincon",start:"20:15",end:"21:15",min:90,priority:3,together:false,group:"",consecutive:false,consecutiveGroup:"",fixed:false},
 
-{
-id:4,
-category:"AFA",
-group:"1ra",
-day:"viernes",
-venue:"satsaid",
-start:"20:00",
-duration:60,
-target:90,
-minimum:60,
-staff:"AFA1",
-priority:3,
-flexible:"si",
-separate:"no",
-moveDay:"si",
-moveVenue:"si",
-together:[],
-consecutive:[],
-notes:"Agregar al menos 30 minutos."
-},
+{id:8,area:"AFA",division:"3ra",day:"viernes",venue:"rincon",start:"19:00",end:"20:00",min:90,priority:3,together:false,group:"",consecutive:false,consecutiveGroup:"",fixed:false},
 
-/* 3RA */
+{id:9,area:"AFA",division:"4ta",day:"martes",venue:"rincon",start:"19:00",end:"20:30",min:150,priority:3,together:false,group:"",consecutive:false,consecutiveGroup:"",fixed:false},
 
-{
-id:5,
-category:"AFA",
-group:"3ra",
-day:"martes",
-venue:"rincon",
-start:"20:30",
-duration:90,
-target:90,
-minimum:60,
-staff:"AFA3",
-priority:3,
-flexible:"si",
-separate:"no",
-moveDay:"si",
-moveVenue:"si",
-together:[],
-consecutive:[],
-notes:"Mantener y sumar minutos si es posible."
-},
+{id:10,area:"AFA",division:"4ta",day:"viernes",venue:"rincon",start:"20:00",end:"21:00",min:120,priority:3,together:false,group:"",consecutive:false,consecutiveGroup:"",fixed:false},
 
-{
-id:6,
-category:"AFA",
-group:"3ra",
-day:"miercoles",
-venue:"satsaid",
-start:"20:00",
-duration:60,
-target:75,
-minimum:60,
-staff:"AFA3",
-priority:3,
-flexible:"si",
-separate:"no",
-moveDay:"si",
-moveVenue:"si",
-together:[],
-consecutive:[],
-notes:"Mantener y sumar minutos si es posible."
-},
+{id:11,area:"AFA",division:"5ta",day:"lunes",venue:"rincon",start:"19:30",end:"21:00",min:90,priority:3,together:true,group:"5ta-6ta",consecutive:false,consecutiveGroup:"",fixed:false},
 
-{
-id:7,
-category:"AFA",
-group:"3ra",
-day:"jueves",
-venue:"rincon",
-start:"20:15",
-duration:60,
-target:75,
-minimum:60,
-staff:"AFA3",
-priority:3,
-flexible:"si",
-separate:"no",
-moveDay:"si",
-moveVenue:"si",
-together:[],
-consecutive:[],
-notes:"Mantener y sumar minutos si es posible."
-},
+{id:12,area:"AFA",division:"6ta",day:"lunes",venue:"rincon",start:"19:30",end:"21:00",min:90,priority:3,together:true,group:"5ta-6ta",consecutive:false,consecutiveGroup:"",fixed:false},
 
-{
-id:8,
-category:"AFA",
-group:"3ra",
-day:"viernes",
-venue:"rincon",
-start:"19:00",
-duration:60,
-target:75,
-minimum:60,
-staff:"AFA3",
-priority:3,
-flexible:"si",
-separate:"no",
-moveDay:"si",
-moveVenue:"si",
-together:[],
-consecutive:[],
-notes:"Mantener y sumar minutos si es posible."
-},
+{id:13,area:"AFA",division:"5ta",day:"jueves",venue:"rincon",start:"18:00",end:"19:30",min:90,priority:3,together:true,group:"5ta-6ta",consecutive:false,consecutiveGroup:"",fixed:false},
 
-/* 4TA */
+{id:14,area:"AFA",division:"6ta",day:"jueves",venue:"rincon",start:"18:00",end:"19:30",min:90,priority:3,together:true,group:"5ta-6ta",consecutive:false,consecutiveGroup:"",fixed:false},
 
-{
-id:9,
-category:"AFA",
-group:"4ta",
-day:"martes",
-venue:"rincon",
-start:"19:00",
-duration:90,
-target:150,
-minimum:60,
-staff:"AFA4",
-priority:2,
-flexible:"si",
-separate:"no",
-moveDay:"si",
-moveVenue:"si",
-together:[],
-consecutive:[],
-notes:"Objetivo: sumar 90 minutos semanales."
-},
+{id:15,area:"AFA",division:"7ma",day:"lunes",venue:"rincon",start:"18:00",end:"19:30",min:90,priority:3,together:true,group:"7ma-8va",consecutive:false,consecutiveGroup:"",fixed:false},
 
-{
-id:10,
-category:"AFA",
-group:"4ta",
-day:"viernes",
-venue:"rincon",
-start:"20:00",
-duration:60,
-target:120,
-minimum:60,
-staff:"AFA4",
-priority:2,
-flexible:"si",
-separate:"no",
-moveDay:"si",
-moveVenue:"si",
-together:[],
-consecutive:[],
-notes:"Objetivo: sumar 90 minutos semanales."
-},
+{id:16,area:"AFA",division:"8va",day:"lunes",venue:"rincon",start:"18:00",end:"19:30",min:90,priority:3,together:true,group:"7ma-8va",consecutive:false,consecutiveGroup:"",fixed:false},
 
-/* 5TA Y 6TA */
+{id:17,area:"AFA",division:"7ma",day:"viernes",venue:"rincon",start:"18:00",end:"19:00",min:60,priority:3,together:true,group:"7ma-8va",consecutive:false,consecutiveGroup:"",fixed:false},
 
-{
-id:11,
-category:"AFA",
-group:"5ta",
-day:"lunes",
-venue:"rincon",
-start:"19:30",
-duration:90,
-target:90,
-minimum:60,
-staff:"AFA5",
-priority:2,
-flexible:"si",
-separate:"si",
-moveDay:"si",
-moveVenue:"si",
-together:[],
-consecutive:[],
-notes:"Actualmente entrena con 6ta. Priorizar separación."
-},
+{id:18,area:"AFA",division:"8va",day:"viernes",venue:"rincon",start:"18:00",end:"19:00",min:60,priority:3,together:true,group:"7ma-8va",consecutive:false,consecutiveGroup:"",fixed:false},
 
-{
-id:12,
-category:"AFA",
-group:"6ta",
-day:"lunes",
-venue:"rincon",
-start:"19:30",
-duration:90,
-target:90,
-minimum:60,
-staff:"AFA6",
-priority:2,
-flexible:"si",
-separate:"si",
-moveDay:"si",
-moveVenue:"si",
-together:[],
-consecutive:[],
-notes:"Actualmente entrena con 5ta. Priorizar separación."
-},
+/* PROMOS */
 
-{
-id:13,
-category:"AFA",
-group:"5ta",
-day:"jueves",
-venue:"rincon",
-start:"18:00",
-duration:90,
-target:90,
-minimum:60,
-staff:"AFA5",
-priority:2,
-flexible:"si",
-separate:"si",
-moveDay:"si",
-moveVenue:"si",
-together:[],
-consecutive:[],
-notes:"Actualmente entrena con 6ta. Priorizar separación."
-},
+{id:19,area:"PROMOS",division:"18-19",day:"martes",venue:"manolo",start:"18:00",end:"19:00",min:60,priority:3,together:false,group:"",consecutive:false,consecutiveGroup:"",fixed:false},
 
-{
-id:14,
-category:"AFA",
-group:"6ta",
-day:"jueves",
-venue:"rincon",
-start:"18:00",
-duration:90,
-target:90,
-minimum:60,
-staff:"AFA6",
-priority:2,
-flexible:"si",
-separate:"si",
-moveDay:"si",
-moveVenue:"si",
-together:[],
-consecutive:[],
-notes:"Actualmente entrena con 5ta. Priorizar separación."
-},
+{id:20,area:"PROMOS",division:"18-19",day:"jueves",venue:"manolo",start:"18:00",end:"19:00",min:60,priority:3,together:false,group:"",consecutive:false,consecutiveGroup:"",fixed:false},
 
-/* 7MA Y 8VA */
+{id:21,area:"PROMOS",division:"16-17",day:"martes",venue:"manolo",start:"19:00",end:"20:00",min:60,priority:3,together:false,group:"",consecutive:true,consecutiveGroup:"PROMO-MARTES",fixed:false},
 
-{
-id:15,
-category:"AFA",
-group:"7ma",
-day:"lunes",
-venue:"rincon",
-start:"18:00",
-duration:90,
-target:90,
-minimum:60,
-staff:"AFA7",
-priority:2,
-flexible:"si",
-separate:"si",
-moveDay:"si",
-moveVenue:"si",
-together:[],
-consecutive:[],
-notes:"Actualmente entrena con 8va. Priorizar separación."
-},
+{id:22,area:"PROMOS",division:"16-17",day:"jueves",venue:"manolo",start:"19:00",end:"20:00",min:60,priority:3,together:false,group:"",consecutive:true,consecutiveGroup:"PROMO-JUEVES",fixed:false},
 
-{
-id:16,
-category:"AFA",
-group:"8va",
-day:"lunes",
-venue:"rincon",
-start:"18:00",
-duration:90,
-target:90,
-minimum:60,
-staff:"AFA8",
-priority:2,
-flexible:"si",
-separate:"si",
-moveDay:"si",
-moveVenue:"si",
-together:[],
-consecutive:[],
-notes:"Actualmente entrena con 7ma. Priorizar separación."
-},
+/* FUTSALA */
 
-{
-id:17,
-category:"AFA",
-group:"7ma",
-day:"viernes",
-venue:"rincon",
-start:"18:00",
-duration:60,
-target:60,
-minimum:60,
-staff:"AFA7",
-priority:2,
-flexible:"no",
-separate:"si",
-moveDay:"si",
-moveVenue:"si",
-together:[],
-consecutive:[],
-notes:"Actualmente entrena con 8va. Priorizar separación."
-},
+{id:23,area:"FUTSALA",division:"1ra",day:"martes",venue:"manolo",start:"20:00",end:"21:00",min:60,priority:3,together:false,group:"",consecutive:false,consecutiveGroup:"",fixed:false},
 
-{
-id:18,
-category:"AFA",
-group:"8va",
-day:"viernes",
-venue:"rincon",
-start:"18:00",
-duration:60,
-target:60,
-minimum:60,
-staff:"AFA8",
-priority:2,
-flexible:"no",
-separate:"si",
-moveDay:"si",
-moveVenue:"si",
-together:[],
-consecutive:[],
-notes:"Actualmente entrena con 7ma. Priorizar separación."
-},
+{id:24,area:"FUTSALA",division:"1ra",day:"viernes",venue:"manolo",start:"20:30",end:"21:30",min:60,priority:3,together:false,group:"",consecutive:false,consecutiveGroup:"",fixed:false},
 
-/* ================= PROMOS ================= */
+{id:25,area:"FUTSALA",division:"3ra",day:"lunes",venue:"manolo",start:"20:00",end:"21:00",min:60,priority:3,together:true,group:"FUTSALA-3RA-4TA",consecutive:false,consecutiveGroup:"",fixed:false},
 
-{
-id:19,
-category:"Promos",
-group:"18-19",
-day:"martes",
-venue:"manolo",
-start:"18:00",
-duration:60,
-target:60,
-minimum:45,
-staff:"P1819",
-priority:2,
-flexible:"si",
-separate:"no",
-moveDay:"no",
-moveVenue:"no",
-together:[],
-consecutive:[],
-notes:"Mantener horario."
-},
+{id:26,area:"FUTSALA",division:"4ta",day:"lunes",venue:"manolo",start:"20:00",end:"21:00",min:60,priority:3,together:true,group:"FUTSALA-3RA-4TA",consecutive:false,consecutiveGroup:"",fixed:false},
 
-{
-id:20,
-category:"Promos",
-group:"18-19",
-day:"jueves",
-venue:"manolo",
-start:"18:00",
-duration:60,
-target:60,
-minimum:45,
-staff:"P1819",
-priority:2,
-flexible:"si",
-separate:"no",
-moveDay:"no",
-moveVenue:"no",
-together:[],
-consecutive:[],
-notes:"Mantener horario."
-},
+{id:27,area:"FUTSALA",division:"3ra",day:"jueves",venue:"manolo",start:"20:00",end:"21:00",min:60,priority:3,together:true,group:"FUTSALA-3RA-4TA",consecutive:false,consecutiveGroup:"",fixed:false},
 
-{
-id:21,
-category:"Promos",
-group:"16-17",
-day:"martes",
-venue:"manolo",
-start:"19:00",
-duration:60,
-target:60,
-minimum:45,
-staff:"P1617",
-priority:2,
-flexible:"si",
-separate:"no",
-moveDay:"no",
-moveVenue:"no",
-together:[],
-consecutive:[],
-notes:"Mantener horario."
-},
+{id:28,area:"FUTSALA",division:"4ta",day:"jueves",venue:"manolo",start:"20:00",end:"21:00",min:60,priority:3,together:true,group:"FUTSALA-3RA-4TA",consecutive:false,consecutiveGroup:"",fixed:false},
 
-{
-id:22,
-category:"Promos",
-group:"16-17",
-day:"jueves",
-venue:"manolo",
-start:"19:00",
-duration:60,
-target:60,
-minimum:45,
-staff:"P1617",
-priority:2,
-flexible:"si",
-separate:"no",
-moveDay:"no",
-moveVenue:"no",
-together:[],
-consecutive:[],
-notes:"Mantener horario."
-},
+{id:29,area:"FUTSALA",division:"5ta",day:"martes",venue:"rincon",start:"16:30",end:"18:00",min:90,priority:3,together:true,group:"FUTSALA-5TA-6TA",consecutive:false,consecutiveGroup:"",fixed:false},
 
-/* ================= FUTSALA ================= */
+{id:30,area:"FUTSALA",division:"6ta",day:"martes",venue:"rincon",start:"16:30",end:"18:00",min:90,priority:3,together:true,group:"FUTSALA-5TA-6TA",consecutive:false,consecutiveGroup:"",fixed:false},
 
-{
-id:23,
-category:"Futsala",
-group:"1ra",
-day:"martes",
-venue:"manolo",
-start:"20:00",
-duration:60,
-target:60,
-minimum:45,
-staff:"F1",
-priority:2,
-flexible:"si",
-separate:"no",
-moveDay:"no",
-moveVenue:"no",
-together:[],
-consecutive:[],
-notes:"Mantener horario."
-},
+{id:31,area:"FUTSALA",division:"5ta",day:"viernes",venue:"rincon",start:"16:30",end:"18:00",min:90,priority:3,together:true,group:"FUTSALA-5TA-6TA",consecutive:false,consecutiveGroup:"",fixed:false},
 
-{
-id:24,
-category:"Futsala",
-group:"1ra",
-day:"viernes",
-venue:"manolo",
-start:"20:30",
-duration:60,
-target:60,
-minimum:45,
-staff:"F1",
-priority:2,
-flexible:"si",
-separate:"no",
-moveDay:"no",
-moveVenue:"no",
-together:[],
-consecutive:[],
-notes:"Mantener horario."
-},
+{id:32,area:"FUTSALA",division:"6ta",day:"viernes",venue:"rincon",start:"16:30",end:"18:00",min:90,priority:3,together:true,group:"FUTSALA-5TA-6TA",consecutive:false,consecutiveGroup:"",fixed:false},
 
-{
-id:25,
-category:"Futsala",
-group:"3ra",
-day:"lunes",
-venue:"manolo",
-start:"20:00",
-duration:60,
-target:60,
-minimum:45,
-staff:"F3",
-priority:2,
-flexible:"si",
-separate:"no",
-moveDay:"no",
-moveVenue:"no",
-together:[],
-consecutive:[],
-notes:"Actualmente comparte con 4ta."
-},
+{id:33,area:"FUTSALA",division:"7ma",day:"lunes",venue:"rincon",start:"17:00",end:"18:00",min:60,priority:3,together:true,group:"FUTSALA-7MA-8VA",consecutive:false,consecutiveGroup:"",fixed:false},
 
-{
-id:26,
-category:"Futsala",
-group:"4ta",
-day:"lunes",
-venue:"manolo",
-start:"20:00",
-duration:60,
-target:60,
-minimum:45,
-staff:"F4",
-priority:2,
-flexible:"si",
-separate:"no",
-moveDay:"no",
-moveVenue:"no",
-together:[],
-consecutive:[],
-notes:"Actualmente comparte con 3ra."
-},
+{id:34,area:"FUTSALA",division:"8va",day:"lunes",venue:"rincon",start:"17:00",end:"18:00",min:60,priority:3,together:true,group:"FUTSALA-7MA-8VA",consecutive:false,consecutiveGroup:"",fixed:false},
 
-{
-id:27,
-category:"Futsala",
-group:"3ra",
-day:"jueves",
-venue:"manolo",
-start:"20:00",
-duration:60,
-target:60,
-minimum:45,
-staff:"F3",
-priority:2,
-flexible:"si",
-separate:"no",
-moveDay:"no",
-moveVenue:"no",
-together:[],
-consecutive:[],
-notes:"Actualmente comparte con 4ta."
-},
+{id:35,area:"FUTSALA",division:"7ma",day:"jueves",venue:"rincon",start:"17:00",end:"18:00",min:60,priority:3,together:true,group:"FUTSALA-7MA-8VA",consecutive:false,consecutiveGroup:"",fixed:false},
 
-{
-id:28,
-category:"Futsala",
-group:"4ta",
-day:"jueves",
-venue:"manolo",
-start:"20:00",
-duration:60,
-target:60,
-minimum:45,
-staff:"F4",
-priority:2,
-flexible:"si",
-separate:"no",
-moveDay:"no",
-moveVenue:"no",
-together:[],
-consecutive:[],
-notes:"Actualmente comparte con 3ra."
-},
+{id:36,area:"FUTSALA",division:"8va",day:"jueves",venue:"rincon",start:"17:00",end:"18:00",min:60,priority:3,together:true,group:"FUTSALA-7MA-8VA",consecutive:false,consecutiveGroup:"",fixed:false}
 
-{
-id:29,
-category:"Futsala",
-group:"5ta",
-day:"martes",
-venue:"rincon",
-start:"16:30",
-duration:90,
-target:90,
-minimum:60,
-staff:"F5",
-priority:2,
-flexible:"si",
-separate:"no",
-moveDay:"no",
-moveVenue:"no",
-together:[],
-consecutive:[],
-notes:"Mantener horario."
-},
+]
 
-{
-id:30,
-category:"Futsala",
-group:"6ta",
-day:"martes",
-venue:"rincon",
-start:"16:30",
-duration:90,
-target:90,
-minimum:60,
-staff:"F6",
-priority:2,
-flexible:"si",
-separate:"no",
-moveDay:"no",
-moveVenue:"no",
-together:[],
-consecutive:[],
-notes:"Mantener horario."
-},
+};
 
-{
-id:31,
-category:"Futsala",
-group:"5ta",
-day:"viernes",
-venue:"rincon",
-start:"16:30",
-duration:90,
-target:90,
-minimum:60,
-staff:"F5",
-priority:2,
-flexible:"si",
-separate:"no",
-moveDay:"no",
-moveVenue:"no",
-together:[],
-consecutive:[],
-notes:"Mantener horario."
-},
+let data=loadData();
 
-{
-id:32,
-category:"Futsala",
-group:"6ta",
-day:"viernes",
-venue:"rincon",
-start:"16:30",
-duration:90,
-target:90,
-minimum:60,
-staff:"F6",
-priority:2,
-flexible:"si",
-separate:"no",
-moveDay:"no",
-moveVenue:"no",
-together:[],
-consecutive:[],
-notes:"Mantener horario."
-},
-
-{
-id:33,
-category:"Futsala",
-group:"7ma",
-day:"lunes",
-venue:"rincon",
-start:"17:00",
-duration:60,
-target:60,
-minimum:45,
-staff:"F7",
-priority:2,
-flexible:"si",
-separate:"no",
-moveDay:"no",
-moveVenue:"no",
-together:[],
-consecutive:[],
-notes:"Mantener horario."
-},
-
-{
-id:34,
-category:"Futsala",
-group:"8va",
-day:"lunes",
-venue:"rincon",
-start:"17:00",
-duration:60,
-target:60,
-minimum:45,
-staff:"F8",
-priority:2,
-flexible:"si",
-separate:"no",
-moveDay:"no",
-moveVenue:"no",
-together:[],
-consecutive:[],
-notes:"Mantener horario."
-},
-
-{
-id:35,
-category:"Futsala",
-group:"7ma",
-day:"jueves",
-venue:"rincon",
-start:"17:00",
-duration:60,
-target:60,
-minimum:45,
-staff:"F7",
-priority:2,
-flexible:"si",
-separate:"no",
-moveDay:"no",
-moveVenue:"no",
-together:[],
-consecutive:[],
-notes:"Mantener horario."
-},
-
-{
-id:36,
-category:"Futsala",
-group:"8va",
-day:"jueves",
-venue:"rincon",
-start:"17:00",
-duration:60,
-target:60,
-minimum:45,
-staff:"F8",
-priority:2,
-flexible:"si",
-separate:"no",
-moveDay:"no",
-moveVenue:"no",
-together:[],
-consecutive:[],
-notes:"Mantener horario."
-}
-
-];
-
-
-/* =========================================================
-CARGA
-========================================================= */
-
-let venues;
-let trainings;
-
-function deepCopy(x){
-    return JSON.parse(JSON.stringify(x));
-}
+const days=["lunes","martes","miércoles","jueves","viernes","sábado","domingo"];
 
 function loadData(){
-
-    const savedVenues=
-        localStorage.getItem("futsal_venues_final");
-
-    const savedTrainings=
-        localStorage.getItem("futsal_trainings_final");
-
-    venues=
-        savedVenues
-        ?
-        JSON.parse(savedVenues)
-        :
-        deepCopy(INITIAL_VENUES);
-
-    trainings=
-        savedTrainings
-        ?
-        JSON.parse(savedTrainings)
-        :
-        deepCopy(INITIAL_TRAININGS);
+    const saved=localStorage.getItem(STORAGE_KEY);
+    if(saved){
+        try{return JSON.parse(saved);}
+        catch(e){}
+    }
+    return JSON.parse(JSON.stringify(initialData));
 }
 
-loadData();
-
-
-function save(){
-
-    localStorage.setItem(
-        "futsal_venues_final",
-        JSON.stringify(venues)
-    );
-
-    localStorage.setItem(
-        "futsal_trainings_final",
-        JSON.stringify(trainings)
-    );
+function saveData(){
+    localStorage.setItem(STORAGE_KEY,JSON.stringify(data));
 }
 
-
-/* =========================================================
-RESTAURAR GRILLA INICIAL
-========================================================= */
-
-function restoreInitial(){
-
-    const ok=
-        confirm(
-            "Esto va a reemplazar la grilla actual por la grilla inicial que cargamos. ¿Continuar?"
-        );
-
-    if(!ok)return;
-
-    venues=deepCopy(INITIAL_VENUES);
-    trainings=deepCopy(INITIAL_TRAININGS);
-
-    save();
-    render();
-
-    alert(
-        "✅ Se restauró la grilla inicial con todos los horarios."
-    );
+function venueName(id){
+    const v=data.venues.find(x=>x.id===id);
+    return v?v.name:id;
 }
 
-
-/* =========================================================
-UTILIDADES
-========================================================= */
-
-function minutes(time){
-
-    const p=time.split(":").map(Number);
-
-    return p[0]*60+p[1];
+function minutes(t){
+    const [h,m]=t.split(":").map(Number);
+    return h*60+m;
 }
 
-
-function timeString(total){
-
-    total=Math.max(0,Math.round(total));
-
-    return String(Math.floor(total/60)).padStart(2,"0")
-        +":"
-        +String(total%60).padStart(2,"0");
+function timeStr(m){
+    m=Math.round(m);
+    let h=Math.floor(m/60);
+    let min=m%60;
+    return String(h).padStart(2,"0")+":"+String(min).padStart(2,"0");
 }
 
-
-function finish(t){
-
-    return timeString(
-        minutes(t.start)+t.duration
-    );
+function duration(t){
+    return minutes(t.end)-minutes(t.start);
 }
-
-
-function getVenue(id){
-
-    return venues.find(v=>v.id===id);
-}
-
 
 function overlaps(a,b){
-
-    if(a.day!==b.day)return false;
-
-    return(
-        minutes(a.start)
-        <
-        minutes(b.start)+b.duration
-        &&
-        minutes(b.start)
-        <
-        minutes(a.start)+a.duration
-    );
+    return minutes(a.start)<minutes(b.end) &&
+           minutes(b.start)<minutes(a.end);
 }
 
+function availabilityOK(t){
 
-function escapeHtml(text){
+    const venue=data.venues.find(v=>v.id===t.venue);
+    if(!venue)return false;
 
-    return String(text ?? "")
-        .replace(/&/g,"&amp;")
-        .replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;")
-        .replace(/"/g,"&quot;")
-        .replace(/'/g,"&#039;");
+    const slots=venue.availability[t.day]||[];
+
+    return slots.some(slot=>{
+        return minutes(t.start)>=minutes(slot[0]) &&
+               minutes(t.end)<=minutes(slot[1]);
+    });
 }
 
+function getFilteredTrainings(){
 
-/* =========================================================
-CONFLICTOS
-========================================================= */
+    const p=document.getElementById("filterPredio").value;
+    const type=document.getElementById("filterTipo").value;
 
-function getConflicts(list=trainings){
+    return data.trainings.filter(t=>{
+        if(p!=="TODOS" && t.venue!==p)return false;
+        if(type!=="TODOS" && t.area!==type)return false;
+        return true;
+    });
+}
 
-    const result=[];
+function detectConflicts(){
 
-    for(let i=0;i<list.length;i++){
+    const conflicts=[];
+    const ts=data.trainings;
 
-        const a=list[i];
+    for(let i=0;i<ts.length;i++){
 
-        const venue=getVenue(a.venue);
-
-        if(!venue){
-
-            result.push({
-                type:"venue",
-                ids:[a.id],
-                text:
-                `${a.category} ${a.group}: predio inexistente.`
-            });
-
-            continue;
-        }
-
-        const av=venue.availability[a.day];
-
-        if(!av){
-
-            result.push({
+        if(!availabilityOK(ts[i])){
+            conflicts.push({
                 type:"availability",
-                ids:[a.id],
-                text:
-                `${a.category} ${a.group}: `
-                +
-                `${venue.name} no está disponible `
-                +
-                `el ${DAY_NAMES[a.day]}.`
-            });
-
-        }else if(
-            minutes(a.start)<minutes(av[0])
-            ||
-            minutes(a.start)+a.duration>minutes(av[1])
-        ){
-
-            result.push({
-                type:"availability",
-                ids:[a.id],
-                text:
-                `${a.category} ${a.group}: `
-                +
-                `${a.start}-${finish(a)} `
-                +
-                `fuera de ${venue.name} `
-                +
-                `(${av[0]}-${av[1]}).`
+                a:ts[i],
+                message:`${ts[i].area} ${ts[i].division} - ${ts[i].day} ${ts[i].start}-${ts[i].end}: fuera de disponibilidad de ${venueName(ts[i].venue)}`
             });
         }
 
+        for(let j=i+1;j<ts.length;j++){
 
-        for(let j=i+1;j<list.length;j++){
+            const a=ts[i];
+            const b=ts[j];
 
-            const b=list[j];
-
+            if(a.day!==b.day)continue;
+            if(a.venue!==b.venue)continue;
             if(!overlaps(a,b))continue;
 
-
-            /* CANCHA */
-
-            if(a.venue===b.venue){
-
-                const venue=getVenue(a.venue);
-
-                const simultaneous=
-                    list.filter(
-                        x=>
-                        x.day===a.day
-                        &&
-                        x.venue===a.venue
-                        &&
-                        overlaps(a,x)
-                    ).length;
-
-                if(
-                    simultaneous>
-                    (venue?.courts||1)
-                ){
-
-                    result.push({
-                        type:"court",
-                        ids:[a.id,b.id],
-                        text:
-                        `CANCHA: ${DAY_NAMES[a.day]} `
-                        +
-                        `${a.category} ${a.group} `
-                        +
-                        `${a.start}-${finish(a)} `
-                        +
-                        `choca con `
-                        +
-                        `${b.category} ${b.group} `
-                        +
-                        `${b.start}-${finish(b)} `
-                        +
-                        `en ${venue.name}.`
-                    });
-                }
+            if(a.together && b.together && a.group && a.group===b.group){
+                continue;
             }
 
-
-            /* STAFF */
-
-            if(
-                a.staff
-                &&
-                b.staff
-                &&
-                a.staff===b.staff
-            ){
-
-                const together=
-                    a.together?.includes(b.id)
-                    ||
-                    b.together?.includes(a.id);
-
-                if(!together){
-
-                    result.push({
-                        type:"staff",
-                        ids:[a.id,b.id],
-                        text:
-                        `STAFF "${a.staff}": `
-                        +
-                        `${a.category} ${a.group} `
-                        +
-                        `y ${b.category} ${b.group} `
-                        +
-                        `se superponen.`
-                    });
-                }
-            }
+            conflicts.push({
+                type:"overlap",
+                a,
+                b,
+                message:`${a.area} ${a.division} y ${b.area} ${b.division} se superponen en ${venueName(a.venue)} el ${a.day}`
+            });
         }
-
-
-        /* CONJUNTOS */
-
-        (a.together||[]).forEach(id=>{
-
-            const b=list.find(x=>x.id===id);
-
-            if(!b)return;
-
-            if(
-                a.day!==b.day
-                ||
-                a.start!==b.start
-                ||
-                a.duration!==b.duration
-                ||
-                a.venue!==b.venue
-            ){
-
-                result.push({
-                    type:"together",
-                    ids:[a.id,b.id],
-                    text:
-                    `CONJUNTO: ${a.category} ${a.group} `
-                    +
-                    `debe entrenar junto con `
-                    +
-                    `${b.category} ${b.group}.`
-                });
-            }
-        });
-
-
-        /* CONSECUTIVOS */
-
-        (a.consecutive||[]).forEach(id=>{
-
-            const b=list.find(x=>x.id===id);
-
-            if(!b)return;
-
-            const aEnd=
-                minutes(a.start)+a.duration;
-
-            const bEnd=
-                minutes(b.start)+b.duration;
-
-            const correct=
-                a.day===b.day
-                &&
-                a.venue===b.venue
-                &&
-                (
-                    aEnd===minutes(b.start)
-                    ||
-                    bEnd===minutes(a.start)
-                );
-
-            if(!correct){
-
-                result.push({
-                    type:"consecutive",
-                    ids:[a.id,b.id],
-                    text:
-                    `CONSECUTIVO: ${a.category} ${a.group} `
-                    +
-                    `debe estar inmediatamente junto a `
-                    +
-                    `${b.category} ${b.group}.`
-                });
-            }
-        });
     }
 
-    /*
-    Evitar duplicados
-    */
-
-    const unique=[];
-
-    const seen=new Set();
-
-    result.forEach(c=>{
-
-        const key=
-            c.type
-            +
-            "-"
-            +
-            [...c.ids].sort().join("-");
-
-        if(!seen.has(key)){
-
-            seen.add(key);
-            unique.push(c);
-        }
-    });
-
-    return unique;
+    return conflicts;
 }
-
-
-/* =========================================================
-RENDER CONFLICTOS
-========================================================= */
-
-function renderConflicts(){
-
-    const conflicts=getConflicts();
-
-    const box=
-        document.getElementById("conflicts");
-
-    if(!conflicts.length){
-
-        box.innerHTML=
-        `
-        <div class="good">
-        🟢 No hay conflictos.
-        </div>
-        `;
-
-        return;
-    }
-
-    box.innerHTML=
-        conflicts
-        .map(c=>`<div style="margin:7px 0">🔴 ${escapeHtml(c.text)}</div>`)
-        .join("");
-}
-
-
-/* =========================================================
-FILTRO PREDIOS
-========================================================= */
-
-function populateVenueFilter(){
-
-    const filter=
-        document.getElementById("venueFilter");
-
-    const current=filter.value;
-
-    filter.innerHTML=
-        `<option value="all">Todos los predios</option>`
-        +
-        venues.map(
-            v=>
-            `
-            <option value="${v.id}">
-            ${escapeHtml(v.name)}
-            </option>
-            `
-        ).join("");
-
-    if(
-        venues.some(v=>v.id===current)
-    ){
-        filter.value=current;
-    }
-}
-
-
-/* =========================================================
-CALENDARIO
-========================================================= */
-
-function renderCalendar(){
-
-    populateVenueFilter();
-
-    const calendar=
-        document.getElementById("calendar");
-
-    calendar.innerHTML="";
-
-    const venueFilter=
-        document.getElementById("venueFilter").value;
-
-    const categoryFilter=
-        document.getElementById("categoryFilter").value;
-
-    const viewFilter=
-        document.getElementById("viewFilter").value;
-
-    const conflicts=getConflicts();
-
-    const conflictIds=
-        new Set(
-            conflicts.flatMap(c=>c.ids)
-        );
-
-
-    DAYS.forEach(day=>{
-
-        const column=document.createElement("div");
-
-        column.innerHTML=
-        `
-        <div class="dayhead">
-        ${DAY_NAMES[day]}
-        </div>
-
-        <div
-        class="daybody"
-        data-day="${day}">
-        </div>
-        `;
-
-        const body=
-            column.querySelector(".daybody");
-
-
-        body.ondragover=e=>{
-            e.preventDefault();
-        };
-
-
-        body.ondrop=e=>{
-
-            const id=
-                Number(
-                    e.dataTransfer.getData("id")
-                );
-
-            const t=
-                trainings.find(x=>x.id===id);
-
-            if(!t)return;
-
-            if(
-                t.moveDay==="no"
-                &&
-                t.day!==day
-            ){
-
-                alert(
-                    "Este entrenamiento no puede cambiar de día."
-                );
-
-                return;
-            }
-
-            t.day=day;
-
-            save();
-            render();
-        };
-
-
-        let dayTrainings=
-            trainings.filter(t=>t.day===day);
-
-
-        if(venueFilter!=="all"){
-
-            dayTrainings=
-                dayTrainings.filter(
-                    t=>t.venue===venueFilter
-                );
-        }
-
-
-        if(categoryFilter!=="all"){
-
-            dayTrainings=
-                dayTrainings.filter(
-                    t=>t.category===categoryFilter
-                );
-        }
-
-
-        if(viewFilter==="conflicts"){
-
-            dayTrainings=
-                dayTrainings.filter(
-                    t=>conflictIds.has(t.id)
-                );
-        }
-
-
-        if(viewFilter==="together"){
-
-            dayTrainings=
-                dayTrainings.filter(
-                    t=>t.together?.length
-                );
-        }
-
-
-        if(viewFilter==="consecutive"){
-
-            dayTrainings=
-                dayTrainings.filter(
-                    t=>t.consecutive?.length
-                );
-        }
-
-
-        dayTrainings.sort(
-            (a,b)=>
-                minutes(a.start)
-                -
-                minutes(b.start)
-        );
-
-
-        dayTrainings.forEach(t=>{
-
-            const card=
-                document.createElement("div");
-
-            let cls="card";
-
-            if(conflictIds.has(t.id))
-                cls+=" conflict";
-
-            if(t.together?.length)
-                cls+=" together";
-
-            if(t.consecutive?.length)
-                cls+=" consecutive";
-
-            card.className=cls;
-
-            card.draggable=true;
-
-            card.ondragstart=e=>{
-                e.dataTransfer.setData(
-                    "id",
-                    t.id
-                );
-            };
-
-            card.ondblclick=()=>{
-                openTrainingModal(t.id);
-            };
-
-
-            const venue=getVenue(t.venue);
-
-            let tags="";
-
-
-            if(t.together?.length){
-
-                tags+=
-                `<span class="tag">🟣 Conjunto</span>`;
-            }
-
-
-            if(t.consecutive?.length){
-
-                tags+=
-                `<span class="tag">🔵 Consecutivo</span>`;
-            }
-
-
-            if(conflictIds.has(t.id)){
-
-                tags+=
-                `<span class="tag">⚠️ Conflicto</span>`;
-            }
-
-
-            if(t.separate==="si"){
-
-                tags+=
-                `<span class="tag">↔ Separar</span>`;
-            }
-
-
-            card.innerHTML=
-            `
-            <strong>
-            ${escapeHtml(t.category)}
-            —
-            ${escapeHtml(t.group)}
-            </strong>
-
-            <div>
-            ${t.start}
-            →
-            ${finish(t)}
-            ·
-            ${t.duration}'
-            </div>
-
-            <small>
-            🏟️ ${escapeHtml(venue?.name||"Sin predio")}
-            </small>
-
-            <small>
-            👤 ${escapeHtml(t.staff||"Sin staff")}
-            </small>
-
-            ${tags}
-            `;
-
-            body.appendChild(card);
-        });
-
-
-        calendar.appendChild(column);
-    });
-}
-
-
-/* =========================================================
-ESTADÍSTICAS
-========================================================= */
 
 function renderStats(){
 
-    const conflicts=getConflicts();
+    const conflicts=detectConflicts();
 
-    const hours=
-        trainings.reduce(
-            (s,t)=>s+t.duration,
-            0
-        );
+    let outside=conflicts.filter(c=>c.type==="availability").length;
+    let overlap=conflicts.filter(c=>c.type==="overlap").length;
 
-    const objectives=
-        trainings.filter(
-            t=>t.duration>=t.target
-        ).length;
+    let totalMin=0;
 
-    const together=
-        trainings.filter(
-            t=>t.together?.length
-        ).length;
+    data.trainings.forEach(t=>{
+        totalMin+=duration(t);
+    });
 
+    document.getElementById("stats").innerHTML=`
+        <div class="stat">
+            <span>Entrenamientos</span>
+            <strong>${data.trainings.length}</strong>
+        </div>
 
-    document.getElementById(
-        "statTrainings"
-    ).textContent=
-        trainings.length;
+        <div class="stat">
+            <span>Minutos semanales</span>
+            <strong>${totalMin}</strong>
+        </div>
 
-    document.getElementById(
-        "statConflicts"
-    ).textContent=
-        conflicts.length;
+        <div class="stat">
+            <span>Conflictos</span>
+            <strong>${overlap}</strong>
+        </div>
 
-    document.getElementById(
-        "statHours"
-    ).textContent=
-        (hours/60).toFixed(1);
-
-    document.getElementById(
-        "statVenues"
-    ).textContent=
-        venues.length;
-
-    document.getElementById(
-        "statObjectives"
-    ).textContent=
-        objectives;
-
-    document.getElementById(
-        "statTogether"
-    ).textContent=
-        together;
+        <div class="stat">
+            <span>Fuera de disponibilidad</span>
+            <strong>${outside}</strong>
+        </div>
+    `;
 }
 
+function renderConflicts(){
 
-/* =========================================================
-FORMULARIO
-========================================================= */
+    const el=document.getElementById("conflictos");
+    const conflicts=detectConflicts();
 
-function fillTrainingForm(){
-
-    fDay.innerHTML=
-        DAYS.map(
-            d=>
-            `
-            <option value="${d}">
-            ${DAY_NAMES[d]}
-            </option>
-            `
-        ).join("");
-
-
-    fVenue.innerHTML=
-        venues.map(
-            v=>
-            `
-            <option value="${v.id}">
-            ${escapeHtml(v.name)}
-            </option>
-            `
-        ).join("");
-
-
-    const currentId=
-        Number(trainingId.value);
-
-
-    const others=
-        trainings.filter(
-            t=>t.id!==currentId
-        );
-
-
-    const options=
-        others.map(
-            t=>
-            `
-            <option value="${t.id}">
-            ${escapeHtml(t.category)}
-            -
-            ${escapeHtml(t.group)}
-            </option>
-            `
-        ).join("");
-
-
-    fTogether.innerHTML=options;
-    fConsecutive.innerHTML=options;
-}
-
-
-function selectMultiple(select,ids=[]){
-
-    [...select.options].forEach(
-        o=>
-        o.selected=
-            ids.includes(Number(o.value))
-    );
-}
-
-
-function getSelectedIds(select){
-
-    return [...select.selectedOptions]
-        .map(o=>Number(o.value));
-}
-
-
-function openTrainingModal(id=null){
-
-    document
-        .getElementById("trainingModal")
-        .classList.add("on");
-
-    trainingId.value=id||"";
-
-    fillTrainingForm();
-
-
-    if(id){
-
-        const t=
-            trainings.find(
-                x=>x.id===id
-            );
-
-        if(!t)return;
-
-        trainingTitle.textContent=
-            "Modificar entrenamiento";
-
-        fCategory.value=t.category;
-        fGroup.value=t.group;
-        fDay.value=t.day;
-        fVenue.value=t.venue;
-        fStart.value=t.start;
-        fDuration.value=t.duration;
-        fTarget.value=t.target;
-        fMinimum.value=t.minimum;
-        fStaff.value=t.staff;
-        fPriority.value=t.priority;
-        fFlexible.value=t.flexible;
-        fSeparate.value=t.separate;
-        fMoveDay.value=t.moveDay;
-        fMoveVenue.value=t.moveVenue;
-        fNotes.value=t.notes||"";
-
-        selectMultiple(
-            fTogether,
-            t.together||[]
-        );
-
-        selectMultiple(
-            fConsecutive,
-            t.consecutive||[]
-        );
-
-        deleteTrainingButton.style.display=
-            "block";
-
-    }else{
-
-        trainingTitle.textContent=
-            "Agregar entrenamiento";
-
-        fCategory.value="";
-        fGroup.value="";
-        fDay.value="lunes";
-        fVenue.value=venues[0]?.id||"";
-        fStart.value="18:00";
-        fDuration.value=60;
-        fTarget.value=60;
-        fMinimum.value=45;
-        fStaff.value="";
-        fPriority.value=2;
-        fFlexible.value="si";
-        fSeparate.value="no";
-        fMoveDay.value="si";
-        fMoveVenue.value="si";
-        fNotes.value="";
-
-        deleteTrainingButton.style.display=
-            "none";
-    }
-}
-
-
-function closeTrainingModal(){
-
-    trainingModal.classList.remove("on");
-}
-
-
-function saveTraining(){
-
-    const data={
-
-        category:fCategory.value.trim(),
-        group:fGroup.value.trim(),
-        day:fDay.value,
-        venue:fVenue.value,
-        start:fStart.value,
-
-        duration:
-            Number(fDuration.value),
-
-        target:
-            Number(fTarget.value),
-
-        minimum:
-            Number(fMinimum.value),
-
-        staff:
-            fStaff.value.trim(),
-
-        priority:
-            Number(fPriority.value),
-
-        flexible:
-            fFlexible.value,
-
-        separate:
-            fSeparate.value,
-
-        moveDay:
-            fMoveDay.value,
-
-        moveVenue:
-            fMoveVenue.value,
-
-        together:
-            getSelectedIds(fTogether),
-
-        consecutive:
-            getSelectedIds(fConsecutive),
-
-        notes:
-            fNotes.value.trim()
-    };
-
-
-    if(
-        !data.category
-        ||
-        !data.group
-        ||
-        !data.start
-        ||
-        data.duration<15
-    ){
-
-        alert(
-            "Completá categoría, división, horario y duración."
-        );
-
+    if(!conflicts.length){
+        el.innerHTML=`<div class="ok" style="padding:15px;border-radius:8px;">
+        ✅ No hay conflictos detectados.
+        </div>`;
         return;
     }
 
+    el.innerHTML=`
+    <ul class="conflict-list">
+    ${conflicts.map(c=>`
+        <li style="margin-bottom:8px;">
+            ${c.type==="availability"?"🔴":"🟠"}
+            ${c.message}
+        </li>
+    `).join("")}
+    </ul>`;
+}
 
-    const id=Number(trainingId.value);
+function renderGrilla(){
 
+    const el=document.getElementById("grilla");
+    const filtered=getFilteredTrainings();
+
+    let html="";
+
+    days.forEach(day=>{
+
+        const dayTrainings=filtered
+            .filter(t=>t.day===day)
+            .sort((a,b)=>minutes(a.start)-minutes(b.start));
+
+        html+=`
+        <div style="margin-bottom:25px;">
+        <h3>${day.toUpperCase()}</h3>
+        <div style="overflow:auto;">
+        <table>
+        <thead>
+        <tr>
+            <th>Horario</th>
+            ${data.venues.map(v=>`<th>${v.name}</th>`).join("")}
+        </tr>
+        </thead>
+        <tbody>
+        `;
+
+        const intervals=[];
+
+        dayTrainings.forEach(t=>{
+            intervals.push(t.start,t.end);
+        });
+
+        data.venues.forEach(v=>{
+            const slots=v.availability[day]||[];
+            slots.forEach(s=>{
+                intervals.push(s[0],s[1]);
+            });
+        });
+
+        const unique=[...new Set(intervals)].sort((a,b)=>minutes(a)-minutes(b));
+
+        for(let i=0;i<unique.length-1;i++){
+
+            const start=unique[i];
+            const end=unique[i+1];
+
+            html+=`<tr>
+            <td><strong>${start}</strong><br>${end}</td>`;
+
+            data.venues.forEach(v=>{
+
+                const ts=dayTrainings.filter(t=>
+                    t.venue===v.id &&
+                    minutes(t.start)<=minutes(start) &&
+                    minutes(t.end)>=minutes(end)
+                );
+
+                const conflictClass=ts.length>1?"conflict":"";
+
+                html+=`<td class="${conflictClass}">`;
+
+                ts.forEach(t=>{
+
+                    const bad=!availabilityOK(t);
+
+                    html+=`
+                    <div class="training ${bad?"warning":""}"
+                         onclick="editarEntrenamiento(${t.id})">
+
+                        <strong>${t.area} — ${t.division}</strong>
+
+                        ${t.start} - ${t.end}
+                        (${duration(t)} min)
+
+                        <div class="small">
+                        ${t.together?"👥 Juntos":""}
+                        ${t.consecutive?" 🔗 Consecutivo":""}
+                        </div>
+
+                    </div>`;
+                });
+
+                html+=`</td>`;
+            });
+
+            html+=`</tr>`;
+        }
+
+        html+=`
+        </tbody>
+        </table>
+        </div>
+        </div>`;
+    });
+
+    el.innerHTML=html;
+}
+
+function renderVenues(){
+
+    const el=document.getElementById("predios");
+
+    el.innerHTML=`
+    <div class="grid">
+    ${data.venues.map(v=>`
+
+        <div class="card">
+
+            <h3>🏟️ ${v.name}</h3>
+
+            ${days.map(d=>`
+
+                <div style="margin-bottom:5px;">
+                <strong>${d}</strong>:
+
+                ${
+                    (v.availability[d]||[]).length
+                    ?
+                    v.availability[d].map(s=>
+                        `<span class="badge">${s[0]} - ${s[1]}</span>`
+                    ).join("")
+                    :
+                    `<span class="small">Sin disponibilidad</span>`
+                }
+
+                </div>
+
+            `).join("")}
+
+            <br>
+
+            <button onclick="editarPredio('${v.id}')">
+            ✏️ Modificar
+            </button>
+
+        </div>
+
+    `).join("")}
+    </div>`;
+}
+
+function renderTrainings(){
+
+    const el=document.getElementById("entrenamientos");
+
+    const filtered=getFilteredTrainings();
+
+    if(!filtered.length){
+        el.innerHTML=`<div class="empty">No hay entrenamientos para este filtro.</div>`;
+        return;
+    }
+
+    const grouped={};
+
+    filtered.forEach(t=>{
+
+        const key=t.area+"-"+t.division;
+
+        if(!grouped[key]){
+            grouped[key]=[];
+        }
+
+        grouped[key].push(t);
+
+    });
+
+    let html="";
+
+    Object.keys(grouped).sort().forEach(key=>{
+
+        const ts=grouped[key];
+
+        const first=ts[0];
+
+        html+=`
+        <div class="card" style="margin-bottom:12px;">
+
+            <h3>
+            ${first.area} — ${first.division}
+            </h3>
+
+            ${ts
+            .sort((a,b)=>days.indexOf(a.day)-days.indexOf(b.day))
+            .map(t=>`
+
+                <div style="
+                    display:flex;
+                    justify-content:space-between;
+                    align-items:center;
+                    border-top:1px solid #ddd;
+                    padding:9px 0;
+                    gap:10px;
+                    flex-wrap:wrap;
+                ">
+
+                    <div>
+                        <strong>${t.day}</strong>
+                        — ${t.start} a ${t.end}
+                        — ${duration(t)} min
+                        — ${venueName(t.venue)}
+
+                        <div>
+                        ${t.together?`<span class="badge">👥 ${t.group}</span>`:""}
+                        ${t.consecutive?`<span class="badge">🔗 ${t.consecutiveGroup}</span>`:""}
+                        ${t.fixed?`<span class="badge">📌 Fijo</span>`:""}
+                        ${!availabilityOK(t)?`<span class="badge" style="background:#fecaca;">⚠ Fuera de disponibilidad</span>`:""}
+                        </div>
+                    </div>
+
+                    <button onclick="editarEntrenamiento(${t.id})">
+                    ✏️ Modificar
+                    </button>
+
+                </div>
+
+            `).join("")}
+
+        </div>`;
+    });
+
+    el.innerHTML=html;
+}
+
+function updateVenueFilter(){
+
+    const select=document.getElementById("filterPredio");
+    const current=select.value;
+
+    select.innerHTML=
+        `<option value="TODOS">Todos</option>`+
+        data.venues.map(v=>`
+            <option value="${v.id}">${v.name}</option>
+        `).join("");
+
+    if(data.venues.some(v=>v.id===current)){
+        select.value=current;
+    }
+}
+
+function updateVenueSelect(){
+
+    const select=document.getElementById("trainingVenue");
+
+    select.innerHTML=data.venues.map(v=>`
+        <option value="${v.id}">${v.name}</option>
+    `).join("");
+}
+
+function renderAll(){
+
+    updateVenueFilter();
+    updateVenueSelect();
+
+    renderStats();
+    renderConflicts();
+    renderGrilla();
+    renderVenues();
+    renderTrainings();
+}
+
+function nuevoEntrenamiento(){
+
+    updateVenueSelect();
+
+    document.getElementById("modalTitle").innerText="Nuevo entrenamiento";
+
+    document.getElementById("trainingId").value="";
+    document.getElementById("trainingArea").value="AFA";
+    document.getElementById("trainingDivision").value="";
+    document.getElementById("trainingDay").value="lunes";
+    document.getElementById("trainingVenue").value=data.venues[0]?.id||"";
+    document.getElementById("trainingStart").value="18:00";
+    document.getElementById("trainingEnd").value="19:00";
+    document.getElementById("trainingMin").value="60";
+    document.getElementById("trainingPriority").value="2";
+    document.getElementById("trainingTogether").checked=false;
+    document.getElementById("trainingGroup").value="";
+    document.getElementById("trainingConsecutive").checked=false;
+    document.getElementById("trainingConsecutiveGroup").value="";
+    document.getElementById("trainingFixed").checked=false;
+
+    document.getElementById("modalTraining").style.display="flex";
+}
+
+function editarEntrenamiento(id){
+
+    const t=data.trainings.find(x=>x.id===id);
+    if(!t)return;
+
+    updateVenueSelect();
+
+    document.getElementById("modalTitle").innerText=
+        `Modificar ${t.area} — ${t.division}`;
+
+    document.getElementById("trainingId").value=t.id;
+    document.getElementById("trainingArea").value=t.area;
+    document.getElementById("trainingDivision").value=t.division;
+    document.getElementById("trainingDay").value=t.day;
+    document.getElementById("trainingVenue").value=t.venue;
+    document.getElementById("trainingStart").value=t.start;
+    document.getElementById("trainingEnd").value=t.end;
+    document.getElementById("trainingMin").value=t.min;
+    document.getElementById("trainingPriority").value=t.priority;
+    document.getElementById("trainingTogether").checked=!!t.together;
+    document.getElementById("trainingGroup").value=t.group||"";
+    document.getElementById("trainingConsecutive").checked=!!t.consecutive;
+    document.getElementById("trainingConsecutiveGroup").value=t.consecutiveGroup||"";
+    document.getElementById("trainingFixed").checked=!!t.fixed;
+
+    document.getElementById("modalTraining").style.display="flex";
+}
+
+function guardarEntrenamiento(){
+
+    const id=document.getElementById("trainingId").value;
+
+    const obj={
+        area:document.getElementById("trainingArea").value,
+        division:document.getElementById("trainingDivision").value.trim(),
+        day:document.getElementById("trainingDay").value,
+        venue:document.getElementById("trainingVenue").value,
+        start:document.getElementById("trainingStart").value,
+        end:document.getElementById("trainingEnd").value,
+        min:Number(document.getElementById("trainingMin").value)||60,
+        priority:Number(document.getElementById("trainingPriority").value),
+        together:document.getElementById("trainingTogether").checked,
+        group:document.getElementById("trainingGroup").value.trim(),
+        consecutive:document.getElementById("trainingConsecutive").checked,
+        consecutiveGroup:document.getElementById("trainingConsecutiveGroup").value.trim(),
+        fixed:document.getElementById("trainingFixed").checked
+    };
+
+    if(!obj.division){
+        alert("Ingresá la división.");
+        return;
+    }
+
+    if(minutes(obj.end)<=minutes(obj.start)){
+        alert("La hora de finalización debe ser posterior al inicio.");
+        return;
+    }
 
     if(id){
 
-        const t=
-            trainings.find(
-                x=>x.id===id
-            );
+        const index=data.trainings.findIndex(t=>t.id==id);
 
-        Object.assign(t,data);
+        if(index>=0){
+            data.trainings[index]={
+                ...data.trainings[index],
+                ...obj
+            };
+        }
 
     }else{
 
-        trainings.push({
+        obj.id=Date.now();
+        data.trainings.push(obj);
 
-            id:Date.now(),
-
-            ...data
-        });
     }
 
-
-    save();
-    closeTrainingModal();
-    render();
+    saveData();
+    cerrarModal();
+    renderAll();
 }
 
+function eliminarEntrenamiento(){
 
-function deleteTraining(){
+    const id=document.getElementById("trainingId").value;
 
-    const id=
-        Number(trainingId.value);
+    if(!id)return;
 
-    if(
-        !confirm(
-            "¿Eliminar este entrenamiento?"
-        )
-    )return;
+    if(!confirm("¿Eliminar este entrenamiento?"))return;
 
+    data.trainings=data.trainings.filter(t=>t.id!=id);
 
-    trainings=
-        trainings.filter(
-            t=>t.id!==id
-        );
-
-
-    trainings.forEach(t=>{
-
-        t.together=
-            (t.together||[])
-            .filter(x=>x!==id);
-
-        t.consecutive=
-            (t.consecutive||[])
-            .filter(x=>x!==id);
-    });
-
-
-    save();
-    closeTrainingModal();
-    render();
+    saveData();
+    cerrarModal();
+    renderAll();
 }
 
-
-/* =========================================================
-PREDIOS
-========================================================= */
-
-function openConfig(){
-
-    renderVenueConfiguration();
-
-    configModal.classList.add("on");
+function cerrarModal(){
+    document.getElementById("modalTraining").style.display="none";
 }
 
+function nuevoPredio(){
 
-function closeConfig(){
+    document.getElementById("venueTitle").innerText="Nuevo predio";
+    document.getElementById("venueId").value="";
+    document.getElementById("venueName").value="";
 
-    configModal.classList.remove("on");
+    renderAvailabilityForm();
+
+    document.getElementById("modalVenue").style.display="flex";
 }
 
+function editarPredio(id){
 
-function renderVenueConfiguration(){
+    const v=data.venues.find(x=>x.id===id);
+    if(!v)return;
 
-    const box=
-        document.getElementById(
-            "venueConfiguration"
-        );
+    document.getElementById("venueTitle").innerText="Modificar predio";
+    document.getElementById("venueId").value=id;
+    document.getElementById("venueName").value=v.name;
 
+    renderAvailabilityForm(v);
 
-    box.innerHTML=
-        venues.map(
-            v=>
-            `
-            <div class="venueCard">
+    document.getElementById("modalVenue").style.display="flex";
+}
 
-            <div style="
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            gap:10px;
-            ">
+function renderAvailabilityForm(v=null){
 
-            <div>
+    const el=document.getElementById("availabilityForm");
 
-            <input
-            value="${escapeHtml(v.name)}"
-            style="
-            font-size:18px;
-            font-weight:bold;
-            padding:7px;
-            width:350px;
-            "
-            onchange="
-            renameVenue('${v.id}',this.value)
-            "
-            >
+    el.innerHTML=days.map(d=>{
 
-            <div class="muted">
-            Predio · ${v.courts} cancha(s)
-            </div>
+        const slots=v?.availability?.[d]||[];
 
-            </div>
+        return `
+        <div class="card" style="margin-bottom:8px;">
 
-            <button
-            class="red"
-            onclick="
-            deleteVenue('${v.id}')
-            ">
-            Eliminar
-            </button>
+            <strong>${d}</strong>
 
-            </div>
-
-
-            <div style="margin-top:10px">
-
-            <b>Disponibilidad semanal</b>
+            <div id="slots-${d}" style="margin-top:8px;">
 
             ${
-                DAYS.map(day=>{
+                slots.map((s,i)=>`
+                    <div class="flex" style="margin-bottom:5px;">
+                        <input type="time"
+                               value="${s[0]}"
+                               data-day="${d}"
+                               data-type="start">
 
-                    const av=
-                        v.availability[day];
+                        <input type="time"
+                               value="${s[1]}"
+                               data-day="${d}"
+                               data-type="end">
 
-                    return `
-                    <div class="availabilityRow">
-
-                    <label>
-                    ${DAY_NAMES[day]}
-                    </label>
-
-                    <input
-                    type="time"
-                    value="${av?.[0]||""}"
-                    onchange="
-                    changeAvailability(
-                    '${v.id}',
-                    '${day}',
-                    'start',
-                    this.value
-                    )
-                    "
-                    >
-
-                    <input
-                    type="time"
-                    value="${av?.[1]||""}"
-                    onchange="
-                    changeAvailability(
-                    '${v.id}',
-                    '${day}',
-                    'end',
-                    this.value
-                    )
-                    "
-                    >
-
-                    <button
-                    class="${av?'red':'green'}"
-                    onclick="
-                    toggleAvailability(
-                    '${v.id}',
-                    '${day}'
-                    )
-                    "
-                    >
-                    ${av?"Quitar":"Agregar"}
-                    </button>
-
+                        <button class="btn-red"
+                                onclick="this.parentElement.remove()">
+                            ×
+                        </button>
                     </div>
-                    `;
-                }).join("")
+                `).join("")
             }
 
             </div>
 
+            <button class="btn-gray"
+                    onclick="addSlot('${d}')">
+                ＋ Horario
+            </button>
 
-            <div style="margin-top:12px">
+        </div>
+        `;
 
-            <label>
-            Cantidad de canchas:
-            </label>
-
-            <input
-            type="number"
-            min="1"
-            value="${v.courts}"
-            style="width:100px;padding:7px"
-            onchange="
-            changeCourtCount(
-            '${v.id}',
-            this.value
-            )
-            "
-            >
-
-            </div>
-
-            </div>
-            `
-        ).join("");
+    }).join("");
 }
 
+function addSlot(day){
 
-function renameVenue(id,name){
+    const container=document.getElementById("slots-"+day);
 
-    const v=getVenue(id);
+    const row=document.createElement("div");
 
-    if(!v)return;
+    row.className="flex";
+    row.style.marginBottom="5px";
 
-    v.name=
-        name.trim()||"Predio";
+    row.innerHTML=`
+        <input type="time" value="08:00"
+               data-day="${day}" data-type="start">
 
-    save();
-    render();
+        <input type="time" value="23:00"
+               data-day="${day}" data-type="end">
+
+        <button class="btn-red"
+                onclick="this.parentElement.remove()">
+            ×
+        </button>
+    `;
+
+    container.appendChild(row);
 }
 
+function guardarPredio(){
 
-function changeCourtCount(id,value){
+    const id=document.getElementById("venueId").value;
+    const name=document.getElementById("venueName").value.trim();
 
-    const v=getVenue(id);
-
-    if(!v)return;
-
-    v.courts=
-        Math.max(
-            1,
-            Number(value)||1
-        );
-
-    save();
-    render();
-}
-
-
-function changeAvailability(
-    id,
-    day,
-    field,
-    value
-){
-
-    const v=getVenue(id);
-
-    if(!v)return;
-
-
-    if(!v.availability[day]){
-
-        v.availability[day]=[
-            "08:00",
-            "23:00"
-        ];
+    if(!name){
+        alert("Ingresá el nombre del predio.");
+        return;
     }
 
+    const availability={};
 
-    if(field==="start")
-        v.availability[day][0]=value;
+    days.forEach(d=>{
 
-    if(field==="end")
-        v.availability[day][1]=value;
+        const rows=document.querySelectorAll(
+            `[data-day="${d}"][data-type="start"]`
+        );
 
+        const starts=[...rows];
 
-    save();
-    render();
-}
+        availability[d]=starts.map(startInput=>{
 
+            const parent=startInput.parentElement;
 
-function toggleAvailability(id,day){
+            const endInput=parent.querySelector(
+                `[data-day="${d}"][data-type="end"]`
+            );
 
-    const v=getVenue(id);
+            return [
+                startInput.value,
+                endInput.value
+            ];
 
-    if(!v)return;
+        }).filter(s=>s[0] && s[1] && minutes(s[1])>minutes(s[0]));
 
+    });
 
-    if(v.availability[day]){
+    if(id){
 
-        delete v.availability[day];
+        const v=data.venues.find(x=>x.id===id);
+
+        if(v){
+            v.name=name;
+            v.availability=availability;
+        }
 
     }else{
 
-        v.availability[day]=[
-            "08:00",
-            "23:00"
-        ];
+        data.venues.push({
+            id:"venue-"+Date.now(),
+            name,
+            availability
+        });
+
     }
 
-
-    save();
-
-    renderVenueConfiguration();
-    render();
+    saveData();
+    cerrarVenueModal();
+    renderAll();
 }
 
+function eliminarPredio(){
 
-function addVenue(){
+    const id=document.getElementById("venueId").value;
 
-    const name=
-        newVenueName.value.trim();
+    if(!id)return;
 
-    if(!name){
+    const used=data.trainings.some(t=>t.venue===id);
 
-        alert(
-            "Ingresá el nombre del predio."
-        );
+    if(used){
 
-        return;
+        if(!confirm(
+            "Este predio tiene entrenamientos asignados. " +
+            "Si lo eliminás, esos entrenamientos quedarán sin predio. ¿Continuar?"
+        ))return;
+
     }
 
+    data.venues=data.venues.filter(v=>v.id!==id);
 
-    const courts=
-        Math.max(
-            1,
-            Number(newVenueCourts.value)||1
-        );
-
-
-    venues.push({
-
-        id:"venue_"+Date.now(),
-
-        name,
-
-        courts,
-
-        availability:{}
-    });
-
-
-    save();
-
-    newVenueName.value="";
-    newVenueCourts.value=1;
-
-    renderVenueConfiguration();
-    render();
+    saveData();
+    cerrarVenueModal();
+    renderAll();
 }
 
-
-function deleteVenue(id){
-
-    if(
-        trainings.some(
-            t=>t.venue===id
-        )
-    ){
-
-        alert(
-            "No podés eliminar este predio mientras tenga entrenamientos asignados."
-        );
-
-        return;
-    }
-
-
-    if(
-        !confirm(
-            "¿Eliminar este predio?"
-        )
-    )return;
-
-
-    venues=
-        venues.filter(
-            v=>v.id!==id
-        );
-
-
-    save();
-
-    renderVenueConfiguration();
-    render();
+function cerrarVenueModal(){
+    document.getElementById("modalVenue").style.display="none";
 }
 
-
-/* =========================================================
+/*
+==========================================================
 OPTIMIZADOR
-========================================================= */
+==========================================================
+*/
 
-function generateCandidates(t){
+function candidateSlots(t){
 
     const candidates=[];
 
-    let durations=[
-        t.duration,
-        t.target
-    ];
+    data.venues.forEach(v=>{
 
+        const slots=v.availability[t.day]||[];
 
-    if(t.flexible==="si"){
+        slots.forEach(slot=>{
 
-        for(
-            let d=t.target;
-            d>=t.minimum;
-            d-=15
-        ){
+            const slotStart=minutes(slot[0]);
+            const slotEnd=minutes(slot[1]);
 
-            durations.push(d);
-        }
-    }
+            const wanted=Math.max(
+                duration(t),
+                Number(t.min)||duration(t)
+            );
 
+            if(slotEnd-slotStart<wanted)return;
 
-    durations=
-        [...new Set(durations)]
-        .filter(d=>d>=t.minimum);
+            /*
+            Probar diferentes posiciones dentro de la disponibilidad.
+            Cada 15 minutos.
+            */
 
+            for(
+                let start=slotStart;
+                start+wanted<=slotEnd;
+                start+=15
+            ){
 
-    for(const day of DAYS){
+                candidates.push({
+                    venue:v.id,
+                    day:t.day,
+                    start:timeStr(start),
+                    end:timeStr(start+wanted)
+                });
 
-        if(
-            t.moveDay==="no"
-            &&
-            day!==t.day
-        )continue;
-
-
-        for(const venue of venues){
-
-            if(
-                t.moveVenue==="no"
-                &&
-                venue.id!==t.venue
-            )continue;
-
-
-            const av=
-                venue.availability[day];
-
-            if(!av)continue;
-
-
-            for(const duration of durations){
-
-                const minStart=
-                    minutes(av[0]);
-
-                const maxStart=
-                    minutes(av[1])
-                    -
-                    duration;
-
-
-                for(
-                    let start=minStart;
-                    start<=maxStart;
-                    start+=15
-                ){
-
-                    candidates.push({
-
-                        ...t,
-
-                        day,
-
-                        venue:venue.id,
-
-                        start:
-                            timeString(start),
-
-                        duration
-                    });
-                }
             }
-        }
-    }
 
+        });
+
+    });
 
     return candidates;
 }
 
-
-/* =========================================================
-PUNTAJE
-========================================================= */
-
-function candidatePenalty(
-    candidate,
-    placed,
-    original
-){
-
-    let penalty=0;
-
+function candidateDays(t){
 
     /*
-    Cambiar día
+    En primer lugar se intenta mantener el mismo día.
+    Si no funciona, se pueden utilizar lunes-viernes.
     */
 
-    if(candidate.day!==original.day)
-        penalty+=1500;
-
-
-    /*
-    Cambiar predio
-    */
-
-    if(candidate.venue!==original.venue)
-        penalty+=1000;
-
-
-    /*
-    Cambiar horario
-    */
-
-    penalty+=
-        Math.abs(
-            minutes(candidate.start)
-            -
-            minutes(original.start)
-        )*3;
-
-
-    /*
-    Perder duración objetivo
-    */
-
-    if(candidate.duration<original.target){
-
-        penalty+=
-            (
-                original.target
-                -
-                candidate.duration
-            )*80;
-    }
-
-
-    /*
-    Conflictos con lo colocado
-    */
-
-    for(const other of placed){
-
-        if(!overlaps(candidate,other))
-            continue;
-
-
-        /*
-        Cancha
-        */
-
-        if(candidate.venue===other.venue){
-
-            const venue=
-                getVenue(candidate.venue);
-
-            const simultaneous=
-                placed.filter(
-                    x=>
-                    x.day===candidate.day
-                    &&
-                    x.venue===candidate.venue
-                    &&
-                    overlaps(candidate,x)
-                ).length;
-
-
-            if(
-                simultaneous>=
-                (venue?.courts||1)
-            ){
-
-                penalty+=100000;
-            }
-        }
-
-
-        /*
-        Staff
-        */
-
-        if(
-            candidate.staff
-            &&
-            other.staff
-            &&
-            candidate.staff===other.staff
-        ){
-
-            const together=
-                candidate.together?.includes(other.id)
-                ||
-                other.together?.includes(candidate.id);
-
-            if(!together)
-                penalty+=90000;
-        }
-    }
-
-
-    /*
-    Separación
-    */
-
-    if(original.separate==="si"){
-
-        const sameTime=
-            placed.filter(
-                x=>
-                x.day===candidate.day
-                &&
-                x.venue===candidate.venue
-                &&
-                overlaps(candidate,x)
-            ).length;
-
-
-        if(sameTime)
-            penalty+=5000;
-    }
-
-
-    /*
-    Conjunto
-    */
-
-    for(const id of candidate.together||[]){
-
-        const other=
-            placed.find(
-                x=>x.id===id
-            );
-
-        if(!other)continue;
-
-
-        if(
-            candidate.day!==other.day
-            ||
-            candidate.start!==other.start
-            ||
-            candidate.duration!==other.duration
-            ||
-            candidate.venue!==other.venue
-        ){
-
-            penalty+=100000;
-        }
-    }
-
-
-    /*
-    Consecutivo
-    */
-
-    for(const id of candidate.consecutive||[]){
-
-        const other=
-            placed.find(
-                x=>x.id===id
-            );
-
-        if(!other)continue;
-
-
-        const end=
-            minutes(candidate.start)
-            +
-            candidate.duration;
-
-
-        const otherEnd=
-            minutes(other.start)
-            +
-            other.duration;
-
-
-        const correct=
-            candidate.day===other.day
-            &&
-            candidate.venue===other.venue
-            &&
-            (
-                end===minutes(other.start)
-                ||
-                otherEnd===minutes(candidate.start)
-            );
-
-
-        if(!correct)
-            penalty+=40000;
-    }
-
-
-    /*
-    Preferir mantener horario
-    */
-
-    if(
-        candidate.day===original.day
-        &&
-        candidate.venue===original.venue
-        &&
-        candidate.start===original.start
-    ){
-
-        penalty-=1000;
-    }
-
-
-    return penalty;
-}
-
-
-/* =========================================================
-OPTIMIZACIÓN POR BEAM SEARCH
-========================================================= */
-
-function optimize(){
-
-    /*
-    Primero:
-    - prioridad
-    - duración objetivo
-    - restricciones fuertes
-    */
-
-    const ordered=
-        [...trainings]
-        .sort(
-            (a,b)=>
-                b.priority-a.priority
-                ||
-                b.target-a.target
-        );
-
-
-    let beam=[
-        {
-            solution:[],
-            penalty:0
-        }
-    ];
-
-
-    for(const training of ordered){
-
-        const candidates=
-            generateCandidates(training);
-
-
-        /*
-        Mantener los candidatos más cercanos
-        al horario original.
-        */
-
-        candidates.sort(
-            (a,b)=>
-                Math.abs(
-                    minutes(a.start)
-                    -
-                    minutes(training.start)
-                )
-                -
-                Math.abs(
-                    minutes(b.start)
-                    -
-                    minutes(training.start)
-                )
-        );
-
-
-        const next=[];
-
-
-        for(const state of beam){
-
-            /*
-            Limitamos para que funcione
-            rápido incluso en navegador.
-            */
-
-            for(
-                const candidate
-                of candidates.slice(0,300)
-            ){
-
-                const penalty=
-                    candidatePenalty(
-                        candidate,
-                        state.solution,
-                        training
-                    );
-
-
-                next.push({
-
-                    solution:
-                        state.solution.concat(
-                            candidate
-                        ),
-
-                    penalty:
-                        state.penalty+penalty
-                });
-            }
-        }
-
-
-        next.sort(
-            (a,b)=>
-                a.penalty-b.penalty
-        );
-
-
-        beam=
-            next.slice(0,100);
-    }
-
-
-    return beam
-        .sort(
-            (a,b)=>
-                a.penalty-b.penalty
-        );
-}
-
-
-/* =========================================================
-OPTIMIZAR
-========================================================= */
-
-function runOptimizer(){
-
-    scenarios.innerHTML=
-    `
-    <div class="warn">
-    🤖 Analizando posibilidades...
-    </div>
-    `;
-
-
-    setTimeout(()=>{
-
-        const results=
-            optimize();
-
-
-        renderScenarios(
-            results.slice(0,6)
-        );
-
-    },50);
-}
-
-
-/* =========================================================
-ESCENARIOS
-========================================================= */
-
-function renderScenarios(results){
-
-    if(!results.length){
-
-        scenarios.innerHTML=
-        `
-        <div class="bad">
-        No se encontraron alternativas.
-        </div>
-        `;
-
-        return;
-    }
-
-
-    scenarios.innerHTML="";
-
-
-    results.forEach(
-        (r,index)=>{
-
-            const conflicts=
-                getConflicts(
-                    r.solution
-                );
-
-
-            const changes=
-                r.solution.filter(t=>{
-
-                    const original=
-                        trainings.find(
-                            x=>x.id===t.id
-                        );
-
-
-                    return(
-                        t.day!==original.day
-                        ||
-                        t.venue!==original.venue
-                        ||
-                        t.start!==original.start
-                        ||
-                        t.duration!==original.duration
-                    );
-
-                }).length;
-
-
-            const objectives=
-                r.solution.filter(t=>{
-
-                    const original=
-                        trainings.find(
-                            x=>x.id===t.id
-                        );
-
-                    return(
-                        t.duration>=original.target
-                    );
-
-                }).length;
-
-
-            const hours=
-                r.solution.reduce(
-                    (s,t)=>s+t.duration,
-                    0
-                );
-
-
-            const div=
-                document.createElement("div");
-
-
-            div.className=
-                "scenario"
-                +
-                (
-                    index===0
-                    ?
-                    " best"
-                    :
-                    ""
-                );
-
-
-            div.innerHTML=
-            `
-
-            <div class="score">
-
-            ${
-                index===0
-                ?
-                "⭐ MEJOR PROPUESTA"
-                :
-                "Propuesta "+(index+1)
-            }
-
-            </div>
-
-
-            <div>
-
-            <span class="metric">
-            Conflictos:
-            <b>${conflicts.length}</b>
-            </span>
-
-            <span class="metric">
-            Objetivos:
-            <b>${objectives}/${trainings.length}</b>
-            </span>
-
-            <span class="metric">
-            Horas:
-            <b>${(hours/60).toFixed(1)}</b>
-            </span>
-
-            <span class="metric">
-            Cambios:
-            <b>${changes}</b>
-            </span>
-
-            </div>
-
-
-            ${
-                conflicts.length
-                ?
-                `<div class="bad">
-                🔴 ${conflicts.length} conflicto(s)
-                </div>`
-                :
-                `<div class="good">
-                🟢 SIN CONFLICTOS
-                </div>`
-            }
-
-
-            <button
-            class="green"
-            onclick='applyScenario(${JSON.stringify(r.solution)})'
-            style="margin-top:8px">
-
-            ✅ Aplicar propuesta
-
-            </button>
-
-
-            <details style="margin-top:12px">
-
-            <summary>
-            Ver cambios de esta propuesta
-            </summary>
-
-
-            <table style="margin-top:10px">
-
-            <tr>
-            <th>Entrenamiento</th>
-            <th>Actual</th>
-            <th>Propuesto</th>
-            </tr>
-
-
-            ${
-                r.solution.map(t=>{
-
-                    const o=
-                        trainings.find(
-                            x=>x.id===t.id
-                        );
-
-
-                    const changed=
-                        t.day!==o.day
-                        ||
-                        t.venue!==o.venue
-                        ||
-                        t.start!==o.start
-                        ||
-                        t.duration!==o.duration;
-
-
-                    return`
-
-                    <tr
-                    class="${changed?"change":""}">
-
-                    <td>
-                    <b>
-                    ${escapeHtml(t.category)}
-                    ${escapeHtml(t.group)}
-                    </b>
-                    </td>
-
-                    <td>
-                    ${DAY_NAMES[o.day]}
-                    ${o.start}-${finish(o)}
-                    <br>
-                    ${escapeHtml(
-                        getVenue(o.venue)?.name||""
-                    )}
-                    </td>
-
-                    <td>
-                    <b>
-                    ${DAY_NAMES[t.day]}
-                    ${t.start}-${finish(t)}
-                    </b>
-                    <br>
-                    ${escapeHtml(
-                        getVenue(t.venue)?.name||""
-                    )}
-                    </td>
-
-                    </tr>
-                    `;
-
-                }).join("")
-            }
-
-            </table>
-
-            </details>
-
-            `;
-
-
-            scenarios.appendChild(div);
-        }
-    );
-}
-
-
-/* =========================================================
-APLICAR
-========================================================= */
-
-function applyScenario(solution){
-
-    if(
-        !confirm(
-            "¿Aplicar esta propuesta?"
-        )
-    )return;
-
-
-    solution.forEach(proposed=>{
-
-        const current=
-            trainings.find(
-                t=>t.id===proposed.id
-            );
-
-
-        if(current){
-
-            Object.assign(
-                current,
-                proposed
-            );
-        }
+    const result=[t.day];
+
+    ["lunes","martes","miércoles","jueves","viernes"]
+    .forEach(d=>{
+        if(!result.includes(d))result.push(d);
     });
 
-
-    save();
-    render();
-
-
-    alert(
-        "✅ Propuesta aplicada."
-    );
+    return result;
 }
 
+function scoreCandidate(t,candidate,all){
 
-/* =========================================================
-EXPORTAR IMAGEN
-========================================================= */
+    let score=0;
 
-async function exportPNG(){
+    const currentDuration=duration(t);
+    const newDuration=minutes(candidate.end)-minutes(candidate.start);
 
-    const calendar=
-        document.getElementById("calendar");
+    /*
+    Mantener día
+    */
+    if(candidate.day===t.day)score+=100;
 
+    /*
+    Mantener predio
+    */
+    if(candidate.venue===t.venue)score+=80;
 
-    try{
+    /*
+    Prioridad
+    */
+    score+=t.priority*20;
 
-        const canvas=
-            await html2canvas(
-                calendar,
-                {
-                    scale:2,
-                    backgroundColor:"#ffffff"
-                }
-            );
+    /*
+    Evitar mover entrenamientos
+    */
+    if(candidate.day===t.day &&
+       candidate.venue===t.venue &&
+       candidate.start===t.start &&
+       candidate.end===t.end){
 
-
-        const link=
-            document.createElement("a");
-
-
-        link.download=
-            "grilla_futsal.png";
-
-
-        link.href=
-            canvas.toDataURL(
-                "image/png"
-            );
-
-
-        link.click();
-
-    }catch(e){
-
-        alert(
-            "No se pudo generar la imagen."
-        );
+        score+=200;
     }
-}
 
+    /*
+    Premiar mayor duración
+    */
+    score+=Math.min(newDuration,180);
 
-/* =========================================================
-PDF
-========================================================= */
+    /*
+    Penalizar cambios de horario
+    */
+    score-=Math.abs(
+        minutes(candidate.start)-minutes(t.start)
+    )*.15;
 
-function exportPDF(){
+    /*
+    Penalizar cambio de predio
+    */
+    if(candidate.venue!==t.venue){
+        score-=70;
+    }
 
-    window.print();
-}
-
-
-/* =========================================================
-BACKUP
-========================================================= */
-
-function exportData(){
-
-    const data={
-
-        version:5,
-
-        venues,
-
-        trainings,
-
-        exported:
-            new Date().toISOString()
+    /*
+    Comprobar conflictos con otros entrenamientos
+    */
+    const temp={
+        ...t,
+        day:candidate.day,
+        venue:candidate.venue,
+        start:candidate.start,
+        end:candidate.end
     };
 
+    all.forEach(other=>{
 
-    const blob=
-        new Blob(
-            [
-                JSON.stringify(
-                    data,
-                    null,
-                    2
-                )
-            ],
-            {
-                type:"application/json"
+        if(other.id===t.id)return;
+
+        if(other.day!==temp.day)return;
+
+        if(other.venue!==temp.venue)return;
+
+        if(!overlaps(temp,other))return;
+
+        /*
+        Si ambos forman un grupo conjunto, permitir.
+        */
+        if(
+            temp.together &&
+            other.together &&
+            temp.group &&
+            temp.group===other.group
+        ){
+            return;
+        }
+
+        score-=10000;
+
+    });
+
+    return score;
+}
+
+function optimizeSingle(t,all){
+
+    if(t.fixed)return null;
+
+    let best=null;
+    let bestScore=-Infinity;
+
+    candidateDays(t).forEach(day=>{
+
+        const copy={...t,day};
+
+        const candidates=candidateSlots(copy);
+
+        candidates.forEach(c=>{
+
+            c.day=day;
+
+            const s=scoreCandidate(
+                t,
+                c,
+                all
+            );
+
+            if(s>bestScore){
+
+                bestScore=s;
+                best=c;
+
             }
-        );
 
+        });
 
-    const url=
-        URL.createObjectURL(blob);
+    });
 
-
-    const a=
-        document.createElement("a");
-
-
-    a.href=url;
-
-    a.download=
-        "backup_grilla_futsal.json";
-
-    a.click();
-
-
-    URL.revokeObjectURL(url);
+    return best;
 }
 
+function optimizar(){
 
-function importData(){
+    if(!confirm(
+        "La optimización intentará mantener días y predios, " +
+        "eliminar conflictos y aumentar la duración cuando haya espacio. " +
+        "Los horarios marcados como FIJOS no se moverán. ¿Continuar?"
+    ))return;
 
-    document
-        .getElementById("importFile")
-        .click();
-}
+    const before=JSON.stringify(data.trainings);
 
+    /*
+    Orden:
+    1. Prioridad
+    2. Entrenamientos más largos
+    */
 
-function processImport(event){
+    const sorted=[...data.trainings].sort((a,b)=>{
 
-    const file=
-        event.target.files[0];
+        if(b.priority!==a.priority)
+            return b.priority-a.priority;
 
-    if(!file)return;
+        return duration(b)-duration(a);
 
+    });
 
-    const reader=
-        new FileReader();
+    /*
+    Varias pasadas.
+    */
 
+    for(let pass=0;pass<4;pass++){
 
-    reader.onload=e=>{
+        sorted.forEach(t=>{
 
-        try{
+            /*
+            Si forma parte de un grupo conjunto,
+            primero se intenta mantenerlo junto.
+            */
 
-            const data=
-                JSON.parse(
-                    e.target.result
+            if(t.together && t.group){
+
+                const group=data.trainings.filter(
+                    x=>x.group===t.group
                 );
 
+                if(group.length>1){
 
-            if(
-                !Array.isArray(data.venues)
-                ||
-                !Array.isArray(data.trainings)
-            ){
+                    const sameDay=group.every(
+                        x=>x.day===group[0].day
+                    );
 
-                throw new Error();
+                    const sameVenue=group.every(
+                        x=>x.venue===group[0].venue
+                    );
+
+                    if(sameDay && sameVenue){
+                        return;
+                    }
+                }
             }
 
-
-            venues=data.venues;
-            trainings=data.trainings;
-
-
-            save();
-            render();
-
-
-            alert(
-                "✅ Datos importados correctamente."
+            const candidate=optimizeSingle(
+                t,
+                data.trainings
             );
 
-        }catch{
+            if(!candidate)return;
 
-            alert(
-                "❌ Archivo inválido."
+            /*
+            Solo aplicar si realmente mejora
+            */
+
+            const current={
+                venue:t.venue,
+                day:t.day,
+                start:t.start,
+                end:t.end
+            };
+
+            const currentScore=scoreCandidate(
+                t,
+                current,
+                data.trainings
             );
+
+            const newScore=scoreCandidate(
+                t,
+                candidate,
+                data.trainings
+            );
+
+            if(newScore>currentScore){
+
+                t.day=candidate.day;
+                t.venue=candidate.venue;
+                t.start=candidate.start;
+                t.end=candidate.end;
+
+            }
+
+        });
+
+    }
+
+    /*
+    Intento especial:
+    grupos conjuntos.
+    */
+
+    const groups={};
+
+    data.trainings
+    .filter(t=>t.together && t.group)
+    .forEach(t=>{
+        if(!groups[t.group])groups[t.group]=[];
+        groups[t.group].push(t);
+    });
+
+    Object.values(groups).forEach(group=>{
+
+        if(group.length<2)return;
+
+        /*
+        Buscar una combinación común.
+        */
+
+        const base=group[0];
+
+        const possible=[];
+
+        candidateDays(base).forEach(day=>{
+
+            data.venues.forEach(v=>{
+
+                const slots=v.availability[day]||[];
+
+                slots.forEach(slot=>{
+
+                    let maxDuration=Infinity;
+
+                    group.forEach(t=>{
+                        maxDuration=Math.min(
+                            maxDuration,
+                            Math.max(
+                                duration(t),
+                                Number(t.min)||duration(t)
+                            )
+                        );
+                    });
+
+                    if(slot[1] && slot[0]){
+
+                        const available=
+                            minutes(slot[1])-minutes(slot[0]);
+
+                        if(available>=maxDuration){
+
+                            possible.push({
+                                day,
+                                venue:v.id,
+                                start:slot[0],
+                                end:timeStr(
+                                    minutes(slot[0])+maxDuration
+                                )
+                            });
+
+                        }
+
+                    }
+
+                });
+
+            });
+
+        });
+
+        let best=null;
+        let bestScore=-Infinity;
+
+        possible.forEach(c=>{
+
+            let score=0;
+
+            group.forEach(t=>{
+
+                if(t.day===c.day)score+=100;
+                if(t.venue===c.venue)score+=80;
+                if(t.start===c.start)score+=50;
+
+            });
+
+            if(score>bestScore){
+                bestScore=score;
+                best=c;
+            }
+
+        });
+
+        if(best){
+
+            group.forEach(t=>{
+
+                if(t.fixed)return;
+
+                t.day=best.day;
+                t.venue=best.venue;
+                t.start=best.start;
+                t.end=best.end;
+
+            });
+
         }
-    };
 
+    });
 
-    reader.readAsText(file);
+    saveData();
+    renderAll();
+
+    const after=JSON.stringify(data.trainings);
+
+    if(before===after){
+
+        alert(
+            "La grilla no necesitó cambios o no encontró " +
+            "una alternativa mejor sin empeorar las restricciones."
+        );
+
+    }else{
+
+        alert(
+            "✅ Optimización realizada.\n\n" +
+            "Revisá la sección de conflictos y la grilla. " +
+            "Podés modificar manualmente cualquier entrenamiento."
+        );
+
+    }
+
 }
 
+/*
+==========================================================
+EXPORTAR
+==========================================================
+*/
 
-/* =========================================================
-RENDER GENERAL
-========================================================= */
+async function exportarImagen(){
 
-function render(){
+    const element=document.querySelector(".container");
 
-    renderCalendar();
+    const canvas=await html2canvas(
+        element,
+        {
+            scale:2,
+            backgroundColor:"#f2f4f7"
+        }
+    );
 
-    renderStats();
+    const link=document.createElement("a");
 
-    renderConflicts();
+    link.download="grilla-futsal.png";
+    link.href=canvas.toDataURL("image/png");
+
+    link.click();
 }
 
+async function exportarPDF(){
 
-render();
+    const element=document.querySelector(".container");
+
+    const canvas=await html2canvas(
+        element,
+        {
+            scale:2,
+            backgroundColor:"#f2f4f7"
+        }
+    );
+
+    const imgData=canvas.toDataURL("image/png");
+
+    const {jsPDF}=window.jspdf;
+
+    const pdf=new jsPDF(
+        "landscape",
+        "mm",
+        "a4"
+    );
+
+    const pageWidth=pdf.internal.pageSize.getWidth();
+    const pageHeight=pdf.internal.pageSize.getHeight();
+
+    const ratio=canvas.height/canvas.width;
+
+    const imgWidth=pageWidth-10;
+    const imgHeight=imgWidth*ratio;
+
+    let position=5;
+
+    let remaining=imgHeight;
+
+    pdf.addImage(
+        imgData,
+        "PNG",
+        5,
+        position,
+        imgWidth,
+        imgHeight
+    );
+
+    remaining-=pageHeight-10;
+
+    while(remaining>0){
+
+        position=-(imgHeight-remaining);
+
+        pdf.addPage();
+
+        pdf.addImage(
+            imgData,
+            "PNG",
+            5,
+            position,
+            imgWidth,
+            imgHeight
+        );
+
+        remaining-=pageHeight-10;
+
+    }
+
+    pdf.save("grilla-futsal.pdf");
+}
+
+/*
+==========================================================
+RESET
+==========================================================
+*/
+
+function resetDatos(){
+
+    if(!confirm(
+        "Esto eliminará todas las modificaciones realizadas " +
+        "y restaurará los datos iniciales. ¿Continuar?"
+    ))return;
+
+    data=JSON.parse(
+        JSON.stringify(initialData)
+    );
+
+    saveData();
+    renderAll();
+}
+
+/*
+==========================================================
+ARRANQUE
+==========================================================
+*/
+
+renderAll();
 
 </script>
 
